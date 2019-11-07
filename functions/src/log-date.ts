@@ -1,15 +1,13 @@
 import * as moment from 'moment';
-import * as admin from 'firebase-admin';
+import { db } from './db';
 
-const db = admin.database();
-
-export default async (date: string, dbKey: string) => {
-  const momentDate = moment(date);
+export const logDate = async (date: string, dbKey: string) => {
+  const momentDate = moment(date).utc();
   const today = momentDate.format('DD-MM-YYYY');
-  const time = momentDate.format('hh:mm:ss');
+  const time = momentDate.format('HH:mm:ssZ');
 
   await db
     .ref('/')
     .child(today)
-    .set({ [dbKey]: time });
+    .update({ [dbKey]: time });
 };
