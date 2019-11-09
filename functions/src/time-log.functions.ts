@@ -1,7 +1,7 @@
 import { https } from './index';
 import { logDate } from './log-date';
 
-const NO_DATE_ERROR = new Error('Date is missing!');
+const NO_DATA_ERROR = new Error('Error: Date is missing');
 
 export const logHomeLeave = https.onRequest(async (request, response) => {
   const {
@@ -9,7 +9,7 @@ export const logHomeLeave = https.onRequest(async (request, response) => {
   } = request;
 
   if (!date) {
-    return response.status(400).send(NO_DATE_ERROR);
+    return response.status(400).send(NO_DATA_ERROR);
   }
 
   try {
@@ -27,7 +27,7 @@ export const logHomeArrive = https.onRequest(async (request, response) => {
   } = request;
 
   if (!date) {
-    return response.status(400).send(NO_DATE_ERROR);
+    return response.status(400).send(NO_DATA_ERROR);
   }
 
   try {
@@ -45,7 +45,7 @@ export const logWorkLeave = https.onRequest(async (request, response) => {
   } = request;
 
   if (!date) {
-    return response.status(400).send(NO_DATE_ERROR);
+    return response.status(400).send(NO_DATA_ERROR);
   }
 
   try {
@@ -63,7 +63,7 @@ export const logWorkArrive = https.onRequest(async (request, response) => {
   } = request;
 
   if (!date) {
-    return response.status(400).send(NO_DATE_ERROR);
+    return response.status(400).send(NO_DATA_ERROR);
   }
 
   try {
