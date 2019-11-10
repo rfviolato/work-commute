@@ -9,9 +9,6 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
-  "prettier": {
-    "singleQuote": true
-  },
   "engines": {
     "node": "8"
   },

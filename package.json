@@ -8,7 +8,8 @@
     "react-scripts": "3.2.0"
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "all"
   },
   "scripts": {
     "start": "react-scripts start",

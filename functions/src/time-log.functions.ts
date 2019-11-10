@@ -5,7 +5,7 @@ const NO_DATA_ERROR = new Error('Error: Date is missing');
 
 export const logHomeLeave = https.onRequest(async (request, response) => {
   const {
-    body: { date }
+    body: { date },
   } = request;
 
   if (!date) {
@@ -23,7 +23,7 @@ export const logHomeLeave = https.onRequest(async (request, response) => {
 
 export const logHomeArrive = https.onRequest(async (request, response) => {
   const {
-    body: { date }
+    body: { date },
   } = request;
 
   if (!date) {
@@ -41,7 +41,7 @@ export const logHomeArrive = https.onRequest(async (request, response) => {
 
 export const logWorkLeave = https.onRequest(async (request, response) => {
   const {
-    body: { date }
+    body: { date },
   } = request;
 
   if (!date) {
@@ -49,7 +49,7 @@ export const logWorkLeave = https.onRequest(async (request, response) => {
   }
 
   try {
-    await logDate(date, 'workLeaveLime');
+    await logDate(date, 'workLeaveTime');
 
     return response.status(200).send();
   } catch (exception) {
@@ -59,7 +59,7 @@ export const logWorkLeave = https.onRequest(async (request, response) => {
 
 export const logWorkArrive = https.onRequest(async (request, response) => {
   const {
-    body: { date }
+    body: { date },
   } = request;
 
   if (!date) {
