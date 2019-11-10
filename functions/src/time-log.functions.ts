@@ -1,5 +1,5 @@
 import { https } from './index';
-import { logDate } from './log-date';
+import { logDate } from './log-date.util';
 
 const NO_DATA_ERROR = new Error('Error: Date is missing');
 

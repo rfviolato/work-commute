@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { https } from './index';
 import { db } from './db';
+import { TIMETABLE_REF, EVENTS_REF, DAY_REF_FORMAT } from './constants';
 
 const NO_DATE_ERROR = new Error('Error: Date is missing');
 const NO_EVENT_ERROR = new Error('Error: Event is missing');
@@ -10,7 +11,7 @@ export const logEvent = https.onRequest(async (request, response) => {
     body: { event, date }
   } = request;
   const momentDate = moment(date).utc();
-  const day = momentDate.format('DD-MM-YYYY');
+  const day = momentDate.format(DAY_REF_FORMAT);
 
   if (!event) {
     return response.status(400).send(NO_DATE_ERROR);
@@ -22,9 +23,9 @@ export const logEvent = https.onRequest(async (request, response) => {
 
   try {
     await db
-      .ref('/')
+      .ref(TIMETABLE_REF)
       .child(day)
-      .child('events')
+      .child(EVENTS_REF)
       .push(event);
 
     return response.status(200).send();
