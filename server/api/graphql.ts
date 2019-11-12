@@ -1,16 +1,6 @@
 import * as admin from 'firebase-admin';
-import { ApolloServer, gql } from 'apollo-server';
-import serviceAccount from './config/firebase-service-account.json';
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyAbkuB89P0mAupxhLcWsPgENDgmcLPq7kM',
-  authDomain: 'work-commute-fbc8e.firebaseapp.com',
-  databaseURL: 'https://work-commute-fbc8e.firebaseio.com',
-  projectId: 'work-commute-fbc8e',
-  storageBucket: 'work-commute-fbc8e.appspot.com',
-  messagingSenderId: '808772314364',
-  appId: '1:808772314364:web:bcd2ed1555e5535aa9a379',
-};
+import { ApolloServer, gql } from 'apollo-server-micro';
+import serviceAccount from './../firebase-service-account.json';
 
 interface IWorkTimetable {
   homeArriveTime: string;
@@ -26,6 +16,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: 'https://work-commute-fbc8e.firebaseio.com',
 });
+
 const db = admin.database();
 
 const typeDefs = gql`
@@ -69,6 +60,10 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default server.createHandler({ path: '/api/graphql' });
