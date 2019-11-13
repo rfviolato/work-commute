@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "description": "work-commut server",
+  "devDependencies": {
+    "apollo-server-micro": "^2.9.8",
+    "firebase-admin": "^8.7.0",
+    "graphql": "^14.5.8",
+    "moment": "^2.24.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@now/node": "^1.1.2"
+  }
+}

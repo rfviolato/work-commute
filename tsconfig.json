@@ -2,16 +2,11 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "lib": [
-      "es6",
-      "dom"
-    ],
+    "lib": ["es6", "dom"],
     "declaration": true,
     "outDir": "lib",
     "strict": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowJs": true,
@@ -23,8 +18,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": [
-    "src/**/*",
-    "api/**/*"
-  ]
+  "include": ["src/**/*", "api/**/*"]
 }

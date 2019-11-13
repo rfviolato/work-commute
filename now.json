@@ -1,4 +1,18 @@
 {
+  "version": 2,
   "name": "work-commute",
-  "version": 2
+  "builds": [
+    { "src": "server/graphql/index.ts", "use": "@now/node" },
+    { "src": "server/api/**/*.ts", "use": "@now/node" }
+  ],
+  "routes": [
+    {
+      "src": "/gql",
+      "dest": "/server/graphql/index.ts"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/api/$1.ts"
+    }
+  ]
 }

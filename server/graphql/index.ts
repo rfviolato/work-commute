@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import { ApolloServer, gql } from 'apollo-server-micro';
-import serviceAccount from './../firebase-service-account.json';
+import serviceAccount from './firebase-service-account.json';
 
 interface IWorkTimetable {
   homeArriveTime: string;
@@ -66,4 +66,4 @@ export const config = {
   },
 };
 
-export default server.createHandler({ path: '/api/graphql' });
+export default server.createHandler({ path: '/gql' });
