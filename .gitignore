@@ -66,3 +66,6 @@ node_modules/
 
 # macos
 .DS_Store
+
+# CRA
+build/

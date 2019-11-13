@@ -3,16 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "moment": "^2.24.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0"
+  },
+  "devDependencies": {
+    "@now/node": "^1.1.2",
+    "apollo-server-micro": "^2.9.8",
+    "firebase-admin": "^8.7.0",
+    "graphql": "^14.5.8",
+    "typescript": "^3.7.2"
   },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
