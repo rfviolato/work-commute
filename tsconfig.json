@@ -3,7 +3,6 @@
     "target": "es5",
     "module": "esnext",
     "lib": ["es6", "dom"],
-    "declaration": true,
     "outDir": "lib",
     "strict": true,
     "typeRoots": ["node_modules/@types"],
@@ -18,5 +17,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src/**/*", "api/**/*"]
+  "include": ["webapp/**/*", "server/**/*"]
 }
