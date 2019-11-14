@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import { ApolloServer, gql } from 'apollo-server-micro';
-import serviceAccount from './firebase-service-account.json';
+import { db } from './../config/firebase';
 
 interface IWorkTimetable {
   homeArriveTime: string;
@@ -11,13 +11,6 @@ interface IWorkTimetable {
     [key: string]: string;
   }[];
 }
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: 'https://work-commute-fbc8e.firebaseio.com',
-});
-
-const db = admin.database();
 
 const typeDefs = gql`
   type Query {

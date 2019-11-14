@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {},
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "typescript": "^3.7.2"
   },
   "prettier": {
