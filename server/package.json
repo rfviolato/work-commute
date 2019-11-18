@@ -1,7 +1,7 @@
 {
   "name": "server",
   "description": "work-commut server",
-  "devDependencies": {
+  "dependencies": {
     "@now/node": "^1.1.2",
     "apollo-server-micro": "^2.9.8",
     "firebase-admin": "^8.7.0",

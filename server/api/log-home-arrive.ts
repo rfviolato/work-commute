@@ -11,7 +11,7 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   try {
-    await logDate(date, 'workLeaveTime');
+    await logDate(date, 'homeArriveTime');
 
     return response.status(200).end();
   } catch (exception) {
