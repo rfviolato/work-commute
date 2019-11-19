@@ -1,14 +1,11 @@
 import { IResolvers } from 'apollo-server-micro';
-
-interface IWorkTimetable {
-  homeArriveTime: string;
-  homeLeaveTime: string;
-  workArriveTime: string;
-  workLeaveTime: string;
-  events: {
-    [key: string]: string;
-  }[];
-}
+import moment from 'moment';
+import { db } from './../config/firebase';
+import {
+  TIMETABLE_REF,
+  DAY_REF_FORMAT,
+  TIME_FORMAT,
+} from './../config/constants';
 
 interface IWorkedPeriod {
   hours: number;
@@ -21,16 +18,49 @@ export default {
       parent,
       { periodStart, periodEnd },
     ): Promise<IWorkedPeriod> => {
-      console.log(periodStart, periodEnd);
       try {
-        // const snapshot = (await db
-        //   .ref('/workDayTimetables/10-11-2019')
-        //   .once('value')) as admin.database.DataSnapshot;
-        // const dayTimetable = snapshot.val() as IWorkTimetable;
+        let workedMinutesInPeriod = 0;
+        const snapshot = await db
+          .ref(TIMETABLE_REF)
+          .orderByKey()
+          .once('value');
+        const dateFormat = `${DAY_REF_FORMAT}T${TIME_FORMAT}`;
+
+        snapshot.forEach(childSnapshot => {
+          const day = childSnapshot.key;
+
+          if (day) {
+            const isInPeriod = moment(day).isBetween(periodStart, periodEnd);
+
+            if (isInPeriod) {
+              const dayTimeTable = childSnapshot.val();
+              const workLeaveTime = moment(
+                `${day}T${dayTimeTable.workLeaveTime}`,
+                dateFormat,
+              );
+              const workArriveTime = moment(
+                `${day}T${dayTimeTable.workArriveTime}`,
+                dateFormat,
+              );
+
+              workedMinutesInPeriod += workLeaveTime.diff(
+                workArriveTime,
+                'minutes',
+              );
+
+              return false;
+            }
+
+            return true;
+          }
+        });
+
+        const hours = Math.floor(workedMinutesInPeriod / 60);
+        const minutes = workedMinutesInPeriod % 60;
 
         return {
-          hours: 8,
-          minutes: 30,
+          hours,
+          minutes,
         };
       } catch (e) {
         throw new Error(e);
