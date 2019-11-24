@@ -1,4 +1,4 @@
-interface IWorkTimetable {
+export interface IWorkTimetable {
   homeArriveTime: string;
   homeLeaveTime: string;
   workArriveTime: string;
@@ -6,4 +6,9 @@ interface IWorkTimetable {
   events: {
     [key: string]: string;
   }[];
+}
+
+export interface IPeriodResolverParams {
+  periodStart: string;
+  periodEnd: string;
 }
