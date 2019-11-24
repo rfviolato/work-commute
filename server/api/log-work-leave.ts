@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from '@now/node';
-import { logDate } from './../utils/log-date';
+import { logTime } from '../utils/log-time';
 
 export default async (request: NowRequest, response: NowResponse) => {
   const {
@@ -11,7 +11,7 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   try {
-    await logDate(date, 'workLeaveTime');
+    await logTime(date, 'workLeaveTime');
 
     return response.status(200).end();
   } catch (exception) {

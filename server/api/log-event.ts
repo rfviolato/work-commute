@@ -19,7 +19,7 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   try {
-    await setOne({ date: { $eq: date } }, { $push: { events: event } });
+    await setOne({ date: { $eq: day } }, { $push: { events: event } });
 
     return response.status(200).end();
   } catch (exception) {
