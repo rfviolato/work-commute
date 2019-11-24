@@ -1,11 +1,7 @@
 import { NowRequest, NowResponse } from '@now/node';
-import {
-  DAY_REF_FORMAT,
-  TIMETABLE_REF,
-  EVENTS_REF,
-} from './../config/constants';
-import { db } from './../config/firebase';
+import { DAY_REF_FORMAT } from '../constants';
 import moment from 'moment';
+import { setOne } from './../lib/db';
 
 export default async (request: NowRequest, response: NowResponse) => {
   const {
@@ -23,11 +19,7 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   try {
-    await db
-      .ref(TIMETABLE_REF)
-      .child(day)
-      .child(EVENTS_REF)
-      .push(event);
+    await setOne({ date: { $eq: date } }, { $push: { events: event } });
 
     return response.status(200).end();
   } catch (exception) {

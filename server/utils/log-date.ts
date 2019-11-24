@@ -1,10 +1,5 @@
 import moment from 'moment';
-import { db } from './../config/firebase';
-import {
-  TIMETABLE_REF,
-  DAY_REF_FORMAT,
-  TIME_FORMAT,
-} from './../config/constants';
+import { TIMETABLE_REF, DAY_REF_FORMAT, TIME_FORMAT } from '../constants';
 
 export const logDate = async (date: string, dbKey: string) => {
   const momentDate = moment(date).utc();
