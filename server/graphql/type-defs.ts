@@ -3,10 +3,20 @@ import { DocumentNode } from 'graphql';
 
 export default gql`
   type Query {
-    workedInPeriod(periodStart: String!, periodEnd: String!): workedPeriod
+    Period(periodStart: String!, periodEnd: String!): Period
   }
 
-  type workedPeriod {
+  type PeriodData {
+    periodStart: String
+    periodEnd: String
+  }
+
+  type Period {
+    amountWorked: AmountWorked
+    averageCommuteTime: Int
+  }
+
+  type AmountWorked {
     hours: Int
     minutes: Int
   }

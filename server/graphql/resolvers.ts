@@ -14,10 +14,19 @@ interface IWorkedPeriod {
 
 export default {
   Query: {
-    workedInPeriod: async (
-      parent,
-      { periodStart, periodEnd },
-    ): Promise<IWorkedPeriod> => {
+    Period: (parent, { periodStart, periodEnd }) => ({
+      periodStart,
+      periodEnd,
+    }),
+  },
+  Period: {
+    amountWorked: async ({
+      periodStart,
+      periodEnd,
+    }: {
+      periodStart: string;
+      periodEnd: string;
+    }): Promise<IWorkedPeriod> => {
       try {
         let workedMinutesInPeriod = 0;
         const snapshot = await db
@@ -66,5 +75,6 @@ export default {
         throw new Error(e);
       }
     },
+    averageCommuteTime: () => 42,
   },
 } as IResolvers;
