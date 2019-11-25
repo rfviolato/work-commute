@@ -1,7 +1,9 @@
 import { IResolvers } from 'apollo-server-micro';
 import { IPeriodResolverParams } from './interface';
-// import moment from 'moment';
-// import { TIMETABLE_REF, DAY_REF_FORMAT, TIME_FORMAT } from '../lib/constants';
+import moment from 'moment';
+import { FULL_DATE_FORMAT } from '../constants';
+import { findAndSort } from './../lib/db';
+import { IWorkTimetable } from './interface';
 
 interface IWorkedPeriod {
   hours: number;
@@ -21,49 +23,35 @@ export default {
       periodEnd,
     }: IPeriodResolverParams): Promise<IWorkedPeriod> => {
       try {
-        // let workedMinutesInPeriod = 0;
-        // const periodStartMoment = moment(periodStart, DAY_REF_FORMAT);
-        // const periodEndMoment = moment(periodEnd, DAY_REF_FORMAT);
-        // const snapshot = await db
-        //   .ref(TIMETABLE_REF)
-        //   .orderByKey()
-        //   .once('value');
-        // const dateFormat = `${DAY_REF_FORMAT}T${TIME_FORMAT}`;
+        const timetables: IWorkTimetable[] = await findAndSort(
+          {
+            date: {
+              $gte: periodStart,
+              $lte: periodEnd,
+            },
+          },
+          { date: 1 },
+        );
 
-        // snapshot.forEach(childSnapshot => {
-        //   const day = childSnapshot.key;
+        const totalWorkedMinutes = timetables.reduce((accum, timetable) => {
+          const workLeaveTime = moment(
+            `${timetable.date}T${timetable.workLeaveTime}`,
+            FULL_DATE_FORMAT,
+          );
+          const workArriveTime = moment(
+            `${timetable.date}T${timetable.workArriveTime}`,
+            FULL_DATE_FORMAT,
+          );
 
-        //   if (day) {
-        //     const isInPeriod = moment(day, DAY_REF_FORMAT).isBetween(
-        //       periodStartMoment,
-        //       periodEndMoment,
-        //     );
+          return (accum += workLeaveTime.diff(workArriveTime, 'minutes'));
+        }, 0);
 
-        //     if (isInPeriod) {
-        //       const dayTimeTable = childSnapshot.val();
-        //       const workLeaveTime = moment(
-        //         `${day}T${dayTimeTable.workLeaveTime}`,
-        //         dateFormat,
-        //       );
-        //       const workArriveTime = moment(
-        //         `${day}T${dayTimeTable.workArriveTime}`,
-        //         dateFormat,
-        //       );
-
-        //       workedMinutesInPeriod += workLeaveTime.diff(
-        //         workArriveTime,
-        //         'minutes',
-        //       );
-        //     }
-        //   }
-        // });
-
-        // const hours = Math.floor(workedMinutesInPeriod / 60);
-        // const minutes = workedMinutesInPeriod % 60;
+        const hours = Math.floor(totalWorkedMinutes / 60);
+        const minutes = totalWorkedMinutes % 60;
 
         return {
-          hours: 42,
-          minutes: 42,
+          hours,
+          minutes,
         };
       } catch (e) {
         throw new Error(e);

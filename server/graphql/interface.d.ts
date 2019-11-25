@@ -1,4 +1,6 @@
 export interface IWorkTimetable {
+  _id: string;
+  date: string;
   homeArriveTime: string;
   homeLeaveTime: string;
   workArriveTime: string;

@@ -3,6 +3,7 @@ import {
   UpdateWriteOpResult,
   FilterQuery,
   UpdateQuery,
+  Cursor,
 } from 'mongodb';
 
 // TODO: Abstract to .env file or secret
@@ -27,6 +28,29 @@ export const setOne = async (
     const collection = db.collection('workTimetable');
 
     return collection.updateOne(filter, update, { upsert: true });
+  } catch (e) {
+    throw new Error(e);
+  } finally {
+    client.close();
+  }
+};
+
+export const findAndSort = async (
+  query: FilterQuery<any>,
+  sort: Object,
+): Promise<any[]> => {
+  const client = await MongoClient.connect(MONGODB_URL, {
+    useUnifiedTopology: true,
+  }).catch(err => {
+    throw new Error(err);
+  });
+
+  try {
+    const db = client.db(DB_NAME);
+    const collection = db.collection('workTimetable');
+    const cursor = collection.find(query).sort(sort);
+
+    return cursor.toArray();
   } catch (e) {
     throw new Error(e);
   } finally {
