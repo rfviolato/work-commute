@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from '@now/node';
-import { DAY_REF_FORMAT } from '../constants';
+import { DAY_FORMAT } from '../constants';
 import moment from 'moment';
 import { setOne } from './../lib/db';
 
@@ -8,7 +8,7 @@ export default async (request: NowRequest, response: NowResponse) => {
     body: { event, date },
   } = request;
   const momentDate = moment(date).utc();
-  const day = momentDate.format(DAY_REF_FORMAT);
+  const day = momentDate.format(DAY_FORMAT);
 
   if (!event) {
     return response.status(400).send({ error: 'Date is missing' });

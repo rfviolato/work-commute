@@ -62,71 +62,63 @@ export default {
       periodEnd,
     }: IPeriodResolverParams): Promise<number> => {
       try {
-        // let minutesInCommutePeriod = 0;
-        // let commuteCount = 0;
-        // const periodStartMoment = moment(periodStart, DAY_REF_FORMAT);
-        // const periodEndMoment = moment(periodEnd, DAY_REF_FORMAT);
-        // const snapshot = await db
-        //   .ref(TIMETABLE_REF)
-        //   .orderByKey()
-        //   .once('value');
-        // const dateFormat = `${DAY_REF_FORMAT}T${TIME_FORMAT}`;
+        const timetables: IWorkTimetable[] = await findAndSort(
+          {
+            date: {
+              $gte: periodStart,
+              $lte: periodEnd,
+            },
+          },
+          { date: 1 },
+        );
 
-        // snapshot.forEach(childSnapshot => {
-        //   const day = childSnapshot.key;
+        const result = timetables.reduce(
+          (accum, timetable) => {
+            const homeLeaveTime = moment(
+              `${timetable.date}T${timetable.homeLeaveTime}`,
+              FULL_DATE_FORMAT,
+            );
+            const workArriveTime = moment(
+              `${timetable.date}T${timetable.workArriveTime}`,
+              FULL_DATE_FORMAT,
+            );
+            const workLeaveTime = moment(
+              `${timetable.date}T${timetable.workLeaveTime}`,
+              FULL_DATE_FORMAT,
+            );
+            const homeArriveTime = moment(
+              `${timetable.date}T${timetable.homeArriveTime}`,
+              FULL_DATE_FORMAT,
+            );
 
-        //   if (day) {
-        //     const isInPeriod = moment(day, DAY_REF_FORMAT).isBetween(
-        //       periodStartMoment,
-        //       periodEndMoment,
-        //     );
+            const morningCommuteInMinutes = workArriveTime.diff(
+              homeLeaveTime,
+              'minutes',
+            );
 
-        //     if (isInPeriod) {
-        //       const dayTimeTable = childSnapshot.val();
-        //       const homeLeaveTime = moment(
-        //         `${day}T${dayTimeTable.homeLeaveTime}`,
-        //         dateFormat,
-        //       );
-        //       const workArriveTime = moment(
-        //         `${day}T${dayTimeTable.workArriveTime}`,
-        //         dateFormat,
-        //       );
-        //       const workLeaveTime = moment(
-        //         `${day}T${dayTimeTable.workLeaveTime}`,
-        //         dateFormat,
-        //       );
-        //       const homeArriveTime = moment(
-        //         `${day}T${dayTimeTable.homeArriveTime}`,
-        //         dateFormat,
-        //       );
+            const eveningCommuteInMinutes = homeArriveTime.diff(
+              workLeaveTime,
+              'minutes',
+            );
 
-        //       const morningCommuteInMinutes = workArriveTime.diff(
-        //         homeLeaveTime,
-        //         'minutes',
-        //       );
+            if (morningCommuteInMinutes && morningCommuteInMinutes > 0) {
+              accum.minutesInCommutePeriod += morningCommuteInMinutes;
+              accum.commuteCount++;
+            }
 
-        //       const eveningCommuteInMinutes = homeArriveTime.diff(
-        //         workLeaveTime,
-        //         'minutes',
-        //       );
+            if (eveningCommuteInMinutes && eveningCommuteInMinutes > 0) {
+              accum.minutesInCommutePeriod += eveningCommuteInMinutes;
+              accum.commuteCount++;
+            }
 
-        //       if (morningCommuteInMinutes && morningCommuteInMinutes > 0) {
-        //         minutesInCommutePeriod += morningCommuteInMinutes;
-        //         commuteCount++;
-        //       }
+            return accum;
+          },
+          { minutesInCommutePeriod: 0, commuteCount: 0 },
+        );
 
-        //       if (eveningCommuteInMinutes && eveningCommuteInMinutes > 0) {
-        //         minutesInCommutePeriod += eveningCommuteInMinutes;
-        //         commuteCount++;
-        //       }
-        //     }
-        //   }
-        // });
+        const average = result.minutesInCommutePeriod / result.commuteCount;
 
-        // const average = minutesInCommutePeriod / commuteCount;
-
-        // return isNaN(average) ? 0 : Math.round(average);
-        return 42;
+        return isNaN(average) ? 0 : Math.round(average);
       } catch (e) {
         throw new Error(e);
       }
