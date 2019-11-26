@@ -13,6 +13,25 @@ const MONGODB_URL =
 // TODO: Abstract to constants file
 const DB_NAME = 'work-commute';
 
+export const createDbClient = async () => {
+  const client = await MongoClient.connect(MONGODB_URL, {
+    useUnifiedTopology: true,
+  }).catch(err => {
+    throw new Error(err);
+  });
+
+  try {
+    const db = client.db(DB_NAME);
+    const workTimetable = db.collection('workTimetable');
+
+    return {
+      workTimetable,
+    };
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 export const setOne = async (
   filter: FilterQuery<any>,
   update: UpdateQuery<any>,
