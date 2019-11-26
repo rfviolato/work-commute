@@ -32,28 +32,6 @@ export const createDbClient = async () => {
   }
 };
 
-export const setOne = async (
-  filter: FilterQuery<any>,
-  update: UpdateQuery<any>,
-): Promise<UpdateWriteOpResult> => {
-  const client = await MongoClient.connect(MONGODB_URL, {
-    useUnifiedTopology: true,
-  }).catch(err => {
-    throw new Error(err);
-  });
-
-  try {
-    const db = client.db(DB_NAME);
-    const collection = db.collection('workTimetable');
-
-    return collection.updateOne(filter, update, { upsert: true });
-  } catch (e) {
-    throw new Error(e);
-  } finally {
-    client.close();
-  }
-};
-
 export const findAndSort = async (
   query: FilterQuery<any>,
   sort: Object,

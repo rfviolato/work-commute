@@ -1,7 +1,7 @@
 import { NowRequest, NowResponse } from '@now/node';
 import { DAY_FORMAT } from '../constants';
 import moment from 'moment';
-import { setOne } from './../lib/db';
+import { createDbClient } from './../lib/db';
 
 export default async (request: NowRequest, response: NowResponse) => {
   const {
@@ -19,7 +19,13 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   try {
-    await setOne({ date: { $eq: day } }, { $push: { events: event } });
+    const db = await createDbClient();
+
+    await db.workTimetable.updateOne(
+      { date: { $eq: day } },
+      { $push: { events: event } },
+      { upsert: true },
+    );
 
     return response.status(200).end();
   } catch (exception) {
