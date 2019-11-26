@@ -1,3 +1,5 @@
+import { Collection } from 'mongodb';
+
 export interface IWorkTimetable {
   _id: string;
   date: string;
@@ -13,4 +15,10 @@ export interface IWorkTimetable {
 export interface IPeriodResolverParams {
   periodStart: string;
   periodEnd: string;
+}
+
+export interface IGQLContext {
+  db: {
+    workTimetable: Collection<any>;
+  };
 }

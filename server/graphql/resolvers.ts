@@ -1,9 +1,8 @@
 import { IResolvers } from 'apollo-server-micro';
-import { IPeriodResolverParams } from './interface';
 import moment from 'moment';
+import { IPeriodResolverParams } from './interface';
 import { FULL_DATE_FORMAT } from '../constants';
-import { findAndSort } from './../lib/db';
-import { IWorkTimetable } from './interface';
+import { IWorkTimetable, IGQLContext } from './interface';
 
 interface IWorkedPeriod {
   hours: number;
@@ -12,26 +11,27 @@ interface IWorkedPeriod {
 
 export default {
   Query: {
-    Period: (parent, { periodStart, periodEnd }) => ({
+    Period: (parent, { periodStart, periodEnd }: IPeriodResolverParams) => ({
       periodStart,
       periodEnd,
     }),
   },
   Period: {
-    amountWorked: async ({
-      periodStart,
-      periodEnd,
-    }: IPeriodResolverParams): Promise<IWorkedPeriod> => {
+    amountWorked: async (
+      { periodStart, periodEnd }: IPeriodResolverParams,
+      data,
+      { db },
+    ): Promise<IWorkedPeriod> => {
       try {
-        const timetables: IWorkTimetable[] = await findAndSort(
-          {
+        const timetables: IWorkTimetable[] = await db.workTimetable
+          .find({
             date: {
               $gte: periodStart,
               $lte: periodEnd,
             },
-          },
-          { date: 1 },
-        );
+          })
+          .sort({ date: 1 })
+          .toArray();
 
         const totalWorkedMinutes = timetables.reduce((accum, timetable) => {
           const workLeaveTime = moment(
@@ -57,20 +57,21 @@ export default {
         throw new Error(e);
       }
     },
-    averageCommuteTime: async ({
-      periodStart,
-      periodEnd,
-    }: IPeriodResolverParams): Promise<number> => {
+    averageCommuteTime: async (
+      { periodStart, periodEnd }: IPeriodResolverParams,
+      data,
+      { db },
+    ): Promise<number> => {
       try {
-        const timetables: IWorkTimetable[] = await findAndSort(
-          {
+        const timetables: IWorkTimetable[] = await db.workTimetable
+          .find({
             date: {
               $gte: periodStart,
               $lte: periodEnd,
             },
-          },
-          { date: 1 },
-        );
+          })
+          .sort({ date: 1 })
+          .toArray();
 
         const result = timetables.reduce(
           (accum, timetable) => {
@@ -124,4 +125,4 @@ export default {
       }
     },
   },
-} as IResolvers;
+} as IResolvers<any, IGQLContext>;

@@ -31,26 +31,3 @@ export const createDbClient = async () => {
     throw new Error(e);
   }
 };
-
-export const findAndSort = async (
-  query: FilterQuery<any>,
-  sort: Object,
-): Promise<any[]> => {
-  const client = await MongoClient.connect(MONGODB_URL, {
-    useUnifiedTopology: true,
-  }).catch(err => {
-    throw new Error(err);
-  });
-
-  try {
-    const db = client.db(DB_NAME);
-    const collection = db.collection('workTimetable');
-    const cursor = collection.find(query).sort(sort);
-
-    return cursor.toArray();
-  } catch (e) {
-    throw new Error(e);
-  } finally {
-    client.close();
-  }
-};
