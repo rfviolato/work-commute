@@ -9,6 +9,11 @@ interface IWorkedPeriod {
   minutes: number;
 }
 
+interface ITimeAtOffice {
+  hours: number;
+  minutes: number;
+}
+
 export default {
   Query: {
     Period: async (
@@ -106,6 +111,63 @@ export default {
         const average = result.minutesInCommutePeriod / result.commuteCount;
 
         return isNaN(average) ? 0 : Math.round(average);
+      } catch (e) {
+        throw new Error(e);
+      }
+    },
+    averageTimeAtOffice: async (
+      timetables: IWorkTimetable[],
+    ): Promise<ITimeAtOffice> => {
+      try {
+        const result = timetables.reduce(
+          (accum, timetable) => {
+            const { workArriveTime, workLeaveTime } = timetable;
+
+            if (workArriveTime && workLeaveTime) {
+              const workArriveTimeMoment = moment(
+                `${timetable.date}T${timetable.workArriveTime}`,
+                FULL_DATE_FORMAT,
+              );
+
+              const workLeaveTimeMoment = moment(
+                `${timetable.date}T${timetable.workLeaveTime}`,
+                FULL_DATE_FORMAT,
+              );
+
+              const minutesAtTheOffice = workLeaveTimeMoment.diff(
+                workArriveTimeMoment,
+                'minutes',
+              );
+
+              accum.workdayCount++;
+              accum.workedMinutes += minutesAtTheOffice;
+            }
+
+            return accum;
+          },
+          { workedMinutes: 0, workdayCount: 0 },
+        );
+
+        const averageMinutesAtTheOffice =
+          result.workedMinutes / result.workdayCount;
+
+        if (
+          isNaN(averageMinutesAtTheOffice) ||
+          averageMinutesAtTheOffice === Infinity
+        ) {
+          return {
+            hours: 0,
+            minutes: 0,
+          };
+        }
+
+        const hours = Math.floor(averageMinutesAtTheOffice / 60);
+        const minutes = Math.floor(averageMinutesAtTheOffice % 60);
+
+        return {
+          hours,
+          minutes,
+        };
       } catch (e) {
         throw new Error(e);
       }

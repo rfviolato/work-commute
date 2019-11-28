@@ -14,9 +14,15 @@ export default gql`
   type Period {
     amountWorked: AmountWorked
     averageCommuteTime: Int
+    averageTimeAtOffice: TimeAtOffice
   }
 
   type AmountWorked {
+    hours: Int
+    minutes: Int
+  }
+
+  type TimeAtOffice {
     hours: Int
     minutes: Int
   }
