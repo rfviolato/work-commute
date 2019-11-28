@@ -11,28 +11,26 @@ interface IWorkedPeriod {
 
 export default {
   Query: {
-    Period: (parent, { periodStart, periodEnd }: IPeriodResolverParams) => ({
-      periodStart,
-      periodEnd,
-    }),
+    Period: async (
+      parent,
+      { periodStart, periodEnd }: IPeriodResolverParams,
+      { db },
+    ) =>
+      await db.workTimetable
+        .find({
+          date: {
+            $gte: periodStart,
+            $lte: periodEnd,
+          },
+        })
+        .sort({ date: 1 })
+        .toArray(),
   },
   Period: {
     amountWorked: async (
-      { periodStart, periodEnd }: IPeriodResolverParams,
-      data,
-      { db },
+      timetables: IWorkTimetable[],
     ): Promise<IWorkedPeriod> => {
       try {
-        const timetables: IWorkTimetable[] = await db.workTimetable
-          .find({
-            date: {
-              $gte: periodStart,
-              $lte: periodEnd,
-            },
-          })
-          .sort({ date: 1 })
-          .toArray();
-
         const totalWorkedMinutes = timetables.reduce((accum, timetable) => {
           const workLeaveTime = moment(
             `${timetable.date}T${timetable.workLeaveTime}`,
@@ -58,21 +56,9 @@ export default {
       }
     },
     averageCommuteTime: async (
-      { periodStart, periodEnd }: IPeriodResolverParams,
-      data,
-      { db },
+      timetables: IWorkTimetable[],
     ): Promise<number> => {
       try {
-        const timetables: IWorkTimetable[] = await db.workTimetable
-          .find({
-            date: {
-              $gte: periodStart,
-              $lte: periodEnd,
-            },
-          })
-          .sort({ date: 1 })
-          .toArray();
-
         const result = timetables.reduce(
           (accum, timetable) => {
             const homeLeaveTime = moment(
