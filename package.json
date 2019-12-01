@@ -5,7 +5,7 @@
   "scripts": {},
   "devDependencies": {
     "@types/moment": "^2.13.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.0"
   },
   "prettier": {
     "singleQuote": true,
