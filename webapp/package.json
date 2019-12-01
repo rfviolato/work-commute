@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-brands-svg-icons": "^5.11.2",
+    "@fortawesome/pro-light-svg-icons": "^5.11.2",
+    "@fortawesome/pro-regular-svg-icons": "^5.11.2",
+    "@fortawesome/pro-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
     "@types/jest": "24.0.23",
     "@types/node": "12.12.14",
     "@types/react": "16.9.13",
@@ -17,14 +23,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "always",
-    "trailingComma": "all"
   },
   "browserslist": {
     "production": [
