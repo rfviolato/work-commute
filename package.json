@@ -2,11 +2,6 @@
   "name": "work-commute",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
-  "devDependencies": {
-    "@types/moment": "^2.13.0",
-    "typescript": "^3.7.0"
-  },
   "prettier": {
     "singleQuote": true,
     "arrowParens": "always",

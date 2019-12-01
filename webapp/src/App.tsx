@@ -1,13 +1,18 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/pro-regular-svg-icons';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { HelloWorld } from './HelloWorld';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:3000/gql',
+});
 
 const App: React.FC = () => {
   return (
-    <div>
-      hell yea! <FontAwesomeIcon icon={faTimes} />
-    </div>
+    <ApolloProvider client={client}>
+      <HelloWorld />
+    </ApolloProvider>
   );
 };
 
