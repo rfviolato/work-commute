@@ -12,7 +12,7 @@ export interface IWorkTimetable {
   }[];
 }
 
-export interface IPeriodResolverParams {
+export interface IPeriodQueryParams {
   periodStart: string;
   periodEnd: string;
 }

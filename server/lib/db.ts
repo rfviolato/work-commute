@@ -1,10 +1,4 @@
-import {
-  MongoClient,
-  UpdateWriteOpResult,
-  FilterQuery,
-  UpdateQuery,
-  Cursor,
-} from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 // TODO: Abstract to .env file or secret
 const MONGODB_URL =

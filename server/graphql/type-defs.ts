@@ -13,8 +13,16 @@ export default gql`
 
   type Period {
     amountWorked: AmountWorked
-    averageCommuteTime: Int
-    averageTimeAtOffice: TimeAtOffice
+    averageTimeCommuting: Int
+    averageTimeWorking: TimeAtOffice
+  }
+
+  type WorkTimetable {
+    homeArriveTime: String
+    homeLeaveTime: String
+    workArriveTime: String
+    workLeaveTime: String
+    events: [String]
   }
 
   type AmountWorked {
@@ -25,13 +33,5 @@ export default gql`
   type TimeAtOffice {
     hours: Int
     minutes: Int
-  }
-
-  type WorkTimetable {
-    homeArriveTime: String
-    homeLeaveTime: String
-    workArriveTime: String
-    workLeaveTime: String
-    events: [String]
   }
 ` as DocumentNode;
