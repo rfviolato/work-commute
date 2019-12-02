@@ -5,18 +5,26 @@ import { IWorkedPeriod } from './interface';
 
 export default async (timetables: IWorkTimetable[]): Promise<IWorkedPeriod> => {
   try {
-    const totalWorkedMinutes = timetables.reduce((accum, timetable) => {
-      const workLeaveTime = moment(
-        `${timetable.day}T${timetable.workLeaveTime}`,
-        FULL_DATE_FORMAT,
-      );
-      const workArriveTime = moment(
-        `${timetable.day}T${timetable.workArriveTime}`,
-        FULL_DATE_FORMAT,
-      );
+    const totalWorkedMinutes = timetables.reduce(
+      (accum, { workArriveTime, workLeaveTime, day }) => {
+        if (workArriveTime && workLeaveTime) {
+          const workLeaveDate = moment(
+            `${day}T${workLeaveTime}`,
+            FULL_DATE_FORMAT,
+          );
 
-      return (accum += workLeaveTime.diff(workArriveTime, 'minutes'));
-    }, 0);
+          const workArriveDate = moment(
+            `${day}T${workArriveTime}`,
+            FULL_DATE_FORMAT,
+          );
+
+          return (accum += workLeaveDate.diff(workArriveDate, 'minutes'));
+        }
+
+        return accum;
+      },
+      0,
+    );
 
     const hours = Math.floor(totalWorkedMinutes / 60);
     const minutes = totalWorkedMinutes % 60;
