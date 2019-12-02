@@ -3,6 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import styled from '@emotion/styled';
+
+const TestElement = styled.div`
+  color: green;
+`;
 
 const QUERY = gql`
   {
@@ -26,8 +31,8 @@ export const HelloWorld: React.FC = () => {
   console.log({ loading, error, data });
 
   return (
-    <div>
+    <TestElement>
       hell yea! <FontAwesomeIcon icon={faTimes} />
-    </div>
+    </TestElement>
   );
 };
