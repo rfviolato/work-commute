@@ -11,12 +11,12 @@ export default async (timetables: IWorkTimetable[]): Promise<ITimeWorked> => {
 
         if (workArriveTime && workLeaveTime) {
           const workArriveTimeMoment = moment(
-            `${timetable.date}T${timetable.workArriveTime}`,
+            `${timetable.day}T${timetable.workArriveTime}`,
             FULL_DATE_FORMAT,
           );
 
           const workLeaveTimeMoment = moment(
-            `${timetable.date}T${timetable.workLeaveTime}`,
+            `${timetable.day}T${timetable.workLeaveTime}`,
             FULL_DATE_FORMAT,
           );
 

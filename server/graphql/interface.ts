@@ -3,6 +3,7 @@ import { Collection } from 'mongodb';
 export interface IWorkTimetable {
   _id: string;
   date: string;
+  day: string;
   homeArriveTime: string;
   homeLeaveTime: string;
   workArriveTime: string;

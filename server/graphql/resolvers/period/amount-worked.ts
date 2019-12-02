@@ -7,11 +7,11 @@ export default async (timetables: IWorkTimetable[]): Promise<IWorkedPeriod> => {
   try {
     const totalWorkedMinutes = timetables.reduce((accum, timetable) => {
       const workLeaveTime = moment(
-        `${timetable.date}T${timetable.workLeaveTime}`,
+        `${timetable.day}T${timetable.workLeaveTime}`,
         FULL_DATE_FORMAT,
       );
       const workArriveTime = moment(
-        `${timetable.date}T${timetable.workArriveTime}`,
+        `${timetable.day}T${timetable.workArriveTime}`,
         FULL_DATE_FORMAT,
       );
 

@@ -8,8 +8,8 @@ export default async (
   return await db.workTimetable
     .find({
       date: {
-        $gte: periodStart,
-        $lte: periodEnd,
+        $gte: new Date(periodStart),
+        $lte: new Date(periodEnd),
       },
     })
     .sort({ date: 1 })
