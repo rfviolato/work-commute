@@ -6,22 +6,20 @@ import { ITimeWorked } from './interface';
 export default async (timetables: IWorkTimetable[]): Promise<ITimeWorked> => {
   try {
     const result = timetables.reduce(
-      (accum, timetable) => {
-        const { workArriveTime, workLeaveTime } = timetable;
-
+      (accum, { workArriveTime, workLeaveTime, day }) => {
         if (workArriveTime && workLeaveTime) {
-          const workArriveTimeMoment = moment(
-            `${timetable.day}T${timetable.workArriveTime}`,
+          const workArriveDate = moment(
+            `${day}T${workArriveTime}`,
             FULL_DATE_FORMAT,
           );
 
-          const workLeaveTimeMoment = moment(
-            `${timetable.day}T${timetable.workLeaveTime}`,
+          const workLeaveDate = moment(
+            `${day}T${workLeaveTime}`,
             FULL_DATE_FORMAT,
           );
 
-          const minutesAtTheOffice = workLeaveTimeMoment.diff(
-            workArriveTimeMoment,
+          const minutesAtTheOffice = workLeaveDate.diff(
+            workArriveDate,
             'minutes',
           );
 
