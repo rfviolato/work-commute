@@ -69,3 +69,6 @@ node_modules/
 
 # CRA
 build/
+
+# Local mongodb script
+db_script.js

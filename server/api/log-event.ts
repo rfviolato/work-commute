@@ -1,14 +1,13 @@
 import { NowRequest, NowResponse } from '@now/node';
-import { DAY_FORMAT } from '../constants';
 import moment from 'moment';
 import { createDbClient } from './../lib/db';
+import { DAY_FORMAT } from '../constants';
 
 export default async (request: NowRequest, response: NowResponse) => {
   const {
     body: { event, date },
   } = request;
   const momentDate = moment(date).utc();
-  const day = momentDate.format(DAY_FORMAT);
 
   if (!event) {
     return response.status(400).send({ error: 'Date is missing' });
@@ -20,10 +19,17 @@ export default async (request: NowRequest, response: NowResponse) => {
 
   try {
     const db = await createDbClient();
+    const day = momentDate.format(DAY_FORMAT);
 
     await db.workTimetable.updateOne(
-      { date: { $eq: day } },
-      { $push: { events: event } },
+      { day: { $eq: day } },
+      {
+        $push: { events: event },
+        $setOnInsert: {
+          date: new Date(momentDate.toISOString()),
+          day,
+        },
+      },
       { upsert: true },
     );
 

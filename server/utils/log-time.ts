@@ -1,6 +1,6 @@
 import { UpdateWriteOpResult } from 'mongodb';
 import moment from 'moment';
-import { DAY_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT } from '../constants';
+import { TIME_FORMAT, DAY_FORMAT } from '../constants';
 import { createDbClient } from '../lib/db';
 
 export const logTime = async (
@@ -13,8 +13,14 @@ export const logTime = async (
   const db = await createDbClient();
 
   return db.workTimetable.updateOne(
-    { date: { $eq: day } },
-    { $set: { [property]: time } },
+    { day: { $eq: day } },
+    {
+      $set: { [property]: time },
+      $setOnInsert: {
+        date: new Date(momentDate.toISOString()),
+        day,
+      },
+    },
     { upsert: true },
   );
 };
