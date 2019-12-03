@@ -2,16 +2,16 @@ import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { HelloWorld } from './HelloWorld';
+import { Period } from './components/Period';
+import GlobalStyles from './GlobalStyles';
 
-const client = new ApolloClient({
-  uri: 'http://localhost:3000/gql',
-});
+const client = new ApolloClient({ uri: '/gql' });
 
 const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
-      <HelloWorld />
+      <Period />
+      <GlobalStyles />
     </ApolloProvider>
   );
 };
