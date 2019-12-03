@@ -5,52 +5,63 @@ import { IWorkTimetable } from './../../interface';
 export default async (timetables: IWorkTimetable[]): Promise<number> => {
   try {
     const result = timetables.reduce(
-      (accum, timetable) => {
-        const homeLeaveTime = moment(
-          `${timetable.day}T${timetable.homeLeaveTime}`,
-          FULL_DATE_FORMAT,
-        );
-        const workArriveTime = moment(
-          `${timetable.day}T${timetable.workArriveTime}`,
-          FULL_DATE_FORMAT,
-        );
-        const workLeaveTime = moment(
-          `${timetable.day}T${timetable.workLeaveTime}`,
-          FULL_DATE_FORMAT,
-        );
-        const homeArriveTime = moment(
-          `${timetable.day}T${timetable.homeArriveTime}`,
-          FULL_DATE_FORMAT,
-        );
+      (
+        accum,
+        { homeLeaveTime, workArriveTime, workLeaveTime, homeArriveTime, day },
+      ) => {
+        const hasMorningCommute = homeLeaveTime && workArriveTime;
+        const hasEveningCommute = workLeaveTime && homeArriveTime;
 
-        const morningCommuteInMinutes = workArriveTime.diff(
-          homeLeaveTime,
-          'minutes',
-        );
+        if (hasMorningCommute) {
+          const homeLeaveDate = moment(
+            `${day}T${homeLeaveTime}`,
+            FULL_DATE_FORMAT,
+          );
 
-        const eveningCommuteInMinutes = homeArriveTime.diff(
-          workLeaveTime,
-          'minutes',
-        );
+          const workArriveDate = moment(
+            `${day}T${workArriveTime}`,
+            FULL_DATE_FORMAT,
+          );
 
-        if (morningCommuteInMinutes && morningCommuteInMinutes > 0) {
-          accum.minutesInCommutePeriod += morningCommuteInMinutes;
+          const morningCommuteMinutes = workArriveDate.diff(
+            homeLeaveDate,
+            'minutes',
+          );
+
+          accum.minutesCommuting += morningCommuteMinutes;
           accum.commuteCount++;
         }
 
-        if (eveningCommuteInMinutes && eveningCommuteInMinutes > 0) {
-          accum.minutesInCommutePeriod += eveningCommuteInMinutes;
+        if (hasEveningCommute) {
+          const workLeaveDate = moment(
+            `${day}T${workLeaveTime}`,
+            FULL_DATE_FORMAT,
+          );
+
+          const homeArriveDate = moment(
+            `${day}T${homeArriveTime}`,
+            FULL_DATE_FORMAT,
+          );
+
+          const eveningCommuteInMinutes = homeArriveDate.diff(
+            workLeaveDate,
+            'minutes',
+          );
+
+          accum.minutesCommuting += eveningCommuteInMinutes;
           accum.commuteCount++;
         }
 
         return accum;
       },
-      { minutesInCommutePeriod: 0, commuteCount: 0 },
+      { minutesCommuting: 0, commuteCount: 0 },
     );
 
-    const average = result.minutesInCommutePeriod / result.commuteCount;
+    if (result.commuteCount === 0) {
+      return 0;
+    }
 
-    return isNaN(average) ? 0 : Math.round(average);
+    return Math.round(result.minutesCommuting / result.commuteCount);
   } catch (e) {
     throw new Error(e);
   }
