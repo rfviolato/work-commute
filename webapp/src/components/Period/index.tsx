@@ -18,7 +18,7 @@ const QUERY = gql`
   }
 `;
 
-const Root = styled.section`
+const Root = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
@@ -39,10 +39,9 @@ const Loading = styled.span`
 
 const Content = styled.div`
   display: flex;
-  padding-top: 40px;
 `;
 
-const TimeDisplay = styled.article`
+const TimeDisplay = styled.div`
   display: flex;
   align-self: flex-start;
   font-size: 24px;

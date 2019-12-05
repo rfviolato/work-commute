@@ -13,6 +13,15 @@ const styles = css`
     height: 100%;
     margin: 0;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
 `;
 
 const GlobalStyles: React.SFC = () => <Global styles={styles} />;
