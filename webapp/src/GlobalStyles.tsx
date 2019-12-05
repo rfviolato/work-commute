@@ -8,7 +8,7 @@ const styles = css`
     font-size: 18px;
     background-color: #323232;
     color: #fff;
-    font-family: sans-serif;
+    font-family: Roboto, sans-serif, sans-serif, Verdana, Geneva, Tahoma;
     width: 100%;
     height: 100%;
     margin: 0;
