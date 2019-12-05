@@ -1,10 +1,7 @@
-import React, { ReactNode } from 'react';
-import styled from '@emotion/styled';
+import React from 'react';
+import { ISectionProps } from './interface';
 
-interface ISectionProps {
-  title: string;
-  children: ReactNode;
-}
+import styled from '@emotion/styled';
 
 const Title = styled.h1`
   font-size: 40px;

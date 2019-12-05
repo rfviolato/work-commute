@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { IPeriodQueryData } from './interface';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 const QUERY = gql`
   {
@@ -23,18 +24,6 @@ const Root = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-`;
-
-const Loading = styled.span`
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-size: 140px;
 `;
 
 const Content = styled.div`
@@ -70,7 +59,7 @@ export const Period: React.FC<IPeriodProps> = () => {
   if (loading) {
     return (
       <Root>
-        <Loading>⏳</Loading>
+        <LoadingSpinner />
       </Root>
     );
   }
