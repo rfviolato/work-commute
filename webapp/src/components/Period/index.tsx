@@ -10,11 +10,15 @@ import { LoadingSpinner } from '../LoadingSpinner';
 const QUERY = gql`
   {
     Period(periodStart: "2019-01-01", periodEnd: "2019-12-31") {
-      averageTimeWorking {
+      averageTimeAtOffice {
         hours
         minutes
       }
-      averageTimeCommuting
+
+      averageTimeCommuting {
+        hours
+        minutes
+      }
     }
   }
 `;
@@ -73,7 +77,7 @@ export const Period: React.FC<IPeriodProps> = () => {
   }
 
   const {
-    Period: { averageTimeCommuting, averageTimeWorking },
+    Period: { averageTimeCommuting, averageTimeAtOffice },
   } = data;
 
   return (
@@ -83,8 +87,14 @@ export const Period: React.FC<IPeriodProps> = () => {
           <div>
             <TimeIcon icon={faTrain} />
           </div>
+          {averageTimeCommuting.hours > 0 && (
+            <div>
+              <span>{averageTimeCommuting.hours}</span>
+              <TimeUnit>hrs.</TimeUnit>
+            </div>
+          )}
           <div>
-            <span>{averageTimeCommuting}</span>
+            <span>{averageTimeCommuting.minutes}</span>
             <TimeUnit>min.</TimeUnit>
           </div>
         </TimeDisplay>
@@ -94,11 +104,11 @@ export const Period: React.FC<IPeriodProps> = () => {
             <TimeIcon icon={faBriefcase} />
           </div>
           <div>
-            <span>{averageTimeWorking.hours}</span>
+            <span>{averageTimeAtOffice.hours}</span>
             <TimeUnit>hrs.</TimeUnit>
           </div>
           <div>
-            <span>{averageTimeWorking.minutes}</span>
+            <span>{averageTimeAtOffice.minutes}</span>
             <TimeUnit>min.</TimeUnit>
           </div>
         </TimeDisplay>

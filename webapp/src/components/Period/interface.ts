@@ -1,10 +1,13 @@
 export interface IPeriodQueryData {
   Period: {
-    averageTimeWorking: {
+    averageTimeAtOffice: {
       hours: number;
       minutes: number;
     };
 
-    averageTimeCommuting: number;
+    averageTimeCommuting: {
+      hours: number;
+      minutes: number;
+    };
   };
 }

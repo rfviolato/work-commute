@@ -12,9 +12,9 @@ export default gql`
   }
 
   type Period {
-    amountWorked: AmountWorked
-    averageTimeCommuting: Int
-    averageTimeWorking: TimeAtOffice
+    totalTimeAtOffice: TotalTimeAtOfficeResult
+    averageTimeCommuting: AverageTimeCommutingResult
+    averageTimeAtOffice: AverageTimeAtOfficeResult
   }
 
   type WorkTimetable {
@@ -25,12 +25,17 @@ export default gql`
     events: [String]
   }
 
-  type AmountWorked {
+  type TotalTimeAtOfficeResult {
     hours: Int
     minutes: Int
   }
 
-  type TimeAtOffice {
+  type AverageTimeCommutingResult {
+    hours: Int
+    minutes: Int
+  }
+
+  type AverageTimeAtOfficeResult {
     hours: Int
     minutes: Int
   }

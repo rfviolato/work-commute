@@ -1,9 +1,9 @@
-import amountWorked from './amount-worked';
+import totalTimeAtOffice from './total-time-at-office';
 import averageTimeCommuting from './average-time-commuting';
-import averageTimeWorking from './average-time-working';
+import averageTimeAtOffice from './average-time-at-office';
 
 export default {
-  amountWorked,
+  totalTimeAtOffice,
   averageTimeCommuting,
-  averageTimeWorking,
+  averageTimeAtOffice,
 };

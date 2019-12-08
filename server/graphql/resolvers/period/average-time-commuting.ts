@@ -1,8 +1,11 @@
 import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
 import { IWorkTimetable } from './../../interface';
+import { IAverageTimeCommuting } from './interface';
 
-export default async (timetables: IWorkTimetable[]): Promise<number> => {
+export default async (
+  timetables: IWorkTimetable[],
+): Promise<IAverageTimeCommuting> => {
   try {
     const result = timetables.reduce(
       (
@@ -58,10 +61,20 @@ export default async (timetables: IWorkTimetable[]): Promise<number> => {
     );
 
     if (result.commuteCount === 0) {
-      return 0;
+      return {
+        hours: 0,
+        minutes: 0,
+      };
     }
 
-    return Math.round(result.minutesCommuting / result.commuteCount);
+    const totalCommutingMinutes = result.minutesCommuting;
+    const hours = Math.floor(totalCommutingMinutes / 60);
+    const minutes = totalCommutingMinutes % 60;
+
+    return {
+      hours,
+      minutes,
+    };
   } catch (e) {
     throw new Error(e);
   }

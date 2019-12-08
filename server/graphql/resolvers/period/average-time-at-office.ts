@@ -1,9 +1,11 @@
 import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
-import { IWorkTimetable } from './../../interface';
-import { ITimeWorked } from './interface';
+import { IWorkTimetable } from '../../interface';
+import { IAverageTimeAtOffice } from './interface';
 
-export default async (timetables: IWorkTimetable[]): Promise<ITimeWorked> => {
+export default async (
+  timetables: IWorkTimetable[],
+): Promise<IAverageTimeAtOffice> => {
   try {
     const result = timetables.reduce(
       (accum, { workArriveTime, workLeaveTime, day }) => {
