@@ -24,6 +24,7 @@ export default gql`
     workArriveTime: String
     workLeaveTime: String
     totalMorningCommuteTime: TotalMorningCommuteTime
+    totalEveningCommuteTime: TotalEveningCommuteTime
   }
 
   type WorkTimetable {
@@ -50,6 +51,11 @@ export default gql`
   }
 
   type TotalMorningCommuteTime {
+    hours: Int
+    minutes: Int
+  }
+
+  type TotalEveningCommuteTime {
     hours: Int
     minutes: Int
   }

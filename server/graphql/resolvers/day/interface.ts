@@ -4,3 +4,4 @@ interface ITime {
 }
 
 export type IMorningCommuteTime = ITime;
+export type IEveningCommuteTime = ITime;
