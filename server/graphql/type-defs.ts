@@ -19,8 +19,11 @@ export default gql`
   }
 
   type Day {
+    homeArriveTime: String
     homeLeaveTime: String
     workArriveTime: String
+    workLeaveTime: String
+    totalMorningCommuteTime: TotalMorningCommuteTime
   }
 
   type WorkTimetable {
@@ -42,6 +45,11 @@ export default gql`
   }
 
   type AverageTimeAtOfficeResult {
+    hours: Int
+    minutes: Int
+  }
+
+  type TotalMorningCommuteTime {
     hours: Int
     minutes: Int
   }
