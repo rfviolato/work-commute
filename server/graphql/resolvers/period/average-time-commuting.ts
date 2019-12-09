@@ -2,6 +2,7 @@ import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
 import { IDayTimetable } from './../../interface';
 import { IAverageTimeCommuting } from './interface';
+import { getTimeFromMinutes } from './../../../utils/get-time-from-minutes';
 
 export default async (
   timetables: IDayTimetable[],
@@ -67,14 +68,7 @@ export default async (
       };
     }
 
-    const totalCommutingMinutes = result.minutesCommuting;
-    const hours = Math.floor(totalCommutingMinutes / 60);
-    const minutes = totalCommutingMinutes % 60;
-
-    return {
-      hours,
-      minutes,
-    };
+    return getTimeFromMinutes(result.minutesCommuting);
   } catch (e) {
     throw new Error(e);
   }

@@ -2,12 +2,13 @@ import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
 import { IDayTimetable } from '../../interface';
 import { ITotalTimeAtOffice } from './interface';
+import { getTimeFromMinutes } from '../../../utils/get-time-from-minutes';
 
 export default async (
   timetables: IDayTimetable[],
 ): Promise<ITotalTimeAtOffice> => {
   try {
-    const totalWorkedMinutes = timetables.reduce(
+    const totalMinutesAtOffice = timetables.reduce(
       (accum, { workArriveTime, workLeaveTime, day }) => {
         if (workArriveTime && workLeaveTime) {
           const workLeaveDate = moment(
@@ -28,13 +29,7 @@ export default async (
       0,
     );
 
-    const hours = Math.floor(totalWorkedMinutes / 60);
-    const minutes = totalWorkedMinutes % 60;
-
-    return {
-      hours,
-      minutes,
-    };
+    return getTimeFromMinutes(totalMinutesAtOffice);
   } catch (e) {
     throw new Error(e);
   }

@@ -2,6 +2,7 @@ import moment from 'moment';
 import { IDayTimetable } from '../../interface';
 import { IMorningCommuteTime } from './interface';
 import { TIME_FORMAT } from '../../../constants';
+import { getTimeFromMinutes } from '../../../utils/get-time-from-minutes';
 
 export default ({
   homeLeaveTime,
@@ -14,16 +15,5 @@ export default ({
     'minutes',
   );
 
-  const hours = Math.floor(totalMinutesCommuting / 60);
-  const minutes = totalMinutesCommuting % 60;
-
-  return {
-    hours,
-    minutes,
-  };
-
-  return {
-    hours: 0,
-    minutes: 0,
-  };
+  return getTimeFromMinutes(totalMinutesCommuting);
 };

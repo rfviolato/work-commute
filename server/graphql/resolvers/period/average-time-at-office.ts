@@ -2,6 +2,7 @@ import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
 import { IDayTimetable } from '../../interface';
 import { IAverageTimeAtOffice } from './interface';
+import { getTimeFromMinutes } from '../../../utils/get-time-from-minutes';
 
 export default async (
   timetables: IDayTimetable[],
@@ -34,26 +35,16 @@ export default async (
       { workedMinutes: 0, workdayCount: 0 },
     );
 
-    const averageMinutesAtTheOffice =
-      result.workedMinutes / result.workdayCount;
+    const averageMinutesAtOffice = result.workedMinutes / result.workdayCount;
 
-    if (
-      isNaN(averageMinutesAtTheOffice) ||
-      averageMinutesAtTheOffice === Infinity
-    ) {
+    if (isNaN(averageMinutesAtOffice) || averageMinutesAtOffice === Infinity) {
       return {
         hours: 0,
         minutes: 0,
       };
     }
 
-    const hours = Math.floor(averageMinutesAtTheOffice / 60);
-    const minutes = Math.floor(averageMinutesAtTheOffice % 60);
-
-    return {
-      hours,
-      minutes,
-    };
+    return getTimeFromMinutes(averageMinutesAtOffice);
   } catch (e) {
     throw new Error(e);
   }
