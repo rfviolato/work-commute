@@ -8,12 +8,16 @@ export default ({
   homeLeaveTime,
   workArriveTime,
 }: IDayTimetable): IMorningCommuteTime => {
-  const homeLeaveTimeDate = moment(homeLeaveTime, TIME_FORMAT);
-  const workArriveTimeDate = moment(workArriveTime, TIME_FORMAT);
-  const totalMinutesCommuting = workArriveTimeDate.diff(
-    homeLeaveTimeDate,
-    'minutes',
-  );
+  if (homeLeaveTime && workArriveTime) {
+    const homeLeaveTimeDate = moment(homeLeaveTime, TIME_FORMAT);
+    const workArriveTimeDate = moment(workArriveTime, TIME_FORMAT);
+    const totalMinutesCommuting = workArriveTimeDate.diff(
+      homeLeaveTimeDate,
+      'minutes',
+    );
 
-  return getTimeFromMinutes(totalMinutesCommuting);
+    return getTimeFromMinutes(totalMinutesCommuting);
+  }
+
+  return getTimeFromMinutes(0);
 };
