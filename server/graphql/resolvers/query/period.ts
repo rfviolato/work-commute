@@ -1,4 +1,5 @@
-import { IGQLContext, IPeriodQueryParams } from './../../interface';
+import { IGQLContext } from './../../interface';
+import { IPeriodQueryParams } from './interface';
 
 export default async (
   parent: any,

@@ -1,10 +1,10 @@
 import moment from 'moment';
 import { FULL_DATE_FORMAT } from '../../../constants';
-import { IWorkTimetable } from '../../interface';
+import { IDayTimetable } from '../../interface';
 import { IAverageTimeAtOffice } from './interface';
 
 export default async (
-  timetables: IWorkTimetable[],
+  timetables: IDayTimetable[],
 ): Promise<IAverageTimeAtOffice> => {
   try {
     const result = timetables.reduce(

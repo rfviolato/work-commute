@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 export default gql`
   type Query {
     Period(periodStart: String!, periodEnd: String!): Period
+    Day(day: String!): Day
   }
 
   type PeriodData {
@@ -15,6 +16,11 @@ export default gql`
     totalTimeAtOffice: TotalTimeAtOfficeResult
     averageTimeCommuting: AverageTimeCommutingResult
     averageTimeAtOffice: AverageTimeAtOfficeResult
+  }
+
+  type Day {
+    homeLeaveTime: String
+    workArriveTime: String
   }
 
   type WorkTimetable {

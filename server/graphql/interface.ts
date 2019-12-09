@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb';
 
-export interface IWorkTimetable {
+export interface IDayTimetable {
   _id: string;
   date: string;
   day: string;
@@ -12,12 +12,6 @@ export interface IWorkTimetable {
     [key: string]: string;
   }[];
 }
-
-export interface IPeriodQueryParams {
-  periodStart: string;
-  periodEnd: string;
-}
-
 export interface IGQLContext {
   db: {
     workTimetable: Collection<any>;
