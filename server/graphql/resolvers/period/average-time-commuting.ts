@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { FULL_DATE_FORMAT } from '../../../constants';
+import { TIME_FORMAT } from '../../../constants';
 import { IDayTimetable } from './../../interface';
 import { IAverageTimeCommuting } from './interface';
 import { getTimeFromMinutes } from './../../../utils/get-time-from-minutes';
@@ -9,22 +9,14 @@ export default (timetables: IDayTimetable[]): IAverageTimeCommuting => {
     const result = timetables.reduce(
       (
         accum,
-        { homeLeaveTime, workArriveTime, workLeaveTime, homeArriveTime, day },
+        { homeLeaveTime, workArriveTime, workLeaveTime, homeArriveTime },
       ) => {
         const hasMorningCommute = homeLeaveTime && workArriveTime;
         const hasEveningCommute = workLeaveTime && homeArriveTime;
 
         if (hasMorningCommute) {
-          const homeLeaveDate = moment(
-            `${day}T${homeLeaveTime}`,
-            FULL_DATE_FORMAT,
-          );
-
-          const workArriveDate = moment(
-            `${day}T${workArriveTime}`,
-            FULL_DATE_FORMAT,
-          );
-
+          const homeLeaveDate = moment(homeLeaveTime, TIME_FORMAT);
+          const workArriveDate = moment(workArriveTime, TIME_FORMAT);
           const morningCommuteMinutes = workArriveDate.diff(
             homeLeaveDate,
             'minutes',
@@ -35,16 +27,8 @@ export default (timetables: IDayTimetable[]): IAverageTimeCommuting => {
         }
 
         if (hasEveningCommute) {
-          const workLeaveDate = moment(
-            `${day}T${workLeaveTime}`,
-            FULL_DATE_FORMAT,
-          );
-
-          const homeArriveDate = moment(
-            `${day}T${homeArriveTime}`,
-            FULL_DATE_FORMAT,
-          );
-
+          const workLeaveDate = moment(workLeaveTime, TIME_FORMAT);
+          const homeArriveDate = moment(homeArriveTime, TIME_FORMAT);
           const eveningCommuteInMinutes = homeArriveDate.diff(
             workLeaveDate,
             'minutes',
@@ -59,14 +43,17 @@ export default (timetables: IDayTimetable[]): IAverageTimeCommuting => {
       { minutesCommuting: 0, commuteCount: 0 },
     );
 
-    if (result.commuteCount === 0) {
-      return {
-        hours: 0,
-        minutes: 0,
-      };
+    const averageMinutesCommuting =
+      result.minutesCommuting / result.commuteCount;
+
+    if (
+      isNaN(averageMinutesCommuting) ||
+      averageMinutesCommuting === Infinity
+    ) {
+      return getTimeFromMinutes(0);
     }
 
-    return getTimeFromMinutes(result.minutesCommuting);
+    return getTimeFromMinutes(averageMinutesCommuting);
   } catch (e) {
     throw new Error(e);
   }
