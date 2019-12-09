@@ -1,4 +1,4 @@
-export interface IPeriodQueryData {
+export interface IAveragesQueryData {
   Period: {
     averageTimeAtOffice: {
       hours: number;

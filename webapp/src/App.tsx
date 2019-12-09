@@ -4,7 +4,7 @@ import ApolloClient from 'apollo-boost';
 import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Section } from './components/Section';
-import { Period } from './components/Period';
+import { Averages } from './components/Averages';
 import GlobalStyles from './GlobalStyles';
 
 const client = new ApolloClient({ uri: '/gql' });
@@ -22,7 +22,7 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <Content>
         <Section title="Averages">
-          <Period />
+          <Averages />
         </Section>
       </Content>
       <GlobalStyles />

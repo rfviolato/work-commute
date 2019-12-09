@@ -4,12 +4,17 @@ import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { IPeriodQueryData } from './interface';
+import { IAveragesQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 const QUERY = gql`
-  {
-    Period(periodStart: "2019-01-01", periodEnd: "2019-12-31") {
+  query getPeriod($periodStart: String!, $periodEnd: String!) {
+    Period(periodStart: $periodStart, periodEnd: $periodEnd) {
+      totalTimeAtOffice {
+        hours
+        minutes
+      }
+
       averageTimeAtOffice {
         hours
         minutes
@@ -55,10 +60,15 @@ const TimeIcon = styled(FontAwesomeIcon)`
   margin-right: 8px;
 `;
 
-interface IPeriodProps {}
+interface IAveragesProps {}
 
-export const Period: React.FC<IPeriodProps> = () => {
-  const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY);
+export const Averages: React.FC<IAveragesProps> = () => {
+  const { loading, error, data } = useQuery<IAveragesQueryData>(QUERY, {
+    variables: {
+      periodStart: '2019-01-01',
+      periodEnd: '2019-12-31',
+    },
+  });
 
   if (loading) {
     return (
