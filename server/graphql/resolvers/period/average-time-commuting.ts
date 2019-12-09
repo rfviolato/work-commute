@@ -4,9 +4,7 @@ import { IDayTimetable } from './../../interface';
 import { IAverageTimeCommuting } from './interface';
 import { getTimeFromMinutes } from './../../../utils/get-time-from-minutes';
 
-export default async (
-  timetables: IDayTimetable[],
-): Promise<IAverageTimeCommuting> => {
+export default (timetables: IDayTimetable[]): IAverageTimeCommuting => {
   try {
     const result = timetables.reduce(
       (

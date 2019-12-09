@@ -4,9 +4,7 @@ import { IDayTimetable } from '../../interface';
 import { ITotalTimeAtOffice } from './interface';
 import { getTimeFromMinutes } from '../../../utils/get-time-from-minutes';
 
-export default async (
-  timetables: IDayTimetable[],
-): Promise<ITotalTimeAtOffice> => {
+export default (timetables: IDayTimetable[]): ITotalTimeAtOffice => {
   try {
     const totalMinutesAtOffice = timetables.reduce(
       (accum, { workArriveTime, workLeaveTime, day }) => {
