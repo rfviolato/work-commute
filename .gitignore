@@ -65,6 +65,10 @@ node_modules/
 .env
 .env.build
 
+#mongodb
+dump/
+prod_dump.json
+
 # macos
 .DS_Store
 
