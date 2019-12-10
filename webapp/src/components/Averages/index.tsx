@@ -79,11 +79,19 @@ export const Averages: React.FC<IAveragesProps> = () => {
     <Root>
       <Content>
         <TimeDisplayContainer>
-          <TimeDisplay {...averageTimeCommuting} icon={faTrain} />
+          <TimeDisplay
+            {...averageTimeCommuting}
+            icon={faTrain}
+            label="Time commuting"
+          />
         </TimeDisplayContainer>
 
         <TimeDisplayContainer>
-          <TimeDisplay {...averageTimeAtOffice} icon={faBriefcase} />
+          <TimeDisplay
+            {...averageTimeAtOffice}
+            icon={faBriefcase}
+            label="Time at the office"
+          />
         </TimeDisplayContainer>
       </Content>
     </Root>

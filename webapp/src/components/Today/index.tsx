@@ -90,15 +90,27 @@ export const Today: React.FC = () => {
     <Root>
       <Content>
         <TimeDisplayContainer>
-          <TimeDisplay {...totalMorningCommuteTime} icon={faSunHaze} />
+          <TimeDisplay
+            {...totalMorningCommuteTime}
+            icon={faSunHaze}
+            label="Morning commute"
+          />
         </TimeDisplayContainer>
 
         <TimeDisplayContainer>
-          <TimeDisplay {...totalTimeAtOffice} icon={faBuilding} />
+          <TimeDisplay
+            {...totalTimeAtOffice}
+            icon={faBuilding}
+            label="Time at the office"
+          />
         </TimeDisplayContainer>
 
         <TimeDisplayContainer>
-          <TimeDisplay {...totalEveningCommuteTime} icon={faCloudsMoon} />
+          <TimeDisplay
+            {...totalEveningCommuteTime}
+            icon={faCloudsMoon}
+            label="Evening commute"
+          />
         </TimeDisplayContainer>
       </Content>
     </Root>
