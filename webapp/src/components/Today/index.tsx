@@ -43,15 +43,25 @@ const Root = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-`;
 
-const Content = styled.div`
-  display: flex;
+  @media (max-width: 720px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const TimeDisplayContainer = styled.div`
+  width: 200px;
+
   &:not(:first-of-type) {
     margin-left: 32px;
+  }
+
+  @media (max-width: 720px) {
+    &:not(:first-of-type) {
+      margin-left: 0;
+      margin-top: 32px;
+    }
   }
 `;
 
@@ -88,31 +98,29 @@ export const Today: React.FC = () => {
 
   return (
     <Root>
-      <Content>
-        <TimeDisplayContainer>
-          <TimeDisplay
-            {...totalMorningCommuteTime}
-            icon={faSunHaze}
-            label="Morning commute"
-          />
-        </TimeDisplayContainer>
+      <TimeDisplayContainer>
+        <TimeDisplay
+          {...totalMorningCommuteTime}
+          icon={faSunHaze}
+          label="Morning commute"
+        />
+      </TimeDisplayContainer>
 
-        <TimeDisplayContainer>
-          <TimeDisplay
-            {...totalTimeAtOffice}
-            icon={faBuilding}
-            label="Time at the office"
-          />
-        </TimeDisplayContainer>
+      <TimeDisplayContainer>
+        <TimeDisplay
+          {...totalTimeAtOffice}
+          icon={faBuilding}
+          label="Time at the office"
+        />
+      </TimeDisplayContainer>
 
-        <TimeDisplayContainer>
-          <TimeDisplay
-            {...totalEveningCommuteTime}
-            icon={faCloudsMoon}
-            label="Evening commute"
-          />
-        </TimeDisplayContainer>
-      </Content>
+      <TimeDisplayContainer>
+        <TimeDisplay
+          {...totalEveningCommuteTime}
+          icon={faCloudsMoon}
+          label="Evening commute"
+        />
+      </TimeDisplayContainer>
     </Root>
   );
 };

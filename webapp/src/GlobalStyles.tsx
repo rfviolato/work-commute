@@ -22,6 +22,12 @@ const styles = css`
   h6 {
     margin: 0;
   }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 `;
 
 const GlobalStyles: React.SFC = () => <Global styles={styles} />;

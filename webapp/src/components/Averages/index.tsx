@@ -33,15 +33,25 @@ const Root = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-`;
 
-const Content = styled.div`
-  display: flex;
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const TimeDisplayContainer = styled.div`
+  width: 200px;
+
   &:not(:first-of-type) {
     margin-left: 32px;
+  }
+
+  @media (max-width: 480px) {
+    &:not(:first-of-type) {
+      margin-left: 0;
+      margin-top: 32px;
+    }
   }
 `;
 
@@ -77,23 +87,21 @@ export const Averages: React.FC<IAveragesProps> = () => {
 
   return (
     <Root>
-      <Content>
-        <TimeDisplayContainer>
-          <TimeDisplay
-            {...averageTimeCommuting}
-            icon={faTrain}
-            label="Time commuting"
-          />
-        </TimeDisplayContainer>
+      <TimeDisplayContainer>
+        <TimeDisplay
+          {...averageTimeCommuting}
+          icon={faTrain}
+          label="Time commuting"
+        />
+      </TimeDisplayContainer>
 
-        <TimeDisplayContainer>
-          <TimeDisplay
-            {...averageTimeAtOffice}
-            icon={faBriefcase}
-            label="Time at the office"
-          />
-        </TimeDisplayContainer>
-      </Content>
+      <TimeDisplayContainer>
+        <TimeDisplay
+          {...averageTimeAtOffice}
+          icon={faBriefcase}
+          label="Time at the office"
+        />
+      </TimeDisplayContainer>
     </Root>
   );
 };
