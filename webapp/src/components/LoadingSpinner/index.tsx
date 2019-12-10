@@ -4,12 +4,6 @@ import { faCog } from '@fortawesome/pro-solid-svg-icons';
 import { keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 
-/**
- * TODO:
- * - Add animation to spin
- * - Make it sizeable via props or just with font-size in `em`s
- */
-
 const rotate = keyframes`  
   50% {
     transform: rotate(180deg) scale(1.25);

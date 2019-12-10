@@ -5,7 +5,12 @@ import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Section } from './components/Section';
 import { Averages } from './components/Averages';
+import { Today } from './components/Today';
 import GlobalStyles from './GlobalStyles';
+
+const TodaySectionContainer = styled.div`
+  margin-top: 80px;
+`;
 
 const client = new ApolloClient({ uri: '/gql' });
 
@@ -24,6 +29,12 @@ const App: React.FC = () => {
         <Section title="Averages">
           <Averages />
         </Section>
+
+        <TodaySectionContainer>
+          <Section title="Today">
+            <Today />
+          </Section>
+        </TodaySectionContainer>
       </Content>
       <GlobalStyles />
     </ApolloProvider>
