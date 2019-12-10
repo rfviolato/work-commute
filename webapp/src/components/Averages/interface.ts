@@ -1,13 +1,11 @@
+interface ITime {
+  hours: number;
+  minutes: number;
+}
+
 export interface IAveragesQueryData {
   Period: {
-    averageTimeAtOffice: {
-      hours: number;
-      minutes: number;
-    };
-
-    averageTimeCommuting: {
-      hours: number;
-      minutes: number;
-    };
+    averageTimeAtOffice: ITime;
+    averageTimeCommuting: ITime;
   };
 }

@@ -39,6 +39,12 @@ const Content = styled.div`
   display: flex;
 `;
 
+const TimeDisplayContainer = styled.div`
+  &:not(:first-of-type) {
+    margin-left: 32px;
+  }
+`;
+
 interface IAveragesProps {}
 
 export const Averages: React.FC<IAveragesProps> = () => {
@@ -72,8 +78,13 @@ export const Averages: React.FC<IAveragesProps> = () => {
   return (
     <Root>
       <Content>
-        <TimeDisplay {...averageTimeCommuting} icon={faTrain} />
-        <TimeDisplay {...averageTimeAtOffice} icon={faBriefcase} />
+        <TimeDisplayContainer>
+          <TimeDisplay {...averageTimeCommuting} icon={faTrain} />
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <TimeDisplay {...averageTimeAtOffice} icon={faBriefcase} />
+        </TimeDisplayContainer>
       </Content>
     </Root>
   );

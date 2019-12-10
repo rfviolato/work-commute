@@ -3,8 +3,14 @@ import moment from 'moment';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import styled from '@emotion/styled';
+import {
+  faBuilding,
+  faSunHaze,
+  faCloudsMoon,
+} from '@fortawesome/pro-solid-svg-icons';
 import { ITodayQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { TimeDisplay } from '../TimeDisplay';
 
 const QUERY = gql`
   query getDay($day: String!) {
@@ -18,10 +24,12 @@ const QUERY = gql`
         hours
         minutes
       }
+
       totalEveningCommuteTime {
         hours
         minutes
       }
+
       totalTimeAtOffice {
         hours
         minutes
@@ -35,6 +43,16 @@ const Root = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+`;
+
+const Content = styled.div`
+  display: flex;
+`;
+
+const TimeDisplayContainer = styled.div`
+  &:not(:first-of-type) {
+    margin-left: 32px;
+  }
 `;
 
 export const Today: React.FC = () => {
@@ -60,7 +78,29 @@ export const Today: React.FC = () => {
     return <Root>No data 🤔</Root>;
   }
 
-  console.log({ data });
+  const {
+    Day: {
+      totalEveningCommuteTime,
+      totalTimeAtOffice,
+      totalMorningCommuteTime,
+    },
+  } = data;
 
-  return <Root>hey!</Root>;
+  return (
+    <Root>
+      <Content>
+        <TimeDisplayContainer>
+          <TimeDisplay {...totalMorningCommuteTime} icon={faSunHaze} />
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <TimeDisplay {...totalTimeAtOffice} icon={faBuilding} />
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <TimeDisplay {...totalEveningCommuteTime} icon={faCloudsMoon} />
+        </TimeDisplayContainer>
+      </Content>
+    </Root>
+  );
 };

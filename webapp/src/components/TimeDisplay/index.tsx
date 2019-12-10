@@ -4,16 +4,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ITimeDisplayProps } from './interface';
 
 const Root = styled.div`
-  align-self: flex-start;
   font-size: 24px;
-
-  &:not(:first-of-type) {
-    margin-left: 32px;
-  }
 `;
 
 const Unit = styled.span`
   font-size: 0.6em;
+`;
+
+const ZeroUnitContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ZeroUnitLabel = styled.div`
+  height: 3px;
+  width: 20px;
+  border-radius: 30%;
+  background-color: currentColor;
+  margin-left: 5px;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -28,6 +36,17 @@ export const TimeDisplay: React.FC<ITimeDisplayProps> = ({
   minutes,
   icon,
 }) => {
+  if (hours === 0 && minutes === 0) {
+    return (
+      <Root>
+        <ZeroUnitContainer>
+          <Icon icon={icon} />
+          <ZeroUnitLabel />
+        </ZeroUnitContainer>
+      </Root>
+    );
+  }
+
   return (
     <Root>
       <Icon icon={icon} />
