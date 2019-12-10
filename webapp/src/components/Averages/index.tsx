@@ -1,11 +1,11 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { IAveragesQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { TimeDisplay } from '../TimeDisplay';
 
 const QUERY = gql`
   query getPeriod($periodStart: String!, $periodEnd: String!) {
@@ -37,27 +37,6 @@ const Root = styled.div`
 
 const Content = styled.div`
   display: flex;
-`;
-
-const TimeDisplay = styled.div`
-  display: flex;
-  align-self: flex-start;
-  font-size: 24px;
-
-  &:not(:first-of-type) {
-    margin-left: 32px;
-  }
-`;
-
-const TimeUnit = styled.span`
-  font-size: 0.6em;
-`;
-
-const TimeIcon = styled(FontAwesomeIcon)`
-  font-size: 1.1em;
-  position: relative;
-  top: -1px;
-  margin-right: 8px;
 `;
 
 interface IAveragesProps {}
@@ -93,35 +72,8 @@ export const Averages: React.FC<IAveragesProps> = () => {
   return (
     <Root>
       <Content>
-        <TimeDisplay>
-          <div>
-            <TimeIcon icon={faTrain} />
-          </div>
-          {averageTimeCommuting.hours > 0 && (
-            <div>
-              <span>{averageTimeCommuting.hours}</span>
-              <TimeUnit>hrs.</TimeUnit>
-            </div>
-          )}
-          <div>
-            <span>{averageTimeCommuting.minutes}</span>
-            <TimeUnit>min.</TimeUnit>
-          </div>
-        </TimeDisplay>
-
-        <TimeDisplay>
-          <div>
-            <TimeIcon icon={faBriefcase} />
-          </div>
-          <div>
-            <span>{averageTimeAtOffice.hours}</span>
-            <TimeUnit>hrs.</TimeUnit>
-          </div>
-          <div>
-            <span>{averageTimeAtOffice.minutes}</span>
-            <TimeUnit>min.</TimeUnit>
-          </div>
-        </TimeDisplay>
+        <TimeDisplay {...averageTimeCommuting} icon={faTrain} />
+        <TimeDisplay {...averageTimeAtOffice} icon={faBriefcase} />
       </Content>
     </Root>
   );
