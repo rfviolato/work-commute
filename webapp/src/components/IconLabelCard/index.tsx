@@ -17,7 +17,7 @@ const IconContainer = styled.div`
   justify-content: center;
   width: 64px;
   height: 64px;
-  border: 2px solid whitesmoke;
+  border: 2px solid #f1f1f1;
   border-radius: 50%;
 `;
 
@@ -31,7 +31,7 @@ const Icon = styled(FontAwesomeIcon)`
 const Label = styled.div`
   font-size: 14px;
   margin-top: 10px;
-  opacity: 0.85;
+  opacity: 0.9;
 `;
 
 const Content = styled.div`

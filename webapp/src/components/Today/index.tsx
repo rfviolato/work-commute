@@ -8,10 +8,13 @@ import {
   faSunHaze,
   faCloudsMoon,
 } from '@fortawesome/pro-solid-svg-icons';
+import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { ITodayQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabelCard } from '../IconLabelCard';
+import { Card } from '../Card';
+import { TimetableDisplay } from '../TimetableDisplay';
 
 const QUERY = gql`
   query getDay($day: String!) {
@@ -39,18 +42,6 @@ const QUERY = gql`
   }
 `;
 
-const Root = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-
-  @media (max-width: 720px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
 const TimeDisplayContainer = styled.div`
   width: 200px;
 
@@ -58,7 +49,7 @@ const TimeDisplayContainer = styled.div`
     margin-left: 32px;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     &:not(:first-of-type) {
       margin-left: 0;
       margin-top: 32px;
@@ -66,27 +57,42 @@ const TimeDisplayContainer = styled.div`
   }
 `;
 
+const ContentRow = styled.div`
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &:not(:first-of-type) {
+    margin-top: 32px;
+  }
+`;
+
 export const Today: React.FC = () => {
   const { loading, error, data } = useQuery<ITodayQueryData>(QUERY, {
     variables: {
-      day: moment().format('YYYY-MM-DD'),
+      // day: moment().format('YYYY-MM-DD'),
+      day: '2019-12-12',
     },
   });
 
   if (loading) {
     return (
-      <Root>
+      <ContentRow>
         <LoadingSpinner />
-      </Root>
+      </ContentRow>
     );
   }
 
   if (error) {
-    return <Root>Error 😟</Root>;
+    return <ContentRow>Error 😟</ContentRow>;
   }
 
   if (!data || !data.Day) {
-    return <Root>No data yet</Root>;
+    return <ContentRow>No data yet</ContentRow>;
   }
 
   const {
@@ -95,28 +101,80 @@ export const Today: React.FC = () => {
       totalTimeAtOffice,
       totalMorningCommuteTime,
       homeLeaveTime,
+      homeArriveTime,
+      workArriveTime,
+      workLeaveTime,
     },
   } = data;
 
   return (
-    <Root>
-      <TimeDisplayContainer>
-        <IconLabelCard icon={faSunHaze} label="Morning commute">
-          <TimeDisplay {...totalMorningCommuteTime} />
-        </IconLabelCard>
-      </TimeDisplayContainer>
+    <div>
+      <ContentRow>
+        <TimeDisplayContainer style={{ width: 'auto' }}>
+          <TimetableDisplay
+            icon={faClock}
+            timetables={[
+              { timestamp: homeLeaveTime, label: 'Home leave time' },
+              { timestamp: workArriveTime, label: 'Work arrive time' },
+              { timestamp: workLeaveTime, label: 'Work leave time' },
+              { timestamp: homeArriveTime, label: 'Home arrive time' },
+            ]}
+          />
+        </TimeDisplayContainer>
+      </ContentRow>
 
-      <TimeDisplayContainer>
-        <IconLabelCard icon={faBuilding} label="Time at the office">
-          <TimeDisplay {...totalTimeAtOffice} />
-        </IconLabelCard>
-      </TimeDisplayContainer>
+      <ContentRow>
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faSunHaze} label="Morning commute">
+            <TimeDisplay {...totalMorningCommuteTime} />
+          </IconLabelCard>
+        </TimeDisplayContainer>
 
-      <TimeDisplayContainer>
-        <IconLabelCard icon={faCloudsMoon} label="Evening commute">
-          <TimeDisplay {...totalEveningCommuteTime} />
-        </IconLabelCard>
-      </TimeDisplayContainer>
-    </Root>
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faBuilding} label="Time at the office">
+            <TimeDisplay {...totalTimeAtOffice} />
+          </IconLabelCard>
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faCloudsMoon} label="Evening commute">
+            <TimeDisplay {...totalEveningCommuteTime} />
+          </IconLabelCard>
+        </TimeDisplayContainer>
+      </ContentRow>
+    </div>
   );
 };
+
+/**
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faClock} label="Home leave time">
+            {homeLeaveTime
+              ? moment(homeLeaveTime, 'HH:mm:ssZ').format('HH:mm')
+              : 'n/a'}
+          </IconLabelCard>
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faClock} label="Work arrive time">
+            {homeLeaveTime
+              ? moment(workArriveTime, 'HH:mm:ssZ').format('HH:mm')
+              : 'n/a'}
+          </IconLabelCard>
+        </TimeDisplayContainer>
+
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faClock} label="Work leave time">
+            {homeLeaveTime
+              ? moment(workLeaveTime, 'HH:mm:ssZ').format('HH:mm')
+              : 'n/a'}
+          </IconLabelCard>
+        </TimeDisplayContainer>
+        <TimeDisplayContainer>
+          <IconLabelCard icon={faClock} label="Home arrive time">
+            {homeLeaveTime
+              ? moment(homeArriveTime, 'HH:mm:ssZ').format('HH:mm')
+              : 'n/a'}
+          </IconLabelCard>
+        </TimeDisplayContainer>
+ */

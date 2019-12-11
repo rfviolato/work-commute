@@ -4,7 +4,7 @@ import { ICardProps } from './interface';
 
 const Root = styled.div`
   padding: 20px;
-  border: 1px solid whitesmoke;
+  border: 1px solid #f1f1f1;
   border-radius: 4px;
   background-color: #404040;
 `;
