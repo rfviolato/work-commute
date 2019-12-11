@@ -12,5 +12,5 @@ export interface ITodayQueryData {
     totalMorningCommuteTime: ITime;
     totalEveningCommuteTime: ITime;
     totalTimeAtOffice: ITime;
-  };
+  } | null;
 }

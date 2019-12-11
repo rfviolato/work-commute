@@ -84,8 +84,8 @@ export const Today: React.FC = () => {
     return <Root>Error 😟</Root>;
   }
 
-  if (!data) {
-    return <Root>No data 🤔</Root>;
+  if (!data || !data.Day) {
+    return <Root>No data yet</Root>;
   }
 
   const {
