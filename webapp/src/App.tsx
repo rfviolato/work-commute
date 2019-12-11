@@ -18,8 +18,7 @@ const Content = styled.section`
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 4%;
-  padding-top: 40px;
+  padding: 40px 4% 60px;
 `;
 
 const App: React.FC = () => {
