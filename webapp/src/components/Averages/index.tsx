@@ -6,6 +6,7 @@ import { gql } from 'apollo-boost';
 import { IAveragesQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
+import { IconLabelCard } from '../IconLabelCard';
 
 const QUERY = gql`
   query getPeriod($periodStart: String!, $periodEnd: String!) {
@@ -88,19 +89,15 @@ export const Averages: React.FC<IAveragesProps> = () => {
   return (
     <Root>
       <TimeDisplayContainer>
-        <TimeDisplay
-          {...averageTimeCommuting}
-          icon={faTrain}
-          label="Time commuting"
-        />
+        <IconLabelCard icon={faTrain} label="Time commuting">
+          <TimeDisplay {...averageTimeCommuting} />
+        </IconLabelCard>
       </TimeDisplayContainer>
 
       <TimeDisplayContainer>
-        <TimeDisplay
-          {...averageTimeAtOffice}
-          icon={faBriefcase}
-          label="Time at the office"
-        />
+        <IconLabelCard icon={faBriefcase} label="Time at the office">
+          <TimeDisplay {...averageTimeAtOffice} />
+        </IconLabelCard>
       </TimeDisplayContainer>
     </Root>
   );

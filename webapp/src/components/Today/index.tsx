@@ -11,6 +11,7 @@ import {
 import { ITodayQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
+import { IconLabelCard } from '../IconLabelCard';
 
 const QUERY = gql`
   query getDay($day: String!) {
@@ -93,33 +94,28 @@ export const Today: React.FC = () => {
       totalEveningCommuteTime,
       totalTimeAtOffice,
       totalMorningCommuteTime,
+      homeLeaveTime,
     },
   } = data;
 
   return (
     <Root>
       <TimeDisplayContainer>
-        <TimeDisplay
-          {...totalMorningCommuteTime}
-          icon={faSunHaze}
-          label="Morning commute"
-        />
+        <IconLabelCard icon={faSunHaze} label="Morning commute">
+          <TimeDisplay {...totalMorningCommuteTime} />
+        </IconLabelCard>
       </TimeDisplayContainer>
 
       <TimeDisplayContainer>
-        <TimeDisplay
-          {...totalTimeAtOffice}
-          icon={faBuilding}
-          label="Time at the office"
-        />
+        <IconLabelCard icon={faBuilding} label="Time at the office">
+          <TimeDisplay {...totalTimeAtOffice} />
+        </IconLabelCard>
       </TimeDisplayContainer>
 
       <TimeDisplayContainer>
-        <TimeDisplay
-          {...totalEveningCommuteTime}
-          icon={faCloudsMoon}
-          label="Evening commute"
-        />
+        <IconLabelCard icon={faCloudsMoon} label="Evening commute">
+          <TimeDisplay {...totalEveningCommuteTime} />
+        </IconLabelCard>
       </TimeDisplayContainer>
     </Root>
   );
