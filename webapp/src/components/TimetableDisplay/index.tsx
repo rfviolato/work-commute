@@ -5,9 +5,18 @@ import { ITimetableDisplay } from './interface';
 import { Card } from '../Card';
 import moment from 'moment';
 
+const CSS_VARIABLES = {
+  MOBILE_BREAKPOINT: 360,
+};
+
 const Content = styled.div`
   display: flex;
+
+  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+    flex-direction: column;
+  }
 `;
+
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -15,7 +24,15 @@ const IconContainer = styled.div`
   margin-right: 34px;
   border-right: 1px solid #aaa;
   font-size: 42px;
+
+  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+    border-right: none;
+    padding: 0 0 20px 0;
+    margin: 0;
+    justify-content: center;
+  }
 `;
+
 const TimetableContainer = styled.ul`
   padding: 0;
   margin: 0;
@@ -29,6 +46,10 @@ const Timetable = styled.li`
 
   &:not(:last-child) {
     border-bottom: 1px solid #aaa;
+  }
+
+  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+    justify-content: center;
   }
 `;
 

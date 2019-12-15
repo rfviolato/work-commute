@@ -42,32 +42,36 @@ const QUERY = gql`
   }
 `;
 
-const TimeDisplayContainer = styled.div`
-  width: 200px;
+const CSS_VARS = {
+  GRID_GUTTER: 32,
+};
 
-  &:not(:first-of-type) {
-    margin-left: 32px;
-  }
+const TimetableContainer = styled.div`
+  margin-bottom: ${CSS_VARS.GRID_GUTTER}px;
 
-  @media (max-width: 900px) {
-    &:not(:first-of-type) {
-      margin-left: 0;
-      margin-top: 32px;
-    }
+  @media (max-width: 360px) {
+    width: 250px;
   }
 `;
 
-const ContentRow = styled.div`
+const Root = styled.article`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TimeCardsGrid = styled.div`
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  grid-column-gap: ${CSS_VARS.GRID_GUTTER}px;
   justify-content: center;
 
-  @media (max-width: 900px) {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  &:not(:first-of-type) {
-    margin-top: 32px;
+  @media (max-width: 720px) {
+    grid-template-columns: 200px;
+    grid-column-gap: 0;
+    grid-row-gap: ${CSS_VARS.GRID_GUTTER}px;
   }
 `;
 
@@ -80,18 +84,18 @@ export const Today: React.FC = () => {
 
   if (loading) {
     return (
-      <ContentRow>
+      <Root>
         <LoadingSpinner />
-      </ContentRow>
+      </Root>
     );
   }
 
   if (error) {
-    return <ContentRow>Error 😟</ContentRow>;
+    return <Root>Error 😟</Root>;
   }
 
   if (!data || !data.Day) {
-    return <ContentRow>No data yet</ContentRow>;
+    return <Root>No data yet</Root>;
   }
 
   const {
@@ -107,40 +111,32 @@ export const Today: React.FC = () => {
   } = data;
 
   return (
-    <div>
-      <ContentRow>
-        <TimeDisplayContainer style={{ width: 'auto' }}>
-          <TimetableDisplay
-            icon={faClock}
-            timetables={[
-              { timestamp: homeLeaveTime, label: 'Home leave time' },
-              { timestamp: workArriveTime, label: 'Work arrive time' },
-              { timestamp: workLeaveTime, label: 'Work leave time' },
-              { timestamp: homeArriveTime, label: 'Home arrive time' },
-            ]}
-          />
-        </TimeDisplayContainer>
-      </ContentRow>
+    <Root>
+      <TimetableContainer>
+        <TimetableDisplay
+          icon={faClock}
+          timetables={[
+            { timestamp: homeLeaveTime, label: 'Home leave time' },
+            { timestamp: workArriveTime, label: 'Work arrive time' },
+            { timestamp: workLeaveTime, label: 'Work leave time' },
+            { timestamp: homeArriveTime, label: 'Home arrive time' },
+          ]}
+        />
+      </TimetableContainer>
 
-      <ContentRow>
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faSunHaze} label="Morning commute">
-            <TimeDisplay {...totalMorningCommuteTime} />
-          </IconLabelCard>
-        </TimeDisplayContainer>
+      <TimeCardsGrid>
+        <IconLabelCard icon={faSunHaze} label="Morning commute">
+          <TimeDisplay {...totalMorningCommuteTime} />
+        </IconLabelCard>
 
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faBuilding} label="Time at the office">
-            <TimeDisplay {...totalTimeAtOffice} />
-          </IconLabelCard>
-        </TimeDisplayContainer>
+        <IconLabelCard icon={faBuilding} label="Time at the office">
+          <TimeDisplay {...totalTimeAtOffice} />
+        </IconLabelCard>
 
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faCloudsMoon} label="Evening commute">
-            <TimeDisplay {...totalEveningCommuteTime} />
-          </IconLabelCard>
-        </TimeDisplayContainer>
-      </ContentRow>
-    </div>
+        <IconLabelCard icon={faCloudsMoon} label="Evening commute">
+          <TimeDisplay {...totalEveningCommuteTime} />
+        </IconLabelCard>
+      </TimeCardsGrid>
+    </Root>
   );
 };
