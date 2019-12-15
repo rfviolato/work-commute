@@ -31,28 +31,19 @@ const QUERY = gql`
 
 const Root = styled.div`
   display: flex;
+  align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: center;
-  }
 `;
 
-const TimeDisplayContainer = styled.div`
-  width: 200px;
-
-  &:not(:first-of-type) {
-    margin-left: 32px;
-  }
+const TimeDisplayGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 200px);
+  grid-column-gap: 32px;
 
   @media (max-width: 480px) {
-    &:not(:first-of-type) {
-      margin-left: 0;
-      margin-top: 32px;
-    }
+    grid-template-columns: 200px;
+    grid-column-gap: 0;
+    grid-row-gap: 32px;
   }
 `;
 
@@ -88,17 +79,15 @@ export const Averages: React.FC<IAveragesProps> = () => {
 
   return (
     <Root>
-      <TimeDisplayContainer>
+      <TimeDisplayGrid>
         <IconLabelCard icon={faTrain} label="Time commuting">
           <TimeDisplay {...averageTimeCommuting} />
         </IconLabelCard>
-      </TimeDisplayContainer>
 
-      <TimeDisplayContainer>
         <IconLabelCard icon={faBriefcase} label="Time at the office">
           <TimeDisplay {...averageTimeAtOffice} />
         </IconLabelCard>
-      </TimeDisplayContainer>
+      </TimeDisplayGrid>
     </Root>
   );
 };
