@@ -78,8 +78,7 @@ const TimeCardsGrid = styled.div`
 export const Today: React.FC = () => {
   const { loading, error, data } = useQuery<ITodayQueryData>(QUERY, {
     variables: {
-      // day: moment().format('YYYY-MM-DD'),
-      day: '2019-12-12',
+      day: moment().format('YYYY-MM-DD'),
     },
   });
 

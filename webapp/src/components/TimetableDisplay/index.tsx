@@ -20,7 +20,7 @@ const Content = styled.div`
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 30px 0 10px;
+  padding: 0 30px 0 0;
   margin-right: 34px;
   border-right: 1px solid #aaa;
   font-size: 42px;
