@@ -35,7 +35,14 @@ const Label = styled.div`
 `;
 
 const Content = styled.div`
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #aaa;
+  width: 100%;
+  text-align: center;
   margin-top: 20px;
+  padding-top: 18px;
+  line-height: 1;
 `;
 
 export const IconLabelCard: React.FC<IIconCardProps> = ({
