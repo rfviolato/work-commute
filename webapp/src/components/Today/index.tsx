@@ -74,8 +74,7 @@ const ContentRow = styled.div`
 export const Today: React.FC = () => {
   const { loading, error, data } = useQuery<ITodayQueryData>(QUERY, {
     variables: {
-      // day: moment().format('YYYY-MM-DD'),
-      day: '2019-12-12',
+      day: moment().format('YYYY-MM-DD'),
     },
   });
 
@@ -145,36 +144,3 @@ export const Today: React.FC = () => {
     </div>
   );
 };
-
-/**
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faClock} label="Home leave time">
-            {homeLeaveTime
-              ? moment(homeLeaveTime, 'HH:mm:ssZ').format('HH:mm')
-              : 'n/a'}
-          </IconLabelCard>
-        </TimeDisplayContainer>
-
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faClock} label="Work arrive time">
-            {homeLeaveTime
-              ? moment(workArriveTime, 'HH:mm:ssZ').format('HH:mm')
-              : 'n/a'}
-          </IconLabelCard>
-        </TimeDisplayContainer>
-
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faClock} label="Work leave time">
-            {homeLeaveTime
-              ? moment(workLeaveTime, 'HH:mm:ssZ').format('HH:mm')
-              : 'n/a'}
-          </IconLabelCard>
-        </TimeDisplayContainer>
-        <TimeDisplayContainer>
-          <IconLabelCard icon={faClock} label="Home arrive time">
-            {homeLeaveTime
-              ? moment(homeArriveTime, 'HH:mm:ssZ').format('HH:mm')
-              : 'n/a'}
-          </IconLabelCard>
-        </TimeDisplayContainer>
- */
