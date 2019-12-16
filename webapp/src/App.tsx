@@ -19,6 +19,11 @@ const Content = styled.section`
   max-width: 1180px;
   margin: 0 auto;
   padding: 40px 4% 60px;
+
+  @media (max-width: 375px) {
+    padding-left: 8%;
+    padding-right: 8%;
+  }
 `;
 
 const App: React.FC = () => {

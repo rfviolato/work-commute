@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IIconCardProps } from './interface';
+import { IIconLabelProps } from './interface';
 import { Card } from '../Card';
 
-const Container = styled.div`
+const Root = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,22 +45,20 @@ const Content = styled.div`
   line-height: 1;
 `;
 
-export const IconLabelCard: React.FC<IIconCardProps> = ({
+export const IconLabel: React.FC<IIconLabelProps> = ({
   children,
   icon,
   label,
 }) => {
   return (
-    <Card>
-      <Container>
-        <IconContainer>
-          <Icon icon={icon} />
-        </IconContainer>
+    <Root>
+      <IconContainer>
+        <Icon icon={icon} />
+      </IconContainer>
 
-        <Label>{label}</Label>
+      <Label>{label}</Label>
 
-        <Content>{children}</Content>
-      </Container>
-    </Card>
+      <Content>{children}</Content>
+    </Root>
   );
 };

@@ -2,17 +2,16 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ITimetableDisplay } from './interface';
-import { Card } from '../Card';
 import moment from 'moment';
 
 const CSS_VARIABLES = {
-  MOBILE_BREAKPOINT: 360,
+  MQ: { X_SMALL: 375 },
 };
 
-const Content = styled.div`
+const Root = styled.div`
   display: flex;
 
-  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+  @media (max-width: ${CSS_VARIABLES.MQ.X_SMALL}px) {
     flex-direction: column;
   }
 `;
@@ -25,7 +24,7 @@ const IconContainer = styled.div`
   border-right: 1px solid #aaa;
   font-size: 42px;
 
-  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+  @media (max-width: ${CSS_VARIABLES.MQ.X_SMALL}px) {
     border-right: none;
     padding: 0 0 20px 0;
     margin: 0;
@@ -48,7 +47,7 @@ const Timetable = styled.li`
     border-bottom: 1px solid #aaa;
   }
 
-  @media (max-width: ${CSS_VARIABLES.MOBILE_BREAKPOINT}px) {
+  @media (max-width: ${CSS_VARIABLES.MQ.X_SMALL}px) {
     justify-content: center;
   }
 `;
@@ -70,37 +69,35 @@ export const TimetableDisplay: React.FC<ITimetableDisplay> = ({
   timetables,
 }) => {
   return (
-    <Card>
-      <Content>
-        <IconContainer>
-          <FontAwesomeIcon icon={icon} />
-        </IconContainer>
+    <Root>
+      <IconContainer>
+        <FontAwesomeIcon icon={icon} />
+      </IconContainer>
 
-        <TimetableContainer>
-          {timetables.map(({ timestamp, label }) => {
-            const timetableDate = moment(timestamp, 'HH:mm:ssZ');
-            const timetableLabel = `${label}: `;
+      <TimetableContainer>
+        {timetables.map(({ timestamp, label }) => {
+          const timetableDate = moment(timestamp, 'HH:mm:ssZ');
+          const timetableLabel = `${label}: `;
 
-            if (timetableDate && !timetableDate.isValid()) {
-              return (
-                <Timetable>
-                  <TimetableLabel>{timetableLabel}</TimetableLabel>
-                  <TimetableTimestamp>n/a</TimetableTimestamp>
-                </Timetable>
-              );
-            }
-
+          if (timetableDate && !timetableDate.isValid()) {
             return (
               <Timetable>
                 <TimetableLabel>{timetableLabel}</TimetableLabel>
-                <TimetableTimestamp>
-                  {timetableDate.format('HH:mm')}
-                </TimetableTimestamp>
+                <TimetableTimestamp>n/a</TimetableTimestamp>
               </Timetable>
             );
-          })}
-        </TimetableContainer>
-      </Content>
-    </Card>
+          }
+
+          return (
+            <Timetable>
+              <TimetableLabel>{timetableLabel}</TimetableLabel>
+              <TimetableTimestamp>
+                {timetableDate.format('HH:mm')}
+              </TimetableTimestamp>
+            </Timetable>
+          );
+        })}
+      </TimetableContainer>
+    </Root>
   );
 };

@@ -6,7 +6,8 @@ import { gql } from 'apollo-boost';
 import { IAveragesQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
-import { IconLabelCard } from '../IconLabelCard';
+import { IconLabel } from '../IconLabel';
+import { Card } from '../Card';
 
 const QUERY = gql`
   query getPeriod($periodStart: String!, $periodEnd: String!) {
@@ -29,6 +30,11 @@ const QUERY = gql`
   }
 `;
 
+const CSS_VARS = {
+  GRID_GUTTER: 32,
+  GRID_COL_SIZE: 200,
+};
+
 const Root = styled.div`
   display: flex;
   align-items: center;
@@ -37,13 +43,13 @@ const Root = styled.div`
 
 const TimeDisplayGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 200px);
-  grid-column-gap: 32px;
+  grid-template-columns: repeat(2, ${CSS_VARS.GRID_COL_SIZE}px);
+  grid-column-gap: ${CSS_VARS.GRID_GUTTER}px;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 200px;
+  @media (max-width: 520px) {
+    grid-template-columns: ${CSS_VARS.GRID_COL_SIZE}px;
     grid-column-gap: 0;
-    grid-row-gap: 32px;
+    grid-row-gap: ${CSS_VARS.GRID_GUTTER}px;
   }
 `;
 
@@ -53,7 +59,7 @@ export const Averages: React.FC<IAveragesProps> = () => {
   const { loading, error, data } = useQuery<IAveragesQueryData>(QUERY, {
     variables: {
       periodStart: '2019-01-01',
-      periodEnd: '2019-12-31',
+      periodEnd: '2020-12-31',
     },
   });
 
@@ -79,15 +85,17 @@ export const Averages: React.FC<IAveragesProps> = () => {
 
   return (
     <Root>
-      <TimeDisplayGrid>
-        <IconLabelCard icon={faTrain} label="Time commuting">
-          <TimeDisplay {...averageTimeCommuting} />
-        </IconLabelCard>
+      <Card>
+        <TimeDisplayGrid>
+          <IconLabel icon={faTrain} label="Time commuting">
+            <TimeDisplay {...averageTimeCommuting} />
+          </IconLabel>
 
-        <IconLabelCard icon={faBriefcase} label="Time at the office">
-          <TimeDisplay {...averageTimeAtOffice} />
-        </IconLabelCard>
-      </TimeDisplayGrid>
+          <IconLabel icon={faBriefcase} label="Time at the office">
+            <TimeDisplay {...averageTimeAtOffice} />
+          </IconLabel>
+        </TimeDisplayGrid>
+      </Card>
     </Root>
   );
 };

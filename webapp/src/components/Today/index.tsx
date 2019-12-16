@@ -12,10 +12,12 @@ import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { ITodayQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
-import { IconLabelCard } from '../IconLabelCard';
-import { Card } from '../Card';
+import { IconLabel } from '../IconLabel';
 import { TimetableDisplay } from '../TimetableDisplay';
+import { IS_DEV } from '../../constants';
+import { Card } from '../Card';
 
+const DEVELOPMENT_DAY = '2019-12-12';
 const QUERY = gql`
   query getDay($day: String!) {
     Day(day: $day) {
@@ -44,42 +46,71 @@ const QUERY = gql`
 
 const CSS_VARS = {
   GRID_GUTTER: 32,
+  MQ: {
+    MEDIUM: 960,
+    SMALL: 620,
+    X_SMALL: 375,
+  },
 };
 
-const TimetableContainer = styled.div`
-  margin-bottom: ${CSS_VARS.GRID_GUTTER}px;
+const Root = styled.div`
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
 
-  @media (max-width: 360px) {
-    width: 250px;
+  @media (max-width: ${CSS_VARS.MQ.MEDIUM}px) {
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
-const Root = styled.article`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const TimetableContainer = styled.div`
+  margin-right: 40px;
+  flex: 0 1 auto;
+
+  @media (max-width: ${CSS_VARS.MQ.MEDIUM}px) {
+    margin-right: 0;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: ${CSS_VARS.MQ.X_SMALL}px) {
+    width: 100%;
+    max-width: 250px;
+  }
+`;
+
+const TimeCardsContainer = styled(Card)`
+  flex: 1 1 auto;
+
+  @media (max-width: ${CSS_VARS.MQ.SMALL}px) {
+    max-width: 250px;
+  }
+
+  @media (max-width: ${CSS_VARS.MQ.MEDIUM}px) {
+    width: 100%;
+    flex: 1 0 auto;
+  }
 `;
 
 const TimeCardsGrid = styled.div`
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 200px);
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
   grid-column-gap: ${CSS_VARS.GRID_GUTTER}px;
   justify-content: center;
 
-  @media (max-width: 720px) {
-    grid-template-columns: 200px;
+  @media (max-width: ${CSS_VARS.MQ.SMALL}px) {
+    grid-template-columns: 100%;
     grid-column-gap: 0;
-    grid-row-gap: ${CSS_VARS.GRID_GUTTER}px;
+    grid-row-gap: 45px;
   }
 `;
 
 export const Today: React.FC = () => {
+  const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
   const { loading, error, data } = useQuery<ITodayQueryData>(QUERY, {
-    variables: {
-      day: moment().format('YYYY-MM-DD'),
-    },
+    variables: { day },
   });
 
   if (loading) {
@@ -113,30 +144,34 @@ export const Today: React.FC = () => {
   return (
     <Root>
       <TimetableContainer>
-        <TimetableDisplay
-          icon={faClock}
-          timetables={[
-            { timestamp: homeLeaveTime, label: 'Home leave time' },
-            { timestamp: workArriveTime, label: 'Work arrive time' },
-            { timestamp: workLeaveTime, label: 'Work leave time' },
-            { timestamp: homeArriveTime, label: 'Home arrive time' },
-          ]}
-        />
+        <Card>
+          <TimetableDisplay
+            icon={faClock}
+            timetables={[
+              { timestamp: homeLeaveTime, label: 'Home leave time' },
+              { timestamp: workArriveTime, label: 'Work arrive time' },
+              { timestamp: workLeaveTime, label: 'Work leave time' },
+              { timestamp: homeArriveTime, label: 'Home arrive time' },
+            ]}
+          />
+        </Card>
       </TimetableContainer>
 
-      <TimeCardsGrid>
-        <IconLabelCard icon={faSunHaze} label="Morning commute">
-          <TimeDisplay {...totalMorningCommuteTime} />
-        </IconLabelCard>
+      <TimeCardsContainer>
+        <TimeCardsGrid>
+          <IconLabel icon={faSunHaze} label="Morning commute">
+            <TimeDisplay {...totalMorningCommuteTime} />
+          </IconLabel>
 
-        <IconLabelCard icon={faBuilding} label="Time at the office">
-          <TimeDisplay {...totalTimeAtOffice} />
-        </IconLabelCard>
+          <IconLabel icon={faBuilding} label="Time at the office">
+            <TimeDisplay {...totalTimeAtOffice} />
+          </IconLabel>
 
-        <IconLabelCard icon={faCloudsMoon} label="Evening commute">
-          <TimeDisplay {...totalEveningCommuteTime} />
-        </IconLabelCard>
-      </TimeCardsGrid>
+          <IconLabel icon={faCloudsMoon} label="Evening commute">
+            <TimeDisplay {...totalEveningCommuteTime} />
+          </IconLabel>
+        </TimeCardsGrid>
+      </TimeCardsContainer>
     </Root>
   );
 };

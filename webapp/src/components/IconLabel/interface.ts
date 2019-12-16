@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-export interface IIconCardProps {
+export interface IIconLabelProps {
   children: ReactNode;
   label: string;
   icon: IconProp;
