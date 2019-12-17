@@ -3,10 +3,12 @@ import { hot } from 'react-hot-loader/root';
 import ApolloClient from 'apollo-boost';
 import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Section } from './components/Section';
 import { Averages } from './components/Averages';
 import { Today } from './components/Today';
+import { Navigation } from './components/Navigation';
+
 import GlobalStyles from './GlobalStyles';
 
 const client = new ApolloClient({ uri: '/gql' });
@@ -27,22 +29,21 @@ const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
       <Router>
+        <Navigation />
         <Switch>
-          <Route exact path="/">
-            <Content>
+          <Content>
+            <Route exact path="/">
               <Section title="Today">
                 <Today />
               </Section>
-            </Content>
-          </Route>
+            </Route>
 
-          <Route path="/period">
-            <Content>
+            <Route path="/period">
               <Section title="Averages">
                 <Averages />
               </Section>
-            </Content>
-          </Route>
+            </Route>
+          </Content>
         </Switch>
       </Router>
       <GlobalStyles />
