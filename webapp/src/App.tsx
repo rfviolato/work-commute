@@ -3,14 +3,11 @@ import { hot } from 'react-hot-loader/root';
 import ApolloClient from 'apollo-boost';
 import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { Section } from './components/Section';
 import { Averages } from './components/Averages';
 import { Today } from './components/Today';
 import GlobalStyles from './GlobalStyles';
-
-const TodaySectionContainer = styled.div`
-  margin-top: 80px;
-`;
 
 const client = new ApolloClient({ uri: '/gql' });
 
@@ -29,17 +26,25 @@ const Content = styled.section`
 const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
-      <Content>
-        <Section title="Averages">
-          <Averages />
-        </Section>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Content>
+              <Section title="Today">
+                <Today />
+              </Section>
+            </Content>
+          </Route>
 
-        <TodaySectionContainer>
-          <Section title="Today">
-            <Today />
-          </Section>
-        </TodaySectionContainer>
-      </Content>
+          <Route path="/period">
+            <Content>
+              <Section title="Averages">
+                <Averages />
+              </Section>
+            </Content>
+          </Route>
+        </Switch>
+      </Router>
       <GlobalStyles />
     </ApolloProvider>
   );
