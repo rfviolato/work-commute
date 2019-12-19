@@ -2,7 +2,6 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IIconLabelProps } from './interface';
-import { Card } from '../Card';
 
 const Root = styled.div`
   display: flex;

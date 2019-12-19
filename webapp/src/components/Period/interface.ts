@@ -3,7 +3,7 @@ interface ITime {
   minutes: number;
 }
 
-export interface IAveragesQueryData {
+export interface IPeriodQueryData {
   Period: {
     averageTimeAtOffice: ITime;
     averageTimeCommuting: ITime;

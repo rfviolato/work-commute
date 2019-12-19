@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Section } from './components/Section';
-import { Averages } from './components/Averages';
+import { Period } from './components/Period';
 import { Today } from './components/Today';
 import { Navigation } from './components/Navigation';
 
@@ -39,8 +39,8 @@ const App: React.FC = () => {
             </Route>
 
             <Route path="/period">
-              <Section title="Averages">
-                <Averages />
+              <Section title="Period">
+                <Period />
               </Section>
             </Route>
           </Content>
