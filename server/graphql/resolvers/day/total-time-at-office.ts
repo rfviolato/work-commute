@@ -4,10 +4,10 @@ import { TIME_FORMAT } from '../../../constants';
 import { IDayTimetable } from '../../interface';
 import { ITotalTimeAtOffice } from './interface';
 
-export default async ({
+export default ({
   workArriveTime,
   workLeaveTime,
-}: IDayTimetable): Promise<ITotalTimeAtOffice> => {
+}: IDayTimetable): ITotalTimeAtOffice => {
   try {
     if (workArriveTime && workLeaveTime) {
       const workArriveDate = moment(workArriveTime, TIME_FORMAT);

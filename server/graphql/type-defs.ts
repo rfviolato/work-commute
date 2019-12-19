@@ -16,6 +16,7 @@ export default gql`
     totalTimeAtOffice: TotalTimeAtOfficeResult
     averageTimeCommuting: AverageTimeCommutingResult
     averageTimeAtOffice: AverageTimeAtOfficeResult
+    timetableChart: [TimetableChartResult]
   }
 
   type Day {
@@ -26,6 +27,17 @@ export default gql`
     totalMorningCommuteTime: TotalMorningCommuteTime
     totalEveningCommuteTime: TotalEveningCommuteTime
     totalTimeAtOffice: TotalTimeAtOfficeResult
+  }
+
+  type TimetableChartResult {
+    homeArriveTime: String
+    homeLeaveTime: String
+    workArriveTime: String
+    workLeaveTime: String
+    events: [String]
+    totalTimeAtOffice: TotalTimeAtOfficeResult
+    totalMorningCommuteTime: TotalMorningCommuteTime
+    totalEveningCommuteTime: TotalEveningCommuteTime
   }
 
   type WorkTimetable {

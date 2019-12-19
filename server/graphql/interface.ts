@@ -1,5 +1,4 @@
 import { Collection } from 'mongodb';
-
 export interface IDayTimetable {
   _id: string;
   date: string;
