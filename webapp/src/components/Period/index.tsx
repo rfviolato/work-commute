@@ -1,10 +1,10 @@
-import React, { HtmlHTMLAttributes } from 'react';
+import React from 'react';
 import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { select, scaleBand, scaleLinear, max, axisBottom, axisLeft } from 'd3';
-import { IPeriodQueryData } from './interface';
+import { IPeriodQueryData, ITime } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
@@ -26,6 +26,23 @@ const QUERY = gql`
       averageTimeCommuting {
         hours
         minutes
+      }
+
+      timetableChart {
+        day
+
+        totalTimeAtOffice {
+          hours
+          minutes
+        }
+        totalMorningCommuteTime {
+          hours
+          minutes
+        }
+        totalEveningCommuteTime {
+          hours
+          minutes
+        }
       }
     }
   }
@@ -55,7 +72,7 @@ const TimeDisplayGrid = styled.div`
 `;
 
 const Chart = styled.div`
-  border: 1px solid #555;
+  margin-bottom: 15px;
 
   .date-chart-bar {
     fill: #4edfa5;
@@ -63,32 +80,6 @@ const Chart = styled.div`
 `;
 
 const chartRef = React.createRef<HTMLDivElement>();
-const fakeData = [
-  {
-    date: '14-12-2019',
-    commuteTime: 50,
-  },
-  {
-    date: '15-12-2019',
-    commuteTime: 57,
-  },
-  {
-    date: '16-12-2019',
-    commuteTime: 68,
-  },
-  {
-    date: '17-12-2019',
-    commuteTime: 54,
-  },
-  {
-    date: '18-12-2019',
-    commuteTime: 52,
-  },
-  {
-    date: '19-12-2019',
-    commuteTime: 62,
-  },
-];
 
 interface IPeriodProps {}
 
@@ -109,16 +100,23 @@ function topRondedCornersRect(
 
   return `M${M} v${V1} h${H1} v${V2 + radius} a${A1} h${H2} a${A2}`;
 }
+
+function getTotalMinutesFromTime(time: ITime): number {
+  return time.hours * 60 + time.minutes;
+}
+
 export const Period: React.FC<IPeriodProps> = () => {
   const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
     variables: {
-      periodStart: '2019-01-01',
-      periodEnd: '2020-12-31',
+      periodStart: '2019-11-30',
+      periodEnd: '2020-02-01',
     },
   });
 
+  const timetableChartData = data && data.Period && data.Period.timetableChart;
+
   React.useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && timetableChartData) {
       const PADDING = 40;
       const SVG_WIDTH = 1000;
       const SVG_HEIGHT = 600;
@@ -131,78 +129,98 @@ export const Period: React.FC<IPeriodProps> = () => {
 
       const chart = svg
         .append('g')
-        .attr('transform', `translate(${PADDING}, ${PADDING})`);
+        .attr('transform', `translate(${PADDING + 10}, ${PADDING})`);
       const xScale = scaleBand()
         .range([0, WIDTH])
-        .padding(0.6);
+        .padding(0.4);
       const yScale = scaleLinear().range([HEIGHT, 0]);
 
-      xScale.domain(fakeData.map((data) => data.date));
-      yScale.domain([0, max(fakeData, (data) => data.commuteTime) || 0]);
+      xScale.domain(timetableChartData.map((data) => data.day));
+      yScale.domain([
+        0,
+        max(timetableChartData, (data): number =>
+          getTotalMinutesFromTime(data.totalTimeAtOffice),
+        ) || 0,
+      ]);
 
       chart
         .append('g')
         .call(axisBottom(xScale))
         .attr('transform', `translate(0, ${HEIGHT})`);
 
+      const yAxis = axisLeft(yScale).tickFormat((minutesTick) => {
+        if (typeof minutesTick !== 'number') {
+          return '0';
+        }
+        const hours = Math.floor(minutesTick / 60);
+        const minutes = Math.floor(minutesTick % 60);
+
+        if (minutes === 0) {
+          return `${hours}h`;
+        }
+
+        return `${hours}h${minutes}m`;
+      });
+
       chart
         .append('g')
-        .call(axisLeft(yScale))
+        .call(yAxis)
         .attr('transform', `translate(0, 0)`);
 
       chart
         .selectAll()
-        .data(fakeData)
+        .data(timetableChartData)
         .enter()
         .append('path')
         .attr('class', 'date-chart-bar')
-        .attr('d', (d) =>
-          topRondedCornersRect(
-            Math.round(xScale(d.date) || 0),
-            Math.round(yScale(d.commuteTime)),
-            Math.round(xScale.bandwidth()),
-            Math.round(HEIGHT - yScale(d.commuteTime)),
+        .attr('d', (d) => {
+          const totalMinutes = getTotalMinutesFromTime(d.totalTimeAtOffice);
+
+          return topRondedCornersRect(
+            xScale(d.day) || 0,
+            yScale(totalMinutes),
+            xScale.bandwidth(),
+            HEIGHT - yScale(totalMinutes),
             5,
-          ),
-        );
+          );
+        });
     }
-  }, []);
+  }, [timetableChartData]);
 
-  return <Chart ref={chartRef}></Chart>;
+  if (loading) {
+    return (
+      <Root>
+        <LoadingSpinner />
+      </Root>
+    );
+  }
 
-  // if (loading) {
-  //   return (
-  //     <Root>
-  //       <LoadingSpinner />
-  //     </Root>
-  //   );
-  // }
+  if (error) {
+    return <Root>Error 😟</Root>;
+  }
 
-  // if (error) {
-  //   return <Root>Error 😟</Root>;
-  // }
+  if (!data) {
+    return <Root>No data 🤔</Root>;
+  }
 
-  // if (!data) {
-  //   return <Root>No data 🤔</Root>;
-  // }
+  const {
+    Period: { averageTimeCommuting, averageTimeAtOffice },
+  } = data;
 
-  // const {
-  //   Period: { averageTimeCommuting, averageTimeAtOffice },
-  // } = data;
+  return (
+    <Root>
+      <Card>
+        <Chart ref={chartRef}></Chart>
+        <TimeDisplayGrid>
+          <IconLabel icon={faTrain} label="Time commuting">
+            <TimeDisplay {...averageTimeCommuting} />
+          </IconLabel>
 
-  // return (
-  //   <Root>
-  //     <Card>
-  //       <TimeDisplayGrid>
-  //         <IconLabel icon={faTrain} label="Time commuting">
-  //           <TimeDisplay {...averageTimeCommuting} />
-  //         </IconLabel>
-
-  //         <IconLabel icon={faBriefcase} label="Time at the office">
-  //           <TimeDisplay {...averageTimeAtOffice} />
-  //         </IconLabel>
-  //       </TimeDisplayGrid>
-  //     </Card>
-  //   </Root>
-  // );
+          <IconLabel icon={faBriefcase} label="Time at the office">
+            <TimeDisplay {...averageTimeAtOffice} />
+          </IconLabel>
+        </TimeDisplayGrid>
+      </Card>
+    </Root>
+  );
 };

@@ -30,6 +30,8 @@ export default gql`
   }
 
   type TimetableChartResult {
+    date: String
+    day: String
     homeArriveTime: String
     homeLeaveTime: String
     workArriveTime: String
