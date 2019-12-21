@@ -3,6 +3,7 @@ import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import posed from 'react-pose';
 import { IPeriodQueryData, ITime } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
@@ -87,15 +88,34 @@ const SingleBarContainer = styled.div`
   position: relative;
   flex: 1;
 
-  &:not(:first-child) {
+  &:not(:first-of-type) {
     margin-left: 20px;
   }
 `;
 
-const Bar = styled.div`
+const BarContainer = styled.div`
+  overflow: hidden;
+`;
+
+const AnimatedBar = posed.div({
+  visible: {
+    y: 0,
+    transition: ({ index }: { index: number }) => ({
+      y: {
+        duration: 1000,
+        ease: [0.645, 0.045, 0.355, 1],
+        delay: index * 30,
+      },
+    }),
+  },
+  invisible: { y: '100%' },
+});
+const Bar = styled(AnimatedBar)`
+  height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   background-color: #4edfa5;
+  transform-origin: bottom left;
 `;
 
 const BarChartAxis = styled.div`
@@ -105,10 +125,21 @@ const BarChartAxis = styled.div`
   border-radius: 8px;
 `;
 
-const BarChartYValueLabel = styled.div`
+const AnimatedBarLabel = posed.div({
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      default: { duration: 500, ease: [0.215, 0.61, 0.355, 1], delay: 100 },
+    },
+  },
+  invisible: { opacity: 0, y: -2 },
+});
+
+const BarChartYValueLabel = styled(AnimatedBarLabel)`
   position: absolute;
   width: 100%;
-  top: 15px;
+  top: 7px;
   left: 0;
   font-size: 14px;
   text-align: center;
@@ -151,6 +182,8 @@ function getArrayMaxValue(array: any[], acessor: Function): number {
 
 export const Period: React.FC<IPeriodProps> = () => {
   const [chartDaraMaxYValue, setChartDaraMaxYValue] = React.useState<number>(0);
+  const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
+  const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
   const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
     variables: {
       periodStart: '2019-11-30',
@@ -169,6 +202,8 @@ export const Period: React.FC<IPeriodProps> = () => {
           getTotalMinutesFromTime(day.totalTimeAtOffice),
         ),
       );
+
+      setTimeout(() => setIsChartVisible(true), 500);
     }
   }, [data]);
 
@@ -198,7 +233,7 @@ export const Period: React.FC<IPeriodProps> = () => {
       <Card>
         <Chart>
           <BarsContainer>
-            {timetableChart.map(({ totalTimeAtOffice, day }) => {
+            {timetableChart.map(({ totalTimeAtOffice, day }, i) => {
               const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
               const height = getBarHeight(
                 CHART_HEIGHT,
@@ -207,21 +242,33 @@ export const Period: React.FC<IPeriodProps> = () => {
               );
 
               return (
-                <SingleBarContainer>
-                  <Bar
-                    key={day}
+                <SingleBarContainer key={day}>
+                  <BarContainer
                     style={{
                       height: `${height}px`,
                     }}
-                  />
-                  <BarChartYValueLabel>
+                  >
+                    <Bar
+                      index={i}
+                      pose={isChartVisible ? 'visible' : 'invisible'}
+                      onPoseComplete={() => {
+                        setAreBarsVisible(true);
+                      }}
+                    />
+                  </BarContainer>
+
+                  <BarChartYValueLabel
+                    pose={areBarsVisible ? 'visible' : 'invisible'}
+                  >
                     {totalTimeAtOffice.hours}h{totalTimeAtOffice.minutes}
                   </BarChartYValueLabel>
+
                   <BarChartXValue>{moment(day).format('DD')}</BarChartXValue>
                 </SingleBarContainer>
               );
             })}
           </BarsContainer>
+
           <BarChartAxis />
         </Chart>
         <TimeDisplayGrid>
