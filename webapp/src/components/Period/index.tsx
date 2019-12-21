@@ -3,12 +3,12 @@ import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { select, scaleBand, scaleLinear, max, axisBottom, axisLeft } from 'd3';
 import { IPeriodQueryData, ITime } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
 import { Card } from '../Card';
+import moment from 'moment';
 
 const QUERY = gql`
   query getPeriod($periodStart: String!, $periodEnd: String!) {
@@ -72,120 +72,105 @@ const TimeDisplayGrid = styled.div`
 `;
 
 const Chart = styled.div`
-  margin-bottom: 15px;
+  width: 1000px;
+  margin-bottom: 60px;
+`;
 
-  .date-chart-bar {
-    fill: #4edfa5;
+const BarsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 20px;
+`;
+
+const SingleBarContainer = styled.div`
+  position: relative;
+  flex: 1;
+
+  &:not(:first-child) {
+    margin-left: 20px;
   }
 `;
 
-const chartRef = React.createRef<HTMLDivElement>();
+const Bar = styled.div`
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: #4edfa5;
+`;
+
+const BarChartAxis = styled.div`
+  height: 4px;
+  width: 100%;
+  background: #f1f1f1;
+  border-radius: 8px;
+`;
+
+const BarChartYValueLabel = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 15px;
+  left: 0;
+  font-size: 14px;
+  text-align: center;
+`;
+
+const BarChartXValue = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: -30px;
+  left: 0;
+  font-size: 16px;
+  text-align: center;
+`;
 
 interface IPeriodProps {}
-
-function topRondedCornersRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-): string {
-  const M = `${x}, ${y + radius}`;
-  const V1 = height - radius;
-  const H1 = width;
-  const V2 = -height;
-  const A1 = `${radius} ${radius} 0 0 0 -${radius} -${radius}`;
-  const H2 = -width + radius * 2;
-  const A2 = `${radius} ${radius} 0 0 0 -${radius} ${radius}`;
-
-  return `M${M} v${V1} h${H1} v${V2 + radius} a${A1} h${H2} a${A2}`;
-}
 
 function getTotalMinutesFromTime(time: ITime): number {
   return time.hours * 60 + time.minutes;
 }
 
+function getBarHeight(
+  maxHeight: number,
+  maxValue: number,
+  value: number,
+): number {
+  return (value * maxHeight) / maxValue;
+}
+
+function getArrayMaxValue(array: any[], acessor: Function): number {
+  return array.reduce((accum: number, currentItem: any) => {
+    const value = acessor(currentItem);
+
+    if (value > accum) {
+      return value;
+    }
+
+    return accum;
+  }, 0);
+}
+
 export const Period: React.FC<IPeriodProps> = () => {
+  const [chartDaraMaxYValue, setChartDaraMaxYValue] = React.useState<number>(0);
   const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
     variables: {
       periodStart: '2019-11-30',
-      periodEnd: '2020-02-01',
+      periodEnd: '2019-12-31',
     },
   });
 
-  const timetableChartData = data && data.Period && data.Period.timetableChart;
-
   React.useEffect(() => {
-    if (chartRef.current && timetableChartData) {
-      const PADDING = 40;
-      const SVG_WIDTH = 1000;
-      const SVG_HEIGHT = 600;
-      const WIDTH = SVG_WIDTH - PADDING * 2;
-      const HEIGHT = SVG_HEIGHT - PADDING * 2;
-      const svg = select(chartRef.current)
-        .append('svg')
-        .attr('width', `${SVG_WIDTH}px`)
-        .attr('height', `${SVG_HEIGHT}px`);
+    if (data) {
+      const {
+        Period: { timetableChart },
+      } = data;
 
-      const chart = svg
-        .append('g')
-        .attr('transform', `translate(${PADDING + 10}, ${PADDING})`);
-      const xScale = scaleBand()
-        .range([0, WIDTH])
-        .padding(0.4);
-      const yScale = scaleLinear().range([HEIGHT, 0]);
-
-      xScale.domain(timetableChartData.map((data) => data.day));
-      yScale.domain([
-        0,
-        max(timetableChartData, (data): number =>
-          getTotalMinutesFromTime(data.totalTimeAtOffice),
-        ) || 0,
-      ]);
-
-      chart
-        .append('g')
-        .call(axisBottom(xScale))
-        .attr('transform', `translate(0, ${HEIGHT})`);
-
-      const yAxis = axisLeft(yScale).tickFormat((minutesTick) => {
-        if (typeof minutesTick !== 'number') {
-          return '0';
-        }
-        const hours = Math.floor(minutesTick / 60);
-        const minutes = Math.floor(minutesTick % 60);
-
-        if (minutes === 0) {
-          return `${hours}h`;
-        }
-
-        return `${hours}h${minutes}m`;
-      });
-
-      chart
-        .append('g')
-        .call(yAxis)
-        .attr('transform', `translate(0, 0)`);
-
-      chart
-        .selectAll()
-        .data(timetableChartData)
-        .enter()
-        .append('path')
-        .attr('class', 'date-chart-bar')
-        .attr('d', (d) => {
-          const totalMinutes = getTotalMinutesFromTime(d.totalTimeAtOffice);
-
-          return topRondedCornersRect(
-            xScale(d.day) || 0,
-            yScale(totalMinutes),
-            xScale.bandwidth(),
-            HEIGHT - yScale(totalMinutes),
-            5,
-          );
-        });
+      setChartDaraMaxYValue(
+        getArrayMaxValue(timetableChart, (day: any) =>
+          getTotalMinutesFromTime(day.totalTimeAtOffice),
+        ),
+      );
     }
-  }, [timetableChartData]);
+  }, [data]);
 
   if (loading) {
     return (
@@ -204,13 +189,41 @@ export const Period: React.FC<IPeriodProps> = () => {
   }
 
   const {
-    Period: { averageTimeCommuting, averageTimeAtOffice },
+    Period: { averageTimeCommuting, averageTimeAtOffice, timetableChart },
   } = data;
+  const CHART_HEIGHT = 500;
 
   return (
     <Root>
       <Card>
-        <Chart ref={chartRef}></Chart>
+        <Chart>
+          <BarsContainer>
+            {timetableChart.map(({ totalTimeAtOffice, day }) => {
+              const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
+              const height = getBarHeight(
+                CHART_HEIGHT,
+                chartDaraMaxYValue,
+                totalMinutes,
+              );
+
+              return (
+                <SingleBarContainer>
+                  <Bar
+                    key={day}
+                    style={{
+                      height: `${height}px`,
+                    }}
+                  />
+                  <BarChartYValueLabel>
+                    {totalTimeAtOffice.hours}h{totalTimeAtOffice.minutes}
+                  </BarChartYValueLabel>
+                  <BarChartXValue>{moment(day).format('DD')}</BarChartXValue>
+                </SingleBarContainer>
+              );
+            })}
+          </BarsContainer>
+          <BarChartAxis />
+        </Chart>
         <TimeDisplayGrid>
           <IconLabel icon={faTrain} label="Time commuting">
             <TimeDisplay {...averageTimeCommuting} />
