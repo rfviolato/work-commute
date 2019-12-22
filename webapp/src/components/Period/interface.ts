@@ -3,7 +3,7 @@ export interface ITime {
   minutes: number;
 }
 
-interface TimetableChartData {
+export interface TimetableChartData {
   day: string;
   totalTimeAtOffice: ITime;
   totalMorningCommuteTime: ITime;
