@@ -180,14 +180,19 @@ function getArrayMaxValue(array: any[], acessor: Function): number {
   }, 0);
 }
 
+const defaultPeriodEnd = moment().format('YYYY-MM-DD');
+const defaultPeriodStart = moment()
+  .subtract(1, 'month')
+  .format('YYYY-MM-DD');
+
 export const Period: React.FC<IPeriodProps> = () => {
   const [chartDaraMaxYValue, setChartDaraMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
   const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
   const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
     variables: {
-      periodStart: '2019-11-30',
-      periodEnd: '2019-12-31',
+      periodStart: defaultPeriodStart,
+      periodEnd: defaultPeriodEnd,
     },
   });
 
@@ -271,6 +276,7 @@ export const Period: React.FC<IPeriodProps> = () => {
 
           <BarChartAxis />
         </Chart>
+
         <TimeDisplayGrid>
           <IconLabel icon={faTrain} label="Time commuting">
             <TimeDisplay {...averageTimeCommuting} />
