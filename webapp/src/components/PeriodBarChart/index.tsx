@@ -8,6 +8,7 @@ import { ITime } from '../Period/interface';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
+  BAR_GUTTER: 8,
 };
 
 const AnimatedBarLabel = posed.div({
@@ -15,7 +16,7 @@ const AnimatedBarLabel = posed.div({
     opacity: 1,
     y: 0,
     transition: {
-      default: { duration: 500, ease: [0.215, 0.61, 0.355, 1], delay: 100 },
+      default: { duration: 400, ease: [0.215, 0.61, 0.355, 1] },
     },
   },
   invisible: { opacity: 0, y: 3 },
@@ -26,7 +27,7 @@ const BarChartYValueLabel = styled(AnimatedBarLabel)`
   width: 100%;
   top: 7px;
   left: 0;
-  font-size: 10px;
+  font-size: 1em;
   text-align: center;
 `;
 
@@ -35,7 +36,7 @@ const BarChartXValue = styled.div`
   width: 100%;
   bottom: -26px;
   left: 0;
-  font-size: 12px;
+  font-size: 1.2em;
   text-align: center;
 `;
 
@@ -46,16 +47,37 @@ const BarsContainer = styled.div`
   padding: 0 2px;
 `;
 
-const SingleBarContainer = styled.div`
+function getBarContainerFontSize(barWidth: number) {
+  if (barWidth >= 50) {
+    return '12px';
+  }
+
+  if (barWidth >= 40) {
+    return '11px';
+  }
+
+  if (barWidth >= 30) {
+    return '10px';
+  }
+
+  return '9px';
+}
+
+interface IBarContainerProps {
+  barWidth: number;
+}
+
+const BarContainer = styled.div<IBarContainerProps>`
   position: relative;
   flex: 1;
+  font-size: ${({ barWidth }) => getBarContainerFontSize(barWidth)};
 
   &:not(:first-of-type) {
-    margin-left: 8px;
+    margin-left: ${DIMENSIONS.BAR_GUTTER}px;
   }
 `;
 
-const BarContainer = styled.div`
+const BarRectangleContainer = styled.div`
   overflow: hidden;
 `;
 
@@ -73,7 +95,7 @@ const AnimatedBar = posed.div({
   invisible: { y: '100%' },
 });
 
-const Bar = styled(AnimatedBar)`
+const BarRectangle = styled(AnimatedBar)`
   height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -120,10 +142,13 @@ function formatMinutes(num: number): string {
   return num.toString();
 }
 
+const barsContainerRef = React.createRef<HTMLDivElement>();
+
 export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   const [chartDaraMaxYValue, setChartDaraMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
   const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
+  const [barWidth, setBarWidth] = React.useState<number>(0);
   const onBarAnimationComplete = debounce(() => {
     setAreBarsVisible(true);
   }, 100);
@@ -140,9 +165,19 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
     }
   }, [data]);
 
+  React.useEffect(() => {
+    if (barsContainerRef.current) {
+      const { offsetWidth } = barsContainerRef.current;
+
+      setBarWidth(
+        Math.round(offsetWidth / data.length - DIMENSIONS.BAR_GUTTER),
+      );
+    }
+  }, []);
+
   return (
     <>
-      <BarsContainer>
+      <BarsContainer ref={barsContainerRef}>
         {data.map(({ totalTimeAtOffice, day }, i) => {
           const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
           const height = getBarHeight(
@@ -152,18 +187,18 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
           );
 
           return (
-            <SingleBarContainer key={day}>
-              <BarContainer
+            <BarContainer barWidth={barWidth} key={day}>
+              <BarRectangleContainer
                 style={{
                   height: `${height}px`,
                 }}
               >
-                <Bar
+                <BarRectangle
                   index={i}
                   pose={isChartVisible ? 'visible' : 'invisible'}
                   onPoseComplete={onBarAnimationComplete}
                 />
-              </BarContainer>
+              </BarRectangleContainer>
 
               <BarChartYValueLabel
                 pose={areBarsVisible ? 'visible' : 'invisible'}
@@ -173,7 +208,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
               </BarChartYValueLabel>
 
               <BarChartXValue>{moment(day).format('DD/MM')}</BarChartXValue>
-            </SingleBarContainer>
+            </BarContainer>
           );
         })}
       </BarsContainer>
