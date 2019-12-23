@@ -4,12 +4,17 @@ import posed from 'react-pose';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { IPeriodChartProps } from './interface';
-import { ITime } from '../Period/interface';
+import { Slider } from './../Slider';
+import { ITime, TimetableChartData } from '../Period/interface';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
   BAR_GUTTER: 8,
 };
+
+const ChartBarsSlider = styled(Slider)`
+  height: ${DIMENSIONS.CHART_HEIGHT}px;
+`;
 
 const AnimatedBarLabel = posed.div({
   visible: {
@@ -31,20 +36,35 @@ const BarChartYValueLabel = styled(AnimatedBarLabel)`
   text-align: center;
 `;
 
-const BarChartXValue = styled.div`
+interface IBarChartXValueProps {
+  isMobile?: boolean;
+}
+
+const BarChartXValue = styled.div<IBarChartXValueProps>`
   position: absolute;
   width: 100%;
-  bottom: -26px;
+  bottom: ${({ isMobile }) => (isMobile ? '5px' : '-26px')};
   left: 0;
   font-size: 1.2em;
   text-align: center;
 `;
 
-const BarsContainer = styled.div`
-  display: flex;
+interface IBarsContainerProps {
+  isCarouselItem?: boolean;
+}
+
+const BarsContainer = styled.div<IBarsContainerProps>`
+  display: ${({ isCarouselItem }) => {
+    if (isCarouselItem) {
+      return 'inline-flex !important'; /* needed for slick-carousel style override */
+    }
+
+    return 'flex';
+  }};
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 2px;
+  padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
+  height: ${DIMENSIONS.CHART_HEIGHT}px;
 `;
 
 function getBarContainerFontSize(barWidth: number) {
@@ -106,7 +126,7 @@ const BarRectangle = styled(AnimatedBar)`
 const BarChartAxis = styled.div`
   height: 4px;
   width: 100%;
-  background: #f1f1f1;
+  background-color: #f1f1f1;
   border-radius: 8px;
 `;
 
@@ -142,12 +162,13 @@ function formatMinutes(num: number): string {
   return num.toString();
 }
 
-const barsContainerRef = React.createRef<HTMLDivElement>();
+const chartContainerRef = React.createRef<HTMLDivElement>();
 
 export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
-  const [chartDaraMaxYValue, setChartDaraMaxYValue] = React.useState<number>(0);
+  const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
   const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
+  const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
   const [barWidth, setBarWidth] = React.useState<number>(0);
   const onBarAnimationComplete = debounce(() => {
     setAreBarsVisible(true);
@@ -155,7 +176,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
 
   React.useEffect(() => {
     if (data) {
-      setChartDaraMaxYValue(
+      setChartDataMaxYValue(
         getArrayMaxValue(data, (day: any) =>
           getTotalMinutesFromTime(day.totalTimeAtOffice),
         ),
@@ -166,54 +187,87 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   }, [data]);
 
   React.useEffect(() => {
-    if (barsContainerRef.current) {
-      const { offsetWidth } = barsContainerRef.current;
-
-      setBarWidth(
-        Math.round(offsetWidth / data.length - DIMENSIONS.BAR_GUTTER),
+    if (chartContainerRef.current) {
+      const { offsetWidth } = chartContainerRef.current;
+      const barWidth = Math.round(
+        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
       );
+
+      setBarWidth(barWidth);
+
+      if (barWidth <= 25) {
+        const barWidth = Math.round(offsetWidth / 5 - DIMENSIONS.BAR_GUTTER);
+
+        setBarWidth(barWidth);
+        setIsMobileView(true);
+      }
     }
   }, []);
 
+  const renderChartBars = (
+    { totalTimeAtOffice, day }: TimetableChartData,
+    i: number,
+  ) => {
+    const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
+    const height = getBarHeight(
+      DIMENSIONS.CHART_HEIGHT,
+      chartDataMaxYValue,
+      totalMinutes,
+    );
+
+    return (
+      <BarContainer barWidth={barWidth} key={day}>
+        <BarRectangleContainer
+          style={{
+            height: `${height}px`,
+          }}
+        >
+          <BarRectangle
+            index={i}
+            pose={isChartVisible ? 'visible' : 'invisible'}
+            onPoseComplete={onBarAnimationComplete}
+          />
+        </BarRectangleContainer>
+
+        <BarChartYValueLabel pose={areBarsVisible ? 'visible' : 'invisible'}>
+          {totalTimeAtOffice.hours}h{formatMinutes(totalTimeAtOffice.minutes)}
+        </BarChartYValueLabel>
+
+        <BarChartXValue isMobile={isMobileView}>
+          {moment(day).format('DD/MM')}
+        </BarChartXValue>
+      </BarContainer>
+    );
+  };
+
+  if (isMobileView) {
+    return (
+      <div>
+        <ChartBarsSlider arrows={false}>
+          <BarsContainer isCarouselItem>
+            {data.slice(0, 5).map(renderChartBars)}
+          </BarsContainer>
+          <BarsContainer isCarouselItem>
+            {data.slice(5, 10).map(renderChartBars)}
+          </BarsContainer>
+          <BarsContainer isCarouselItem>
+            {data.slice(10, 15).map(renderChartBars)}
+          </BarsContainer>
+          <BarsContainer isCarouselItem>
+            {data.slice(15, 20).map(renderChartBars)}
+          </BarsContainer>
+        </ChartBarsSlider>
+
+        <BarChartAxis />
+      </div>
+    );
+  }
+
   return (
-    <>
-      <BarsContainer ref={barsContainerRef}>
-        {data.map(({ totalTimeAtOffice, day }, i) => {
-          const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
-          const height = getBarHeight(
-            DIMENSIONS.CHART_HEIGHT,
-            chartDaraMaxYValue,
-            totalMinutes,
-          );
-
-          return (
-            <BarContainer barWidth={barWidth} key={day}>
-              <BarRectangleContainer
-                style={{
-                  height: `${height}px`,
-                }}
-              >
-                <BarRectangle
-                  index={i}
-                  pose={isChartVisible ? 'visible' : 'invisible'}
-                  onPoseComplete={onBarAnimationComplete}
-                />
-              </BarRectangleContainer>
-
-              <BarChartYValueLabel
-                pose={areBarsVisible ? 'visible' : 'invisible'}
-              >
-                {totalTimeAtOffice.hours}h
-                {formatMinutes(totalTimeAtOffice.minutes)}
-              </BarChartYValueLabel>
-
-              <BarChartXValue>{moment(day).format('DD/MM')}</BarChartXValue>
-            </BarContainer>
-          );
-        })}
-      </BarsContainer>
+    <div ref={chartContainerRef}>
+      <BarsContainer>{data.map(renderChartBars)}</BarsContainer>
 
       <BarChartAxis />
-    </>
+    </div>
   );
 };
