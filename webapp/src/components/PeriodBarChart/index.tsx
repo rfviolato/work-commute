@@ -241,7 +241,11 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   }, []);
 
   if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
-    return <div ref={chartContainerRef} />;
+    return (
+      <div ref={chartContainerRef}>
+        <BarsContainer />
+      </div>
+    );
   }
 
   if (isMobileView) {
