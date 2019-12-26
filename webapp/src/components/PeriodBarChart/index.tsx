@@ -63,7 +63,6 @@ interface IBarsContainerProps {
 const BarsContainer = styled.div<IBarsContainerProps>`
   display: ${({ isCarouselItem }) =>
     isCarouselItem ? 'inline-flex !important' : 'flex'};
-  justify-content: space-between;
   align-items: flex-end;
   padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
   height: ${DIMENSIONS.CHART_HEIGHT}px;
@@ -94,6 +93,7 @@ const BarContainer = styled.div<IBarContainerProps>`
   position: relative;
   flex: 1;
   font-size: ${({ barWidth }) => getBarContainerFontSize(barWidth)};
+  max-width: ${({ barWidth }) => barWidth}px;
 
   &:not(:first-of-type) {
     margin-left: ${DIMENSIONS.BAR_GUTTER}px;
