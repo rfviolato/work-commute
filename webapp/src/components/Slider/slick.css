@@ -88,3 +88,33 @@
 .slick-slide > div {
   outline: 0 !important;
 }
+
+.slick-dots {
+  display: flex !important;
+  margin: 15px 0 0 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+
+.slick-dots button {
+  display: none;
+}
+
+.slick-dots li {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: background-color 170ms ease, transform 170ms ease;
+  background-color: #aaa;
+}
+
+.slick-dots li:not(:first-of-type) {
+  margin-left: 5px;
+}
+
+.slick-dots li.slick-active {
+  transform: scale(1.25);
+  background-color: #eee;
+}

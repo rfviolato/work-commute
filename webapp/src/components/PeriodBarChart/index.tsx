@@ -138,50 +138,19 @@ const BarChartAxis = styled.div`
 const chartContainerRef = React.createRef<HTMLDivElement>();
 
 export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
+  const BAR_WIDTH_INITIAL_VALUE = -1;
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
   const [areFinishedAnimating, setAreBarsFinishedAnimating] = React.useState<
     boolean
   >(false);
   const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
-  const [barWidth, setBarWidth] = React.useState<number>(0);
+  const [barWidth, setBarWidth] = React.useState<number>(
+    BAR_WIDTH_INITIAL_VALUE,
+  );
   const onBarAnimationComplete = debounce(() => {
     setAreBarsFinishedAnimating(true);
   }, 100);
-
-  React.useEffect(() => {
-    if (data) {
-      setChartDataMaxYValue(
-        getArrayMaxValue(data, (day: any) =>
-          getTotalMinutesFromTime(day.totalTimeAtOffice),
-        ),
-      );
-
-      setTimeout(() => setIsChartVisible(true), 300);
-    }
-  }, [data]);
-
-  React.useEffect(() => {
-    if (chartContainerRef.current) {
-      const { offsetWidth } = chartContainerRef.current;
-      const barWidth = Math.round(
-        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
-      );
-
-      if (barWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
-        const barWidth = Math.round(
-          offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
-        );
-
-        setBarWidth(barWidth);
-        setIsMobileView(true);
-
-        return;
-      }
-
-      setBarWidth(barWidth);
-    }
-  }, []);
 
   const renderChartBars = (
     { totalTimeAtOffice, day }: TimetableChartData,
@@ -221,6 +190,40 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
     );
   };
 
+  React.useEffect(() => {
+    if (chartContainerRef.current) {
+      const { offsetWidth } = chartContainerRef.current;
+      const barWidth = Math.round(
+        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
+      );
+
+      if (barWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
+        const barWidth = Math.round(
+          offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+        );
+
+        setBarWidth(barWidth);
+        return setIsMobileView(true);
+      }
+
+      return setBarWidth(barWidth);
+    }
+  }, [chartContainerRef.current]);
+
+  React.useEffect(() => {
+    setChartDataMaxYValue(
+      getArrayMaxValue(data, (day: any) =>
+        getTotalMinutesFromTime(day.totalTimeAtOffice),
+      ),
+    );
+
+    setTimeout(() => setIsChartVisible(true), 300);
+  }, []);
+
+  if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
+    return <div ref={chartContainerRef} />;
+  }
+
   if (isMobileView) {
     const numberOfPages = Math.ceil(data.length / BARS_PER_PAGE);
     const slides = new Array(numberOfPages)
@@ -246,6 +249,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
           initialSlide={numberOfPages}
           infinite={false}
           arrows={false}
+          dots={true}
         >
           {slides}
         </ChartBarsSlider>
