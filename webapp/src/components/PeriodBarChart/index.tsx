@@ -12,6 +12,8 @@ const DIMENSIONS = {
   BAR_GUTTER: 8,
 };
 
+const BARS_PER_PAGE = 5;
+
 const ChartBarsSlider = styled(Slider)`
   height: ${DIMENSIONS.CHART_HEIGHT}px;
 `;
@@ -190,7 +192,9 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
       );
 
       if (barWidth <= 25) {
-        const barWidth = Math.round(offsetWidth / 5 - DIMENSIONS.BAR_GUTTER);
+        const barWidth = Math.round(
+          offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+        );
 
         setBarWidth(barWidth);
         setIsMobileView(true);
@@ -239,21 +243,32 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   };
 
   if (isMobileView) {
+    const numberOfPages = Math.ceil(data.length / BARS_PER_PAGE);
+    const slides = new Array(numberOfPages)
+      .fill(numberOfPages)
+      .map((current, i) => {
+        const currentPage = i + 1;
+
+        return (
+          <BarsContainer isCarouselItem key={i}>
+            {data
+              .slice(
+                currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
+                currentPage * BARS_PER_PAGE,
+              )
+              .map(renderChartBars)}
+          </BarsContainer>
+        );
+      });
+
     return (
       <div>
-        <ChartBarsSlider arrows={false}>
-          <BarsContainer isCarouselItem>
-            {data.slice(0, 5).map(renderChartBars)}
-          </BarsContainer>
-          <BarsContainer isCarouselItem>
-            {data.slice(5, 10).map(renderChartBars)}
-          </BarsContainer>
-          <BarsContainer isCarouselItem>
-            {data.slice(10, 15).map(renderChartBars)}
-          </BarsContainer>
-          <BarsContainer isCarouselItem>
-            {data.slice(15, 20).map(renderChartBars)}
-          </BarsContainer>
+        <ChartBarsSlider
+          initialSlide={numberOfPages}
+          infinite={false}
+          arrows={false}
+        >
+          {slides}
         </ChartBarsSlider>
 
         <BarChartAxis />
