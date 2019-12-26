@@ -19,8 +19,6 @@ const DIMENSIONS = {
   MIN_BAR_WIDTH: 25,
 };
 
-const BARS_PER_PAGE = 5;
-
 const ChartBarsSlider = styled(Slider)`
   height: ${DIMENSIONS.CHART_HEIGHT}px;
 `;
@@ -136,17 +134,24 @@ const BarChartAxis = styled.div`
 `;
 
 const chartContainerRef = React.createRef<HTMLDivElement>();
+const sliderRef = React.createRef<any>();
+const BARS_PER_PAGE = 5;
+const BAR_WIDTH_INITIAL_VALUE = -1;
 
 export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
-  const BAR_WIDTH_INITIAL_VALUE = -1;
+  const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
-  const [areFinishedAnimating, setAreBarsFinishedAnimating] = React.useState<
-    boolean
-  >(false);
+  const [
+    areBarsFinishedAnimating,
+    setAreBarsFinishedAnimating,
+  ] = React.useState<boolean>(false);
   const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
   const [barWidth, setBarWidth] = React.useState<number>(
     BAR_WIDTH_INITIAL_VALUE,
+  );
+  const [windowWidth, setWindowWidth] = React.useState<number>(
+    window.innerWidth,
   );
   const onBarAnimationComplete = debounce(() => {
     setAreBarsFinishedAnimating(true);
@@ -178,7 +183,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
         </BarRectangleContainer>
 
         <BarChartYValueLabel
-          pose={areFinishedAnimating ? 'visible' : 'invisible'}
+          pose={areBarsFinishedAnimating ? 'visible' : 'invisible'}
         >
           {totalTimeAtOffice.hours}h{formatMinutes(totalTimeAtOffice.minutes)}
         </BarChartYValueLabel>
@@ -206,18 +211,33 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
         return setIsMobileView(true);
       }
 
-      return setBarWidth(barWidth);
+      setBarWidth(barWidth);
+      return setIsMobileView(false);
     }
-  }, [chartContainerRef.current]);
+  }, [windowWidth]);
 
   React.useEffect(() => {
+    /**
+     * Unfortunately when resizing and changing the component on the fly
+     * Slick's `initialSlide` prop won't work.
+     */
+    if (isMobileView && sliderRef.current) {
+      sliderRef.current.slickGoTo(numberOfSlides);
+    }
+  }, [isMobileView]);
+
+  React.useEffect(() => {
+    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+
     setChartDataMaxYValue(
       getArrayMaxValue(data, (day: any) =>
         getTotalMinutesFromTime(day.totalTimeAtOffice),
       ),
     );
-
+    window.addEventListener('resize', onResize);
     setTimeout(() => setIsChartVisible(true), 300);
+
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
@@ -225,9 +245,8 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   }
 
   if (isMobileView) {
-    const numberOfPages = Math.ceil(data.length / BARS_PER_PAGE);
-    const slides = new Array(numberOfPages)
-      .fill(numberOfPages)
+    const slides = new Array(numberOfSlides)
+      .fill(numberOfSlides)
       .map((current, i) => {
         const currentPage = i + 1;
 
@@ -244,13 +263,8 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
       });
 
     return (
-      <div>
-        <ChartBarsSlider
-          initialSlide={numberOfPages}
-          infinite={false}
-          arrows={false}
-          dots={true}
-        >
+      <div ref={chartContainerRef}>
+        <ChartBarsSlider infinite={false} arrows={false} dots ref={sliderRef}>
           {slides}
         </ChartBarsSlider>
 
