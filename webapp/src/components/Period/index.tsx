@@ -4,7 +4,7 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { IPeriodQueryData, ITime } from './interface';
+import { IPeriodQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';

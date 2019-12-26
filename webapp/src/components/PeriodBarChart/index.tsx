@@ -5,11 +5,18 @@ import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { IPeriodChartProps } from './interface';
 import { Slider } from './../Slider';
-import { ITime, TimetableChartData } from '../Period/interface';
+import { TimetableChartData } from '../Period/interface';
+import {
+  getTotalMinutesFromTime,
+  getBarHeight,
+  formatMinutes,
+  getArrayMaxValue,
+} from './utils';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
   BAR_GUTTER: 8,
+  MIN_BAR_WIDTH: 25,
 };
 
 const BARS_PER_PAGE = 5;
@@ -128,48 +135,18 @@ const BarChartAxis = styled.div`
   border-radius: 8px;
 `;
 
-function getArrayMaxValue(array: any[], acessor: Function): number {
-  return array.reduce((accum: number, currentItem: any) => {
-    const value = acessor(currentItem);
-
-    if (value > accum) {
-      return value;
-    }
-
-    return accum;
-  }, 0);
-}
-
-function getTotalMinutesFromTime(time: ITime): number {
-  return time.hours * 60 + time.minutes;
-}
-
-function getBarHeight(
-  maxHeight: number,
-  maxValue: number,
-  value: number,
-): number {
-  return (value * maxHeight) / maxValue;
-}
-
-function formatMinutes(num: number): string {
-  if (num < 10) {
-    return `0${num}`;
-  }
-
-  return num.toString();
-}
-
 const chartContainerRef = React.createRef<HTMLDivElement>();
 
 export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
-  const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
+  const [areFinishedAnimating, setAreBarsFinishedAnimating] = React.useState<
+    boolean
+  >(false);
   const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
   const [barWidth, setBarWidth] = React.useState<number>(0);
   const onBarAnimationComplete = debounce(() => {
-    setAreBarsVisible(true);
+    setAreBarsFinishedAnimating(true);
   }, 100);
 
   React.useEffect(() => {
@@ -191,7 +168,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
         offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
       );
 
-      if (barWidth <= 25) {
+      if (barWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
         const barWidth = Math.round(
           offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
         );
@@ -231,7 +208,9 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
           />
         </BarRectangleContainer>
 
-        <BarChartYValueLabel pose={areBarsVisible ? 'visible' : 'invisible'}>
+        <BarChartYValueLabel
+          pose={areFinishedAnimating ? 'visible' : 'invisible'}
+        >
           {totalTimeAtOffice.hours}h{formatMinutes(totalTimeAtOffice.minutes)}
         </BarChartYValueLabel>
 
