@@ -54,17 +54,13 @@ interface IBarsContainerProps {
 }
 
 const BarsContainer = styled.div<IBarsContainerProps>`
-  display: ${({ isCarouselItem }) => {
-    if (isCarouselItem) {
-      return 'inline-flex !important'; /* needed for slick-carousel style override */
-    }
-
-    return 'flex';
-  }};
+  display: ${({ isCarouselItem }) =>
+    isCarouselItem ? 'inline-flex !important' : 'flex'};
   justify-content: space-between;
   align-items: flex-end;
   padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
   height: ${DIMENSIONS.CHART_HEIGHT}px;
+  outline: 0;
 `;
 
 function getBarContainerFontSize(barWidth: number) {
@@ -193,14 +189,16 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
         offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
       );
 
-      setBarWidth(barWidth);
-
       if (barWidth <= 25) {
         const barWidth = Math.round(offsetWidth / 5 - DIMENSIONS.BAR_GUTTER);
 
         setBarWidth(barWidth);
         setIsMobileView(true);
+
+        return;
       }
+
+      setBarWidth(barWidth);
     }
   }, []);
 

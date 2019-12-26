@@ -80,4 +80,11 @@
 }
 .slick-arrow.slick-hidden {
   display: none;
-} /*# sourceMappingURL=slick.min.css.map */
+}
+
+/* overrides */
+
+.slick-slide,
+.slick-slide > div {
+  outline: 0 !important;
+}

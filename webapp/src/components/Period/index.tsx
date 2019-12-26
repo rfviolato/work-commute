@@ -80,7 +80,9 @@ const ChartWrapper = styled.div`
 
 interface IPeriodProps {}
 
-const defaultPeriodEnd = moment().format('YYYY-MM-DD');
+const defaultPeriodEnd = moment()
+  .add(1, 'day')
+  .format('YYYY-MM-DD');
 const defaultPeriodStart = moment()
   .subtract(1, 'month')
   .format('YYYY-MM-DD');
