@@ -180,7 +180,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
 
     setTimeout(
       () => setIsChartDoneAnimating(true),
-      SLIDER_FIRST_TRANSFORM_TIMING,
+      isMobileView ? SLIDER_FIRST_TRANSFORM_TIMING : 0,
     );
   }, 100);
 
