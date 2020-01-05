@@ -27,22 +27,30 @@ const CurrentItemDisplay = styled.span`
 
 export const ListItemPicker: React.FC<IListItemPickerProps> = ({
   list,
-  initialIndex,
+  index,
   onChange = () => {},
 }) => {
-  const [currentIndex, setCurrentIndex] = React.useState(initialIndex);
+  const [currentIndex, setCurrentIndex] = React.useState(index);
   const onPreviousClick = React.useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      onChange(currentIndex - 1);
+      const newIndex = currentIndex - 1;
+
+      setCurrentIndex(newIndex);
+      onChange(list[newIndex], newIndex);
     }
   }, [currentIndex]);
   const onNextClick = React.useCallback(() => {
     if (currentIndex < list.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      onChange(currentIndex + 1);
+      const newIndex = currentIndex + 1;
+
+      setCurrentIndex(newIndex);
+      onChange(list[newIndex], newIndex);
     }
   }, [currentIndex]);
+
+  React.useEffect(() => {
+    setCurrentIndex(index);
+  }, [index]);
 
   return (
     <div>

@@ -1,7 +1,7 @@
 export interface IListItemPickerProps {
   list: string[];
-  initialIndex: number;
-  onChange?: (currentIndex: number) => void;
+  index: number;
+  onChange?: (currentValue: string, currentIndex: number) => void;
 }
 
 export interface INavigationButtonProps {

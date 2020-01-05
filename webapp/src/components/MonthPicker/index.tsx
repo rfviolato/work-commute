@@ -1,14 +1,21 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { IMonthPickerProps, ICalendarMonth, IMonthsPerYear } from './interface';
+import {
+  IMonthPickerProps,
+  ICalendarMonth,
+  IMonthsPerYear,
+  IMonthPickerValue,
+  ICalendarMonthPerYear,
+} from './interface';
 import moment from 'moment';
 import posed, { PoseGroup } from 'react-pose';
+import { ListItemPicker } from '../ListItemPicker';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
-  RETRACTED_WIDTH: 125,
-  EXPANDED_HEIGHT: 250,
-  EXPANDED_WIDTH: 250,
+  RETRACTED_WIDTH: 150,
+  EXPANDED_HEIGHT: 270,
+  EXPANDED_WIDTH: 270,
 };
 
 const POSE_NAMES = {
@@ -20,6 +27,8 @@ const POSE_NAMES = {
 
 const Root = styled.div`
   position: relative;
+  width: ${DIMENSIONS.RETRACTED_WIDTH}px;
+  height: ${DIMENSIONS.RETRACTED_HEIGHT}px;
   color: #e0e0e0;
 `;
 
@@ -111,7 +120,8 @@ const PickerMonth = styled.li<IPickerMonth>`
   font-size: 14px;
   transition: opacity 300ms ease;
   opacity: ${({ isAvailable }) => (isAvailable ? 1 : 0.4)};
-  cursor: ${({ isAvailable }) => (isAvailable ? 'pointer' : 'not-allowed')};
+  cursor: ${({ isAvailable, isCurrent }) =>
+    !isAvailable || isCurrent ? 'not-allowed' : 'pointer'};
   color: ${({ isCurrent }) => (isCurrent ? '#4edfa5' : 'currentColor')};
 
   &:hover {
@@ -145,6 +155,13 @@ const ScaledBg = styled(AnimatedScaledBg)`
   border-radius: 4px;
   background-color: #626262;
   transform-origin: top right;
+  border: 1px solid #f1f1f1;
+`;
+
+const PickerYearContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const MonthPicker: React.FC<IMonthPickerProps> = ({
@@ -152,63 +169,101 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
   maxYear,
   minMonth,
   maxMonth,
-  value,
+  currentYear,
+  currentMonth,
+  onSwitch = () => {},
 }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
-  const [isExpanded, setIsExpanded] = React.useState(true);
-  const startDate = moment(`${minYear}-${minMonth}`, 'YYYY-MM');
-  const endDate = moment(`${maxYear}-${maxMonth}`, 'YYYY-MM');
-  const monthDiff = endDate.diff(startDate, 'months') + 1;
-  const yearDiff = Math.ceil(monthDiff / 12);
-  const yearsStartDate = moment(startDate).subtract(1, 'year');
-  const years = Array(yearDiff)
-    .fill(yearDiff)
-    .reduce(
-      (accum: {}) => ({
-        ...accum,
-        [yearsStartDate.add(1, 'year').format('YYYY')]: [],
-      }),
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+  const [browsingYear, setBrowsingYear] = React.useState<string>(currentYear);
+  const [currentValue, setCurrentValue] = React.useState<IMonthPickerValue>({
+    year: currentYear,
+    month: currentMonth,
+  });
+  const [availableYearList, setAvailableYearList] = React.useState<string[]>(
+    [],
+  );
+  const [calendarMonthLabels, setCalendarMonthLabels] = React.useState<
+    ICalendarMonthPerYear
+  >({});
+  const onYearChange = React.useCallback(
+    (year: string) => setBrowsingYear(year),
+    [],
+  );
+
+  React.useEffect(
+    () => setCurrentValue({ month: currentMonth, year: currentYear }),
+    [currentMonth, currentYear],
+  );
+
+  React.useEffect(() => {
+    const startDate = moment(`${minYear}-${minMonth}`, 'YYYY-MM');
+    const endDate = moment(`${maxYear}-${maxMonth}`, 'YYYY-MM');
+    const monthCount = endDate.diff(startDate, 'months') + 1;
+    const yearCount = parseInt(maxYear, 10) - parseInt(minYear, 10) + 1;
+    const yearsStartDate = moment(startDate).subtract(1, 'year');
+
+    const years = Array(yearCount)
+      .fill(yearCount)
+      .reduce(
+        (accum: {}) => ({
+          ...accum,
+          [yearsStartDate.add(1, 'year').format('YYYY')]: [],
+        }),
+        {},
+      );
+    const yearList = Object.keys(years);
+
+    const monthsStartDate = moment(startDate).subtract(1, 'month');
+    const monthsPerYear: IMonthsPerYear = Array(monthCount)
+      .fill(monthCount)
+      .map(() => {
+        const date = monthsStartDate.add(1, 'month');
+
+        return {
+          year: date.format('YYYY'),
+          month: date.format('MM'),
+        };
+      })
+      .reduce(
+        (
+          accum: { [key: string]: string[] },
+          { year, month }: { year: string; month: string },
+        ) => {
+          return {
+            ...accum,
+            [year]: [...accum[year], month],
+          };
+        },
+        years,
+      );
+
+    const calendarMonthsStartDate = moment('12-01', 'MM-DD');
+    const calendarMonthsPerYear: ICalendarMonthPerYear = yearList.reduce(
+      (accum: { [key: string]: any }, year: string) => {
+        return {
+          ...accum,
+          [year]: Array(12)
+            .fill(12)
+            .map(() => {
+              const date = calendarMonthsStartDate.add(1, 'month');
+              const month = date.format('MM');
+              const isAvailable = monthsPerYear[year].includes(month);
+
+              return {
+                month,
+                text: date.format('MMM').toUpperCase(),
+                isAvailable,
+              };
+            }),
+        };
+      },
       {},
     );
 
-  const monthsStartDate = moment(startDate).subtract(1, 'month');
-  const monthsPerYear: IMonthsPerYear = Array(monthDiff)
-    .fill(monthDiff)
-    .map(() => {
-      const date = monthsStartDate.add(1, 'month');
-
-      return {
-        year: date.format('YYYY'),
-        month: date.format('MM'),
-      };
-    })
-    .reduce(
-      (
-        accum: { [key: string]: string[] },
-        { year, month }: { year: string; month: string },
-      ) => {
-        return {
-          ...accum,
-          [year]: [...accum[year], month],
-        };
-      },
-      years,
-    );
-
-  const calendarMonthsStartDate = moment('12-01', 'MM-DD');
-  const calendarMonths: ICalendarMonth[] = Array(12)
-    .fill(12)
-    .map(() => {
-      const date = calendarMonthsStartDate.add(1, 'month');
-      const month = date.format('MM');
-
-      return {
-        month,
-        text: date.format('MMM').toUpperCase(),
-        isAvailable: monthsPerYear[value.year].includes(month),
-        isCurrent: value.month === month,
-      };
-    });
+    setAvailableYearList(yearList);
+    setCalendarMonthLabels(calendarMonthsPerYear);
+  }, [minYear, maxYear, minMonth, maxMonth]);
 
   return (
     <Root>
@@ -223,29 +278,58 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
             onClick={() => setIsOpen(true)}
             onPoseComplete={(pose: string) => setIsExpanded(pose === 'exit')}
           >
-            {moment(value.month).format('MMMM')}
+            {moment(
+              `${currentValue.year}-${currentValue.month}`,
+              'YYYY-MM',
+            ).format('MMMM/YYYY')}
           </RetractedTriggerBtn>
         )}
 
         {isOpen && (
           <Picker
             key="picker"
-            onClick={() => setIsOpen(false)}
             onPoseComplete={(pose: string) => setIsExpanded(pose !== 'exit')}
           >
-            <PickerMonthContainer>
-              {calendarMonths.map(
-                ({ text, month, isAvailable, isCurrent }: ICalendarMonth) => (
-                  <PickerMonth
-                    isCurrent={isCurrent}
-                    isAvailable={isAvailable}
-                    key={month}
-                  >
-                    {text}
-                  </PickerMonth>
-                ),
-              )}
-            </PickerMonthContainer>
+            <PickerYearContainer>
+              <ListItemPicker
+                list={availableYearList}
+                index={availableYearList.indexOf(browsingYear)}
+                onChange={onYearChange}
+              />
+            </PickerYearContainer>
+
+            {calendarMonthLabels[browsingYear] && (
+              <PickerMonthContainer>
+                {calendarMonthLabels[browsingYear].map(
+                  ({ text, month, isAvailable }: ICalendarMonth) => {
+                    const isCurrent =
+                      currentValue.month === month &&
+                      currentValue.year === browsingYear;
+
+                    const onClick = () => {
+                      if (isAvailable) {
+                        const newValue = { year: browsingYear, month };
+
+                        setIsOpen(false);
+                        setCurrentValue(newValue);
+                        onSwitch(newValue);
+                      }
+                    };
+
+                    return (
+                      <PickerMonth
+                        isCurrent={isCurrent}
+                        isAvailable={isAvailable}
+                        onClick={onClick}
+                        key={month}
+                      >
+                        {text}
+                      </PickerMonth>
+                    );
+                  },
+                )}
+              </PickerMonthContainer>
+            )}
           </Picker>
         )}
       </PoseGroup>

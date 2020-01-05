@@ -152,7 +152,11 @@ const sliderRef = React.createRef<any>();
 const BARS_PER_PAGE = 5;
 const BAR_WIDTH_INITIAL_VALUE = -1;
 
-export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
+export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
+  data,
+  periodStart,
+  periodEnd,
+}) => {
   const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
@@ -245,6 +249,23 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
   }, [windowWidth]);
 
   React.useEffect(() => {
+    setChartDataMaxYValue(
+      getArrayMaxValue(data, (day: any) =>
+        getTotalMinutesFromTime(day.totalTimeAtOffice),
+      ),
+    );
+  }, [periodStart, periodEnd]);
+
+  React.useEffect(() => {
+    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+
+    window.addEventListener('resize', onResize);
+    setTimeout(() => setIsChartVisible(true), 300);
+
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  React.useEffect(() => {
     /**
      * Unfortunately when resizing and changing the component on the fly
      * Slick's `initialSlide` prop won't work.
@@ -253,20 +274,6 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({ data }) => {
       sliderRef.current.slickGoTo(numberOfSlides);
     }
   }, [isMobileView, isYValueDoneAnimating]);
-
-  React.useEffect(() => {
-    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
-
-    setChartDataMaxYValue(
-      getArrayMaxValue(data, (day: any) =>
-        getTotalMinutesFromTime(day.totalTimeAtOffice),
-      ),
-    );
-    window.addEventListener('resize', onResize);
-    setTimeout(() => setIsChartVisible(true), 300);
-
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
     return (

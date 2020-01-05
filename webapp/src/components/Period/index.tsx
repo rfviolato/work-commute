@@ -10,6 +10,8 @@ import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
 import { Card } from '../Card';
 import { PeriodBarChat } from '../PeriodBarChart';
+import { MonthPicker } from '../MonthPicker';
+import { IMonthPickerValue } from '../MonthPicker/interface';
 
 const QUERY = gql`
   query getPeriod($periodStart: String!, $periodEnd: String!) {
@@ -55,10 +57,18 @@ const CSS_VARS = {
 };
 
 const Root = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const PeriodSwitcherContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 `;
 
 const TimeDisplayGrid = styled.div`
@@ -80,18 +90,38 @@ const ChartWrapper = styled.div`
 
 interface IPeriodProps {}
 
-const defaultPeriodEnd = moment()
-  .add(1, 'day')
-  .format('YYYY-MM-DD');
-const defaultPeriodStart = moment()
-  .subtract(1, 'month')
-  .format('YYYY-MM-DD');
+const defaultPeriodEndDate = moment()
+  .endOf('month')
+  .add(1, 'day');
+const defaultPeriodStartDate = moment().startOf('month');
+const defaultPeriodEnd = defaultPeriodEndDate.format('YYYY-MM-DD');
+const defaultPeriodStart = defaultPeriodStartDate.format('YYYY-MM-DD');
 
 export const Period: React.FC<IPeriodProps> = () => {
+  const [periodStart, setPeriodStart] = React.useState(defaultPeriodStart);
+  const [periodEnd, setPeriodEnd] = React.useState(defaultPeriodEnd);
+  const [currentSelectedMonth, setCurrentSelectedMonth] = React.useState(
+    defaultPeriodStartDate.format('MM'),
+  );
+  const [currentSelectedYear, setCurrentSelectedYear] = React.useState(
+    defaultPeriodEndDate.format('YYYY'),
+  );
+  const onPeriodSwitch = React.useCallback(
+    ({ year, month }: IMonthPickerValue) => {
+      const newPeriodStartDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
+      const newPeriodEndDate = moment(newPeriodStartDate).endOf('month');
+
+      setPeriodStart(newPeriodStartDate.format('YYYY-MM-DD'));
+      setPeriodEnd(newPeriodEndDate.add(1, 'day').format('YYYY-MM-DD'));
+      setCurrentSelectedMonth(newPeriodStartDate.format('MM'));
+      setCurrentSelectedYear(newPeriodStartDate.format('YYYY'));
+    },
+    [],
+  );
   const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
     variables: {
-      periodStart: defaultPeriodStart,
-      periodEnd: defaultPeriodEnd,
+      periodStart,
+      periodEnd,
     },
   });
 
@@ -118,8 +148,24 @@ export const Period: React.FC<IPeriodProps> = () => {
   return (
     <Root>
       <Card>
+        <PeriodSwitcherContainer>
+          <MonthPicker
+            minYear="2019"
+            minMonth="11"
+            maxYear="2020"
+            maxMonth="01"
+            currentMonth={currentSelectedMonth}
+            currentYear={currentSelectedYear}
+            onSwitch={onPeriodSwitch}
+          />
+        </PeriodSwitcherContainer>
+
         <ChartWrapper>
-          <PeriodBarChat data={timetableChart} />
+          <PeriodBarChat
+            data={timetableChart}
+            periodStart={periodStart}
+            periodEnd={periodEnd}
+          />
         </ChartWrapper>
 
         <TimeDisplayGrid>
