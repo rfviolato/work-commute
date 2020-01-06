@@ -1,5 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import moment from 'moment';
+import posed, { PoseGroup } from 'react-pose';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/pro-solid-svg-icons';
+import { faCalendarAlt } from '@fortawesome/pro-regular-svg-icons';
 import {
   IMonthPickerProps,
   ICalendarMonth,
@@ -7,13 +12,11 @@ import {
   IMonthPickerValue,
   ICalendarMonthPerYear,
 } from './interface';
-import moment from 'moment';
-import posed, { PoseGroup } from 'react-pose';
 import { ListItemPicker } from '../ListItemPicker';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
-  RETRACTED_WIDTH: 150,
+  RETRACTED_WIDTH: 170,
   EXPANDED_HEIGHT: 270,
   EXPANDED_WIDTH: 270,
 };
@@ -72,6 +75,11 @@ const RetractedTriggerBtn = styled(AnimatedRetractedTriggerBtn)`
   }
 `;
 
+const RetractedTriggerBtnText = styled.span`
+  font-weight: 300;
+  margin-right: 8px;
+`;
+
 const AnimatedPicker = posed.div({
   enter: {
     opacity: 1,
@@ -91,11 +99,32 @@ const Picker = styled(AnimatedPicker)`
   font-size: 1em;
   width: ${DIMENSIONS.EXPANDED_WIDTH}px;
   height: ${DIMENSIONS.EXPANDED_HEIGHT}px;
-  padding: 15px;
+  padding: 30px 15px 35px 15px;
   list-style: none;
 
   &:focus {
     outline: 0;
+  }
+`;
+
+const ExpandedTriggerBtn = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: 0;
+  color: currentColor;
+  font-size: 1em;
+  cursor: pointer;
+  transition: opacity 300ms ease;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus,
+  &:hover {
+    opacity: 0.7;
   }
 `;
 
@@ -118,15 +147,25 @@ const PickerMonth = styled.li<IPickerMonth>`
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  transition: opacity 300ms ease;
+  transition: opacity 300ms ease, color 300ms ease;
   opacity: ${({ isAvailable }) => (isAvailable ? 1 : 0.4)};
-  cursor: ${({ isAvailable, isCurrent }) =>
-    !isAvailable || isCurrent ? 'not-allowed' : 'pointer'};
+  cursor: ${({ isAvailable, isCurrent }) => {
+    if (!isAvailable) {
+      return 'not-allowed';
+    }
+
+    if (isCurrent) {
+      return 'default';
+    }
+
+    return 'pointer';
+  }};
   color: ${({ isCurrent }) => (isCurrent ? '#4edfa5' : 'currentColor')};
 
   &:hover {
-    ${({ isAvailable }) =>
-      isAvailable && {
+    ${({ isAvailable, isCurrent }) =>
+      isAvailable &&
+      !isCurrent && {
         opacity: 0.7,
       }}
   }
@@ -278,10 +317,14 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
             onClick={() => setIsOpen(true)}
             onPoseComplete={(pose: string) => setIsExpanded(pose === 'exit')}
           >
-            {moment(
-              `${currentValue.year}-${currentValue.month}`,
-              'YYYY-MM',
-            ).format('MMMM/YYYY')}
+            <RetractedTriggerBtnText>
+              {moment(
+                `${currentValue.year}-${currentValue.month}`,
+                'YYYY-MM',
+              ).format('MMMM YYYY')}
+            </RetractedTriggerBtnText>
+
+            <FontAwesomeIcon icon={faCalendarAlt} />
           </RetractedTriggerBtn>
         )}
 
@@ -290,6 +333,10 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
             key="picker"
             onPoseComplete={(pose: string) => setIsExpanded(pose !== 'exit')}
           >
+            <ExpandedTriggerBtn onClick={() => setIsOpen(false)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </ExpandedTriggerBtn>
+
             <PickerYearContainer>
               <ListItemPicker
                 list={availableYearList}

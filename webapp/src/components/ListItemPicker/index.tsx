@@ -13,11 +13,16 @@ const NavigationButton = styled.button<INavigationButtonProps>`
   color: currentColor;
   font-size: 16px;
   transition: opacity 300ms ease;
-  cursor: ${({ isUnavailable }) => (isUnavailable ? 'not-allowed' : 'pointer')};
+  cursor: ${({ isUnavailable }) => (isUnavailable ? 'default' : 'pointer')};
   opacity: ${({ isUnavailable }) => (isUnavailable ? 0.4 : 1)};
 
   &:focus {
     outline: 0;
+  }
+
+  &:focus,
+  &:hover {
+    ${({ isUnavailable }) => !isUnavailable && { opacity: 0.8 }}
   }
 `;
 

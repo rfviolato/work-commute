@@ -134,7 +134,20 @@ export const Period: React.FC<IPeriodProps> = () => {
   }
 
   if (error) {
-    return <Root>Error 😟</Root>;
+    return (
+      <PeriodSwitcherContainer>
+        <MonthPicker
+          minYear="2019"
+          minMonth="11"
+          maxYear="2020"
+          maxMonth="01"
+          currentMonth={currentSelectedMonth}
+          currentYear={currentSelectedYear}
+          onSwitch={onPeriodSwitch}
+        />
+      </PeriodSwitcherContainer>
+    );
+    // return <Root>Error 😟</Root>;
   }
 
   if (!data) {
