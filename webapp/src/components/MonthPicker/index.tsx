@@ -16,7 +16,7 @@ import { ListItemPicker } from '../ListItemPicker';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
-  RETRACTED_WIDTH: 170,
+  RETRACTED_WIDTH: 175,
   EXPANDED_HEIGHT: 270,
   EXPANDED_WIDTH: 270,
 };
@@ -60,6 +60,7 @@ const RetractedTriggerBtn = styled(AnimatedRetractedTriggerBtn)`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
   cursor: pointer;
   z-index: 2;
   border: 0;
@@ -78,6 +79,7 @@ const RetractedTriggerBtn = styled(AnimatedRetractedTriggerBtn)`
 const RetractedTriggerBtnText = styled.span`
   font-weight: 300;
   margin-right: 8px;
+  white-space: nowrap;
 `;
 
 const AnimatedPicker = posed.div({
@@ -109,14 +111,17 @@ const Picker = styled(AnimatedPicker)`
 
 const ExpandedTriggerBtn = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background-color: transparent;
   border: 0;
   color: currentColor;
   font-size: 1em;
   cursor: pointer;
   transition: opacity 300ms ease;
+  width: 30px;
+  height: 30px;
+  padding: 0;
 
   &:focus {
     outline: 0;
