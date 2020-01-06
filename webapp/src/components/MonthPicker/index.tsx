@@ -229,6 +229,11 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
     (year: string) => setBrowsingYear(year),
     [],
   );
+  const onComponentLeave = React.useCallback(() => {
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  }, [isOpen]);
 
   React.useEffect(
     () => setCurrentValue({ month: currentMonth, year: currentYear }),
@@ -305,7 +310,7 @@ export const MonthPicker: React.FC<IMonthPickerProps> = ({
   }, [minYear, maxYear, minMonth, maxMonth]);
 
   return (
-    <Root>
+    <Root onMouseLeave={onComponentLeave}>
       <ScaledBg
         pose={isExpanded ? POSE_NAMES.BG_EXPAND : POSE_NAMES.BG_RETRACT}
       ></ScaledBg>
