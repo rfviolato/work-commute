@@ -72,12 +72,15 @@ const BarChartXValue = styled.div<IBarChartXValueProps>`
 
 interface IBarsContainerProps {
   isCarouselItem?: boolean;
+  isCentered?: boolean;
 }
 
 const BarsContainer = styled.div<IBarsContainerProps>`
   display: ${({ isCarouselItem }) =>
     isCarouselItem ? 'inline-flex !important' : 'flex'};
   align-items: flex-end;
+  justify-content: ${({ isCentered }) =>
+    isCentered ? 'flex-start' : 'center'};
   padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
   height: ${DIMENSIONS.CHART_HEIGHT}px;
   outline: 0;
@@ -107,7 +110,8 @@ const BarContainer = styled.div<IBarContainerProps>`
   position: relative;
   flex: 1;
   font-size: ${({ barWidth }) => getBarContainerFontSize(barWidth)};
-  max-width: ${({ barWidth }) => barWidth}px;
+  width: ${({ barWidth }) => barWidth}px;
+  max-width: 100px;
 
   &:not(:first-of-type) {
     margin-left: ${DIMENSIONS.BAR_GUTTER}px;
@@ -192,12 +196,14 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
     { totalTimeAtOffice, day }: TimetableChartData,
     i: number,
   ) => {
+    const { hours, minutes } = totalTimeAtOffice;
     const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
     const height = getBarHeight(
       DIMENSIONS.CHART_HEIGHT,
       chartDataMaxYValue,
       totalMinutes,
     );
+    const shouldDisplayYValue = !(hours === 0 && minutes < 30);
 
     return (
       <BarContainer barWidth={barWidth} key={day}>
@@ -213,12 +219,14 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
           />
         </BarRectangleContainer>
 
-        <BarChartYValueLabel
-          pose={areBarsDoneAnimating ? 'visible' : 'invisible'}
-          onPoseComplete={onYAxisValueAnimationComplete}
-        >
-          {totalTimeAtOffice.hours}h{formatMinutes(totalTimeAtOffice.minutes)}
-        </BarChartYValueLabel>
+        {shouldDisplayYValue && (
+          <BarChartYValueLabel
+            pose={areBarsDoneAnimating ? 'visible' : 'invisible'}
+            onPoseComplete={onYAxisValueAnimationComplete}
+          >
+            {hours}h{formatMinutes(minutes)}
+          </BarChartYValueLabel>
+        )}
 
         <BarChartXValue isMobile={isMobileView}>
           {moment(day).format('DD/MM')}
@@ -290,7 +298,13 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
         const currentPage = i + 1;
 
         return (
-          <BarsContainer isCarouselItem key={i}>
+          <BarsContainer
+            isCarouselItem
+            isCentered={
+              !isMobileView || (isMobileView && data.length < BARS_PER_PAGE)
+            }
+            key={i}
+          >
             {data
               .slice(
                 currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
