@@ -48,6 +48,10 @@ const QUERY = gql`
         }
       }
     }
+
+    FirstRecord {
+      day
+    }
   }
 `;
 
@@ -90,6 +94,7 @@ const ChartWrapper = styled.div`
 
 interface IPeriodProps {}
 
+const today = moment();
 const defaultPeriodEndDate = moment()
   .endOf('month')
   .add(1, 'day');
@@ -143,17 +148,20 @@ export const Period: React.FC<IPeriodProps> = () => {
 
   const {
     Period: { averageTimeCommuting, averageTimeAtOffice, timetableChart },
+    FirstRecord: { day },
   } = data;
+
+  const firstRecordDayDate = moment(day);
 
   return (
     <Root>
       <Card>
         <PeriodSwitcherContainer>
           <MonthPicker
-            minYear="2019"
-            minMonth="11"
-            maxYear="2020"
-            maxMonth="01"
+            minYear={firstRecordDayDate.format('YYYY')}
+            minMonth={firstRecordDayDate.format('MM')}
+            maxYear={today.format('YYYY')}
+            maxMonth={today.format('MM')}
             currentMonth={currentSelectedMonth}
             currentYear={currentSelectedYear}
             onSwitch={onPeriodSwitch}

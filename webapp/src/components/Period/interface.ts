@@ -17,4 +17,8 @@ export interface IPeriodQueryData {
     averageTimeCommuting: ITime;
     timetableChart: TimetableChartData[];
   };
+
+  FirstRecord: {
+    day: string;
+  };
 }
