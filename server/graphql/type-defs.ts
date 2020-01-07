@@ -5,6 +5,7 @@ export default gql`
   type Query {
     Period(periodStart: String!, periodEnd: String!): Period
     Day(day: String!): Day
+    FirstRecord: WorkTimetableRecord
   }
 
   type PeriodData {
@@ -42,7 +43,9 @@ export default gql`
     totalEveningCommuteTime: TotalEveningCommuteTime
   }
 
-  type WorkTimetable {
+  type WorkTimetableRecord {
+    date: String
+    day: String
     homeArriveTime: String
     homeLeaveTime: String
     workArriveTime: String
