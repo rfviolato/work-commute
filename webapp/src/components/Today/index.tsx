@@ -8,24 +8,18 @@ import {
   faSunHaze,
   faCloudsMoon,
 } from '@fortawesome/pro-solid-svg-icons';
-import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { ITodayQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
-import { TimetableDisplay } from '../TimetableDisplay';
 import { IS_DEV } from '../../constants';
 import { Card } from '../Card';
+import { DayTimetable } from '../../DayTimetable';
 
 const DEVELOPMENT_DAY = '2019-12-12';
 const QUERY = gql`
   query getDay($day: String!) {
     Day(day: $day) {
-      homeLeaveTime
-      workArriveTime
-      workLeaveTime
-      homeArriveTime
-
       totalMorningCommuteTime {
         hours
         minutes
@@ -134,10 +128,6 @@ export const Today: React.FC = () => {
       totalEveningCommuteTime,
       totalTimeAtOffice,
       totalMorningCommuteTime,
-      homeLeaveTime,
-      homeArriveTime,
-      workArriveTime,
-      workLeaveTime,
     },
   } = data;
 
@@ -145,15 +135,7 @@ export const Today: React.FC = () => {
     <Root>
       <TimetableContainer>
         <Card>
-          <TimetableDisplay
-            icon={faClock}
-            timetables={[
-              { timestamp: homeLeaveTime, label: 'Home leave time' },
-              { timestamp: workArriveTime, label: 'Work arrive time' },
-              { timestamp: workLeaveTime, label: 'Work leave time' },
-              { timestamp: homeArriveTime, label: 'Home arrive time' },
-            ]}
-          />
+          <DayTimetable />
         </Card>
       </TimetableContainer>
 
