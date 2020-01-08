@@ -11,8 +11,13 @@ import {
   IMonthsPerYear,
   IMonthPickerValue,
   ICalendarMonthPerYear,
+  IMonthPickerComponentProps,
+  IMonthPickerQuery,
 } from './interface';
 import { ListItemPicker } from '../ListItemPicker';
+import query from './query';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { useQuery } from '@apollo/react-hooks';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
@@ -208,7 +213,41 @@ const PickerYearContainer = styled.div`
   justify-content: center;
 `;
 
-export const MonthPicker: React.FC<IMonthPickerProps> = ({
+export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
+  const { loading, error, data } = useQuery<IMonthPickerQuery>(query);
+
+  if (loading) {
+    return (
+      <Root>
+        <LoadingSpinner />
+      </Root>
+    );
+  }
+
+  if (error) {
+    return <Root>Error 😟</Root>;
+  }
+
+  if (!data) {
+    return <Root>No data 🤔</Root>;
+  }
+
+  const {
+    FirstRecord: { day },
+  } = data;
+
+  const firstRecordDayDate = moment(day);
+
+  return (
+    <MonthPickerComponent
+      {...props}
+      minYear={firstRecordDayDate.format('YYYY')}
+      minMonth={firstRecordDayDate.format('MM')}
+    />
+  );
+};
+
+export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   minYear,
   maxYear,
   minMonth,

@@ -10,9 +10,3 @@ export interface TimetableChartData {
   totalEveningCommuteTime: ITime;
   totalMinutes: number;
 }
-
-export interface IPeriodQueryData {
-  FirstRecord: {
-    day: string;
-  };
-}

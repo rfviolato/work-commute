@@ -6,11 +6,20 @@ export interface IMonthPickerValue {
 export interface IMonthPickerProps {
   maxYear: string;
   maxMonth: string;
-  minYear: string;
-  minMonth: string;
   currentYear: string;
   currentMonth: string;
   onSwitch?: (value: IMonthPickerValue) => void;
+}
+
+export interface IMonthPickerComponentProps extends IMonthPickerProps {
+  minYear: string;
+  minMonth: string;
+}
+
+export interface IMonthPickerQuery {
+  FirstRecord: {
+    day: string;
+  };
 }
 
 export interface ICalendarMonth {

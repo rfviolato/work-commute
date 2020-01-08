@@ -1,23 +1,11 @@
 import React from 'react';
 import moment from 'moment';
 import styled from '@emotion/styled';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import { IPeriodQueryData } from './interface';
-import { LoadingSpinner } from '../LoadingSpinner';
 import { Card } from '../Card';
 import { PeriodBarChart } from '../PeriodBarChart';
 import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
 import { Averages } from '../Averages';
-
-const QUERY = gql`
-  query getPeriod {
-    FirstRecord {
-      day
-    }
-  }
-`;
 
 const Root = styled.div`
   position: relative;
@@ -27,14 +15,14 @@ const Root = styled.div`
   justify-content: center;
 `;
 
-const PeriodSwitcherContainer = styled.div`
+const MonthPickerContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
 `;
 
-const ChartWrapper = styled.div`
+const ChartContainer = styled.div`
   width: 100%;
   margin-bottom: 60px;
 `;
@@ -70,48 +58,23 @@ export const Period: React.FC<IPeriodProps> = () => {
     },
     [],
   );
-  const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY);
-
-  if (loading) {
-    return (
-      <Root>
-        <LoadingSpinner />
-      </Root>
-    );
-  }
-
-  if (error) {
-    return <Root>Error 😟</Root>;
-  }
-
-  if (!data) {
-    return <Root>No data 🤔</Root>;
-  }
-
-  const {
-    FirstRecord: { day },
-  } = data;
-
-  const firstRecordDayDate = moment(day);
 
   return (
     <Root>
       <Card>
-        <PeriodSwitcherContainer>
+        <MonthPickerContainer>
           <MonthPicker
-            minYear={firstRecordDayDate.format('YYYY')}
-            minMonth={firstRecordDayDate.format('MM')}
             maxYear={today.format('YYYY')}
             maxMonth={today.format('MM')}
             currentMonth={currentSelectedMonth}
             currentYear={currentSelectedYear}
             onSwitch={onPeriodSwitch}
           />
-        </PeriodSwitcherContainer>
+        </MonthPickerContainer>
 
-        <ChartWrapper>
+        <ChartContainer>
           <PeriodBarChart periodStart={periodStart} periodEnd={periodEnd} />
-        </ChartWrapper>
+        </ChartContainer>
 
         <Averages periodStart={periodStart} periodEnd={periodEnd} />
       </Card>
