@@ -2,11 +2,11 @@ import React from 'react';
 import moment from 'moment';
 import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
-import { TimetableDisplay } from '../components/TimetableDisplay';
-import { DEVELOPMENT_DAY, IS_DEV } from '../constants';
+import { TimetableDisplay } from '../TimetableDisplay';
+import { DEVELOPMENT_DAY, IS_DEV } from '../../constants';
 import query from './query';
 import { IDayTimetableQuery } from './interface';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 export const DayTimetable: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');

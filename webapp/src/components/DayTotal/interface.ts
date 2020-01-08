@@ -1,12 +1,12 @@
-interface ITime {
+export interface ITime {
   hours: number;
   minutes: number;
 }
 
-export interface ITodayQueryData {
+export interface IDayTotalQuery {
   Day: {
     totalMorningCommuteTime: ITime;
     totalEveningCommuteTime: ITime;
     totalTimeAtOffice: ITime;
-  } | null;
+  };
 }
