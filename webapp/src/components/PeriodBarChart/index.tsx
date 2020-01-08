@@ -3,7 +3,11 @@ import styled from '@emotion/styled';
 import posed from 'react-pose';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
-import { IPeriodChartProps } from './interface';
+import {
+  IPeriodChartProps,
+  IPeriodChartComponentProps,
+  IPeriodQueryData,
+} from './interface';
 import { Slider } from './../Slider';
 import { TimetableChartData } from '../Period/interface';
 import {
@@ -12,6 +16,9 @@ import {
   formatMinutes,
   getArrayMaxValue,
 } from './utils';
+import query from './query';
+import { useQuery } from '@apollo/react-hooks';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -156,7 +163,43 @@ const sliderRef = React.createRef<any>();
 const BARS_PER_PAGE = 5;
 const BAR_WIDTH_INITIAL_VALUE = -1;
 
-export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
+export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
+  periodStart,
+  periodEnd,
+}) => {
+  const { loading, error, data } = useQuery<IPeriodQueryData>(query, {
+    variables: {
+      periodStart,
+      periodEnd,
+    },
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div>Error 😟</div>;
+  }
+
+  if (!data) {
+    return <div>No data 🤔</div>;
+  }
+
+  const {
+    Period: { timetableChart },
+  } = data;
+
+  return (
+    <PeriodBarChartComponent
+      data={timetableChart}
+      periodStart={periodStart}
+      periodEnd={periodEnd}
+    />
+  );
+};
+
+export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   data,
   periodStart,
   periodEnd,
@@ -292,7 +335,7 @@ export const PeriodBarChat: React.FC<IPeriodChartProps> = ({
   }
 
   if (isMobileView) {
-    const slides = new Array(numberOfSlides)
+    const slides = Array(numberOfSlides)
       .fill(numberOfSlides)
       .map((current, i) => {
         const currentPage = i + 1;

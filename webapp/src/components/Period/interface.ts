@@ -15,7 +15,6 @@ export interface IPeriodQueryData {
   Period: {
     averageTimeAtOffice: ITime;
     averageTimeCommuting: ITime;
-    timetableChart: TimetableChartData[];
   };
 
   FirstRecord: {

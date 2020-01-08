@@ -9,7 +9,7 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
 import { Card } from '../Card';
-import { PeriodBarChat } from '../PeriodBarChart';
+import { PeriodBarChart } from '../PeriodBarChart';
 import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
 
@@ -29,23 +29,6 @@ const QUERY = gql`
       averageTimeCommuting {
         hours
         minutes
-      }
-
-      timetableChart {
-        day
-
-        totalTimeAtOffice {
-          hours
-          minutes
-        }
-        totalMorningCommuteTime {
-          hours
-          minutes
-        }
-        totalEveningCommuteTime {
-          hours
-          minutes
-        }
       }
     }
 
@@ -147,7 +130,7 @@ export const Period: React.FC<IPeriodProps> = () => {
   }
 
   const {
-    Period: { averageTimeCommuting, averageTimeAtOffice, timetableChart },
+    Period: { averageTimeCommuting, averageTimeAtOffice },
     FirstRecord: { day },
   } = data;
 
@@ -169,11 +152,7 @@ export const Period: React.FC<IPeriodProps> = () => {
         </PeriodSwitcherContainer>
 
         <ChartWrapper>
-          <PeriodBarChat
-            data={timetableChart}
-            periodStart={periodStart}
-            periodEnd={periodEnd}
-          />
+          <PeriodBarChart periodStart={periodStart} periodEnd={periodEnd} />
         </ChartWrapper>
 
         <TimeDisplayGrid>
