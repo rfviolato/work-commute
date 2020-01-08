@@ -1,47 +1,23 @@
 import React from 'react';
-import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import moment from 'moment';
 import styled from '@emotion/styled';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { IPeriodQueryData } from './interface';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { TimeDisplay } from '../TimeDisplay';
-import { IconLabel } from '../IconLabel';
 import { Card } from '../Card';
 import { PeriodBarChart } from '../PeriodBarChart';
 import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
+import { Averages } from '../Averages';
 
 const QUERY = gql`
-  query getPeriod($periodStart: String!, $periodEnd: String!) {
-    Period(periodStart: $periodStart, periodEnd: $periodEnd) {
-      totalTimeAtOffice {
-        hours
-        minutes
-      }
-
-      averageTimeAtOffice {
-        hours
-        minutes
-      }
-
-      averageTimeCommuting {
-        hours
-        minutes
-      }
-    }
-
+  query getPeriod {
     FirstRecord {
       day
     }
   }
 `;
-
-const CSS_VARS = {
-  GRID_GUTTER: 32,
-  GRID_COL_SIZE: 200,
-};
 
 const Root = styled.div`
   position: relative;
@@ -56,18 +32,6 @@ const PeriodSwitcherContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
-`;
-
-const TimeDisplayGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, ${CSS_VARS.GRID_COL_SIZE}px);
-  grid-column-gap: ${CSS_VARS.GRID_GUTTER}px;
-
-  @media (max-width: 520px) {
-    grid-template-columns: ${CSS_VARS.GRID_COL_SIZE}px;
-    grid-column-gap: 0;
-    grid-row-gap: ${CSS_VARS.GRID_GUTTER}px;
-  }
 `;
 
 const ChartWrapper = styled.div`
@@ -106,12 +70,7 @@ export const Period: React.FC<IPeriodProps> = () => {
     },
     [],
   );
-  const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY, {
-    variables: {
-      periodStart,
-      periodEnd,
-    },
-  });
+  const { loading, error, data } = useQuery<IPeriodQueryData>(QUERY);
 
   if (loading) {
     return (
@@ -130,7 +89,6 @@ export const Period: React.FC<IPeriodProps> = () => {
   }
 
   const {
-    Period: { averageTimeCommuting, averageTimeAtOffice },
     FirstRecord: { day },
   } = data;
 
@@ -155,15 +113,7 @@ export const Period: React.FC<IPeriodProps> = () => {
           <PeriodBarChart periodStart={periodStart} periodEnd={periodEnd} />
         </ChartWrapper>
 
-        <TimeDisplayGrid>
-          <IconLabel icon={faTrain} label="Time commuting">
-            <TimeDisplay {...averageTimeCommuting} />
-          </IconLabel>
-
-          <IconLabel icon={faBriefcase} label="Time at the office">
-            <TimeDisplay {...averageTimeAtOffice} />
-          </IconLabel>
-        </TimeDisplayGrid>
+        <Averages periodStart={periodStart} periodEnd={periodEnd} />
       </Card>
     </Root>
   );
