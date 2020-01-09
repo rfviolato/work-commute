@@ -5,7 +5,6 @@ import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
 import { useQuery } from '@apollo/react-hooks';
 import query from './query';
-import { LoadingSpinner } from '../LoadingSpinner';
 import {
   IAveragesQueryData,
   IAveragesComponentProps,

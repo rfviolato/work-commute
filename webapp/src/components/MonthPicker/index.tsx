@@ -18,6 +18,7 @@ import { ListItemPicker } from '../ListItemPicker';
 import query from './query';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { useQuery } from '@apollo/react-hooks';
+import Skeleton from 'react-loading-skeleton';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
@@ -213,36 +214,33 @@ const PickerYearContainer = styled.div`
   justify-content: center;
 `;
 
-export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
-  const { loading, error, data } = useQuery<IMonthPickerQuery>(query);
+const today = moment();
 
-  if (loading) {
+export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
+  const { loading, data } = useQuery<IMonthPickerQuery>(query);
+
+  if (data && data.FirstRecord) {
+    const {
+      FirstRecord: { day },
+    } = data;
+
+    const firstRecordDayDate = moment(day);
+
     return (
-      <Root>
-        <LoadingSpinner />
-      </Root>
+      <MonthPickerComponent
+        {...props}
+        minYear={firstRecordDayDate.format('YYYY')}
+        minMonth={firstRecordDayDate.format('MM')}
+      />
     );
   }
-
-  if (error) {
-    return <Root>Error 😟</Root>;
-  }
-
-  if (!data) {
-    return <Root>No data 🤔</Root>;
-  }
-
-  const {
-    FirstRecord: { day },
-  } = data;
-
-  const firstRecordDayDate = moment(day);
 
   return (
     <MonthPickerComponent
       {...props}
-      minYear={firstRecordDayDate.format('YYYY')}
-      minMonth={firstRecordDayDate.format('MM')}
+      isLoading={loading}
+      minYear={today.format('YYYY')}
+      minMonth={today.format('MM')}
     />
   );
 };
@@ -254,6 +252,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   maxMonth,
   currentYear,
   currentMonth,
+  isLoading,
   onSwitch = () => {},
 }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -351,7 +350,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
 
     setAvailableYearList(yearList);
     setCalendarMonthLabels(calendarMonthsPerYear);
-  }, [minYear, maxYear, minMonth, maxMonth]);
+  }, [minYear, maxYear, minMonth, maxMonth, isLoading]);
 
   return (
     <Root onMouseLeave={onComponentLeave}>
@@ -363,14 +362,18 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
         {!isOpen && (
           <RetractedTriggerBtn
             key="retracted-trigger-btn"
-            onClick={() => setIsOpen(true)}
+            onClick={() => !isLoading && setIsOpen(true)}
             onPoseComplete={(pose: string) => setIsExpanded(pose === 'exit')}
           >
             <RetractedTriggerBtnText>
-              {moment(
-                `${currentValue.year}-${currentValue.month}`,
-                'YYYY-MM',
-              ).format('MMMM YYYY')}
+              {isLoading ? (
+                <Skeleton width={100} />
+              ) : (
+                moment(
+                  `${currentValue.year}-${currentValue.month}`,
+                  'YYYY-MM',
+                ).format('MMMM YYYY')
+              )}
             </RetractedTriggerBtnText>
 
             <FontAwesomeIcon icon={faCalendarAlt} />
