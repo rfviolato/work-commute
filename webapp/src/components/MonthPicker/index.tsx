@@ -16,7 +16,6 @@ import {
 } from './interface';
 import { ListItemPicker } from '../ListItemPicker';
 import query from './query';
-import { LoadingSpinner } from '../LoadingSpinner';
 import { useQuery } from '@apollo/react-hooks';
 import Skeleton from 'react-loading-skeleton';
 

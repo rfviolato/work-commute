@@ -125,6 +125,14 @@ const BarContainer = styled.div<IBarContainerProps>`
   }
 `;
 
+const LoadingSpinnerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 40px;
+`;
+
 const BarRectangleContainer = styled.div`
   overflow: hidden;
 `;
@@ -167,32 +175,31 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
   periodStart,
   periodEnd,
 }) => {
-  const { loading, error, data } = useQuery<IPeriodQueryData>(query, {
+  const { loading, data } = useQuery<IPeriodQueryData>(query, {
     variables: {
       periodStart,
       periodEnd,
     },
   });
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (!loading && data && data.Period) {
+    const {
+      Period: { timetableChart },
+    } = data;
 
-  if (error) {
-    return <div>Error 😟</div>;
+    return (
+      <PeriodBarChartComponent
+        data={timetableChart}
+        periodStart={periodStart}
+        periodEnd={periodEnd}
+      />
+    );
   }
-
-  if (!data) {
-    return <div>No data 🤔</div>;
-  }
-
-  const {
-    Period: { timetableChart },
-  } = data;
 
   return (
     <PeriodBarChartComponent
-      data={timetableChart}
+      data={[]}
+      isLoading={loading}
       periodStart={periodStart}
       periodEnd={periodEnd}
     />
@@ -203,6 +210,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   data,
   periodStart,
   periodEnd,
+  isLoading,
 }) => {
   const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
@@ -300,21 +308,29 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   }, [windowWidth]);
 
   React.useEffect(() => {
-    setChartDataMaxYValue(
-      getArrayMaxValue(data, (day: any) =>
-        getTotalMinutesFromTime(day.totalTimeAtOffice),
-      ),
-    );
-  }, [periodStart, periodEnd]);
+    if (!isLoading) {
+      setChartDataMaxYValue(
+        getArrayMaxValue(data, (day: any) =>
+          getTotalMinutesFromTime(day.totalTimeAtOffice),
+        ),
+      );
+    }
+  }, [periodStart, periodEnd, isLoading]);
 
   React.useEffect(() => {
-    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+    if (!isLoading) {
+      const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
 
-    window.addEventListener('resize', onResize);
-    setTimeout(() => setIsChartVisible(true), 300);
+      window.addEventListener('resize', onResize);
+      setTimeout(() => setIsChartVisible(true), 300);
 
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+      return () => window.removeEventListener('resize', onResize);
+    } else {
+      setIsChartVisible(false);
+      setIsChartDoneAnimating(false);
+      setAreBarsDoneAnimating(false);
+    }
+  }, [isLoading]);
 
   React.useEffect(() => {
     /**
@@ -326,10 +342,16 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     }
   }, [isMobileView, isYValueDoneAnimating]);
 
-  if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
+  if (barWidth === BAR_WIDTH_INITIAL_VALUE || isLoading) {
     return (
       <div ref={chartContainerRef}>
-        <BarsContainer />
+        <BarsContainer>
+          <LoadingSpinnerContainer>
+            <LoadingSpinner />
+          </LoadingSpinnerContainer>
+        </BarsContainer>
+
+        <BarChartAxis />
       </div>
     );
   }
