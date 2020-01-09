@@ -10,6 +10,7 @@ import { Today } from './components/Today';
 import { Navigation } from './components/Navigation';
 
 import GlobalStyles from './GlobalStyles';
+import { SkeletonTheme } from 'react-loading-skeleton';
 
 const client = new ApolloClient({ uri: '/gql' });
 
@@ -28,24 +29,26 @@ const Content = styled.section`
 const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <Navigation />
-        <Switch>
-          <Content>
-            <Route exact path="/">
-              <Section title="Today">
-                <Today />
-              </Section>
-            </Route>
+      <SkeletonTheme highlightColor="#b9b9b9">
+        <Router>
+          <Navigation />
+          <Switch>
+            <Content>
+              <Route exact path="/">
+                <Section title="Today">
+                  <Today />
+                </Section>
+              </Route>
 
-            <Route path="/period">
-              <Section title="Period">
-                <Period />
-              </Section>
-            </Route>
-          </Content>
-        </Switch>
-      </Router>
+              <Route path="/period">
+                <Section title="Period">
+                  <Period />
+                </Section>
+              </Route>
+            </Content>
+          </Switch>
+        </Router>
+      </SkeletonTheme>
       <GlobalStyles />
     </ApolloProvider>
   );

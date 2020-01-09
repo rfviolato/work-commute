@@ -6,38 +6,47 @@ import { TimetableDisplay } from '../TimetableDisplay';
 import { DEVELOPMENT_DAY, IS_DEV } from '../../constants';
 import query from './query';
 import { IDayTimetableQuery } from './interface';
-import { LoadingSpinner } from '../LoadingSpinner';
+
+const LABELS = {
+  HOME_LEAVE: 'Home leave time',
+  HOME_ARRIVE: 'Work arrive time',
+  WORK_LEAVE: 'Work leave time',
+  WORK_ARRIVE: 'Home arrive time',
+};
 
 export const DayTimetable: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
-  const { loading, error, data } = useQuery<IDayTimetableQuery>(query, {
+  const { loading, data } = useQuery<IDayTimetableQuery>(query, {
     variables: { day },
   });
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (data && data.Day) {
+    const {
+      Day: { homeLeaveTime, homeArriveTime, workArriveTime, workLeaveTime },
+    } = data;
 
-  if (error) {
-    return <div>Error 😟</div>;
+    return (
+      <TimetableDisplay
+        icon={faClock}
+        timetables={[
+          { timestamp: homeLeaveTime, label: LABELS.HOME_LEAVE },
+          { timestamp: workArriveTime, label: LABELS.WORK_ARRIVE },
+          { timestamp: workLeaveTime, label: LABELS.WORK_LEAVE },
+          { timestamp: homeArriveTime, label: LABELS.HOME_ARRIVE },
+        ]}
+      />
+    );
   }
-
-  if (!data || !data.Day) {
-    return <div>No data yet</div>;
-  }
-
-  const {
-    Day: { homeLeaveTime, homeArriveTime, workArriveTime, workLeaveTime },
-  } = data;
 
   return (
     <TimetableDisplay
       icon={faClock}
+      isLoading={loading}
       timetables={[
-        { timestamp: homeLeaveTime, label: 'Home leave time' },
-        { timestamp: workArriveTime, label: 'Work arrive time' },
-        { timestamp: workLeaveTime, label: 'Work leave time' },
-        { timestamp: homeArriveTime, label: 'Home arrive time' },
+        { label: LABELS.HOME_LEAVE },
+        { label: LABELS.WORK_ARRIVE },
+        { label: LABELS.WORK_LEAVE },
+        { label: LABELS.HOME_ARRIVE },
       ]}
     />
   );

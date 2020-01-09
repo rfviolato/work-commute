@@ -1,10 +1,12 @@
 import React from 'react';
+import moment from 'moment';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Skeleton from 'react-loading-skeleton';
 import { ITimetableDisplay } from './interface';
-import moment from 'moment';
 
 const CSS_VARIABLES = {
+  LABEL_MIN_WIDTH: 125,
   MQ: { X_SMALL: 375 },
 };
 
@@ -38,8 +40,11 @@ const TimetableContainer = styled.ul`
   list-style: none;
 `;
 
-const Timetable = styled.li`
-  display: flex;
+interface ITimetableProps {
+  isLoading?: boolean;
+}
+const Timetable = styled.li<ITimetableProps>`
+  display: ${({ isLoading }) => (isLoading ? 'initial' : 'flex')};
   align-items: center;
   padding: 7px 0;
 
@@ -54,7 +59,7 @@ const Timetable = styled.li`
 
 const TimetableLabel = styled.span`
   display: inline-block;
-  min-width: 125px;
+  min-width: ${CSS_VARIABLES.LABEL_MIN_WIDTH}px;
   font-size: 0.75em;
   font-size: 14px;
   opacity: 0.9;
@@ -67,6 +72,7 @@ const TimetableTimestamp = styled.span`
 export const TimetableDisplay: React.FC<ITimetableDisplay> = ({
   icon,
   timetables,
+  isLoading,
 }) => {
   return (
     <Root>
@@ -82,8 +88,12 @@ export const TimetableDisplay: React.FC<ITimetableDisplay> = ({
           if (timetableDate && !timetableDate.isValid()) {
             return (
               <Timetable>
-                <TimetableLabel>{timetableLabel}</TimetableLabel>
-                <TimetableTimestamp>n/a</TimetableTimestamp>
+                <TimetableLabel>
+                  {isLoading ? <Skeleton width={100} /> : timetableLabel}
+                </TimetableLabel>
+                <TimetableTimestamp>
+                  {isLoading ? <Skeleton width={45} /> : 'n/a'}
+                </TimetableTimestamp>
               </Timetable>
             );
           }
