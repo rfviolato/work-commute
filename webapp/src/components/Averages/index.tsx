@@ -33,37 +33,31 @@ export const Averages: React.FC<IAveragesProps> = ({
   periodStart,
   periodEnd,
 }) => {
-  const { loading, error, data } = useQuery<IAveragesQueryData>(query, {
+  const { loading, data } = useQuery<IAveragesQueryData>(query, {
     variables: {
       periodStart,
       periodEnd,
     },
   });
 
-  if (loading) {
+  if (data && data.Period) {
+    const {
+      Period: { averageTimeCommuting, averageTimeAtOffice },
+    } = data;
+
     return (
-      <Root>
-        <LoadingSpinner />
-      </Root>
+      <AveragesComponent
+        averageTimeCommuting={averageTimeCommuting}
+        averageTimeAtOffice={averageTimeAtOffice}
+      />
     );
   }
 
-  if (error) {
-    return <Root>Error 😟</Root>;
-  }
-
-  if (!data) {
-    return <Root>No data 🤔</Root>;
-  }
-
-  const {
-    Period: { averageTimeCommuting, averageTimeAtOffice },
-  } = data;
-
   return (
     <AveragesComponent
-      averageTimeCommuting={averageTimeCommuting}
-      averageTimeAtOffice={averageTimeAtOffice}
+      isLoading={loading}
+      averageTimeCommuting={{ hours: 0, minutes: 0 }}
+      averageTimeAtOffice={{ hours: 0, minutes: 0 }}
     />
   );
 };
@@ -71,15 +65,16 @@ export const Averages: React.FC<IAveragesProps> = ({
 export const AveragesComponent: React.FC<IAveragesComponentProps> = ({
   averageTimeCommuting,
   averageTimeAtOffice,
+  isLoading,
 }) => {
   return (
     <Root>
       <IconLabel icon={faTrain} label="Time commuting">
-        <TimeDisplay {...averageTimeCommuting} />
+        <TimeDisplay isLoading={isLoading} {...averageTimeCommuting} />
       </IconLabel>
 
       <IconLabel icon={faBriefcase} label="Time at the office">
-        <TimeDisplay {...averageTimeAtOffice} />
+        <TimeDisplay isLoading={isLoading} {...averageTimeAtOffice} />
       </IconLabel>
     </Root>
   );
