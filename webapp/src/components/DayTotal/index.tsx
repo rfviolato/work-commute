@@ -9,10 +9,15 @@ import {
 import query from './query';
 import styled from '@emotion/styled';
 import { IS_DEV, DEVELOPMENT_DAY } from '../../constants';
-import { LoadingSpinner } from '../LoadingSpinner';
 import { IconLabel } from '../IconLabel';
 import { TimeDisplay } from '../TimeDisplay';
 import { IDayTotalQuery } from './interface';
+
+const LABELS = {
+  MORNING_COMMUTE: 'Morning commute',
+  TIME_AT_THE_OFFICE: 'Time at the office',
+  TOTAL_EVENING_COMMUTE: 'Evening commute',
+};
 
 const CSS_VARS = {
   GRID_GUTTER: 32,
@@ -37,42 +42,48 @@ const Root = styled.div`
 
 export const DayTotal: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
-  const { loading, error, data } = useQuery<IDayTotalQuery>(query, {
+  const { data, loading } = useQuery<IDayTotalQuery>(query, {
     variables: { day },
   });
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (data && data.Day) {
+    const {
+      Day: {
+        totalEveningCommuteTime,
+        totalTimeAtOffice,
+        totalMorningCommuteTime,
+      },
+    } = data;
 
-  if (error) {
-    return <div>Error 😟</div>;
-  }
+    return (
+      <Root>
+        <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
+          <TimeDisplay {...totalMorningCommuteTime} />
+        </IconLabel>
 
-  if (!data || !data.Day) {
-    return <div>No data yet</div>;
-  }
+        <IconLabel icon={faBuilding} label={LABELS.TIME_AT_THE_OFFICE}>
+          <TimeDisplay {...totalTimeAtOffice} />
+        </IconLabel>
 
-  const {
-    Day: {
-      totalEveningCommuteTime,
-      totalTimeAtOffice,
-      totalMorningCommuteTime,
-    },
-  } = data;
+        <IconLabel icon={faCloudsMoon} label={LABELS.TOTAL_EVENING_COMMUTE}>
+          <TimeDisplay {...totalEveningCommuteTime} />
+        </IconLabel>
+      </Root>
+    );
+  }
 
   return (
     <Root>
-      <IconLabel icon={faSunHaze} label="Morning commute">
-        <TimeDisplay {...totalMorningCommuteTime} />
+      <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
+        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
       </IconLabel>
 
-      <IconLabel icon={faBuilding} label="Time at the office">
-        <TimeDisplay {...totalTimeAtOffice} />
+      <IconLabel icon={faBuilding} label={LABELS.TIME_AT_THE_OFFICE}>
+        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
       </IconLabel>
 
-      <IconLabel icon={faCloudsMoon} label="Evening commute">
-        <TimeDisplay {...totalEveningCommuteTime} />
+      <IconLabel icon={faCloudsMoon} label={LABELS.TOTAL_EVENING_COMMUTE}>
+        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
       </IconLabel>
     </Root>
   );

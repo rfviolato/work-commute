@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import Skeleton from 'react-loading-skeleton';
 import { ITimeDisplayProps } from './interface';
 
 const Root = styled.div`
@@ -18,20 +19,27 @@ const UnitDisplay = styled.div`
 export const TimeDisplay: React.FC<ITimeDisplayProps> = ({
   hours,
   minutes,
+  isLoading,
 }) => {
   return (
     <Root>
       <UnitDisplay>
-        {hours > 0 && (
-          <span>
-            <span>{hours}</span>
-            <Unit>hrs.</Unit>
-          </span>
-        )}{' '}
-        <span>
-          <span>{minutes}</span>
-          <Unit>min.</Unit>
-        </span>
+        {isLoading ? (
+          <Skeleton width={65} />
+        ) : (
+          <>
+            {hours > 0 && (
+              <span>
+                <span>{hours}</span>
+                <Unit>hrs.</Unit>
+              </span>
+            )}{' '}
+            <span>
+              <span>{minutes}</span>
+              <Unit>min.</Unit>
+            </span>
+          </>
+        )}
       </UnitDisplay>
     </Root>
   );
