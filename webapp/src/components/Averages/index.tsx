@@ -32,7 +32,7 @@ export const Averages: React.FC<IAveragesProps> = ({
   periodStart,
   periodEnd,
 }) => {
-  const { loading, data } = useQuery<IAveragesQueryData>(query, {
+  const { loading, data, error } = useQuery<IAveragesQueryData>(query, {
     variables: {
       periodStart,
       periodEnd,
@@ -52,7 +52,7 @@ export const Averages: React.FC<IAveragesProps> = ({
     );
   }
 
-  return <AveragesComponent isLoading={loading} />;
+  return <AveragesComponent hasError={!!error} isLoading={loading} />;
 };
 
 const DEFAULT_TIME_PROP = { hours: 0, minutes: 0 };
@@ -61,14 +61,19 @@ export const AveragesComponent: React.FC<IAveragesComponentProps> = ({
   averageTimeCommuting = DEFAULT_TIME_PROP,
   averageTimeAtOffice = DEFAULT_TIME_PROP,
   isLoading,
+  hasError,
 }) => {
   return (
     <Root>
-      <IconLabel icon={faTrain} label="Time commuting">
+      <IconLabel hasError={hasError} icon={faTrain} label="Time commuting">
         <TimeDisplay isLoading={isLoading} {...averageTimeCommuting} />
       </IconLabel>
 
-      <IconLabel icon={faBriefcase} label="Time at the office">
+      <IconLabel
+        hasError={hasError}
+        icon={faBriefcase}
+        label="Time at the office"
+      >
         <TimeDisplay isLoading={isLoading} {...averageTimeAtOffice} />
       </IconLabel>
     </Root>

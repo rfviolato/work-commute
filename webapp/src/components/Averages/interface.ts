@@ -19,4 +19,5 @@ export interface IAveragesComponentProps {
   averageTimeAtOffice?: ITime;
   averageTimeCommuting?: ITime;
   isLoading?: boolean;
+  hasError?: boolean;
 }
