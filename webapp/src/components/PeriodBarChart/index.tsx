@@ -305,7 +305,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setBarWidth(barWidth);
       return setIsMobileView(false);
     }
-  }, [windowWidth]);
+  }, [windowWidth, isLoading]);
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -329,6 +329,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setIsChartVisible(false);
       setIsChartDoneAnimating(false);
       setAreBarsDoneAnimating(false);
+      setIsYValueDoneAnimating(false);
     }
   }, [isLoading]);
 
