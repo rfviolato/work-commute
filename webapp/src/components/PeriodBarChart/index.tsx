@@ -19,6 +19,7 @@ import {
 import query from './query';
 import { useQuery } from '@apollo/react-hooks';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { NoChartDataDisplay } from './no-chart-data-display';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -125,7 +126,7 @@ const BarContainer = styled.div<IBarContainerProps>`
   }
 `;
 
-const LoadingSpinnerContainer = styled.div`
+const GeneralInfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,9 +347,9 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return (
       <div ref={chartContainerRef}>
         <BarsContainer>
-          <LoadingSpinnerContainer>
+          <GeneralInfoContainer>
             <LoadingSpinner />
-          </LoadingSpinnerContainer>
+          </GeneralInfoContainer>
         </BarsContainer>
 
         <BarChartAxis />
@@ -382,20 +383,36 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return (
       <div ref={chartContainerRef}>
-        <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
-          <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-            {slides}
-          </Slider>
-        </ChartBarsSlider>
+        {data.length ? (
+          <>
+            <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
+              <Slider infinite={false} arrows={false} dots ref={sliderRef}>
+                {slides}
+              </Slider>
+            </ChartBarsSlider>
 
-        <BarChartAxis />
+            <BarChartAxis />
+          </>
+        ) : (
+          <GeneralInfoContainer>
+            <NoChartDataDisplay />
+          </GeneralInfoContainer>
+        )}
       </div>
     );
   }
 
   return (
     <div ref={chartContainerRef}>
-      <BarsContainer>{data.map(renderChartBars)}</BarsContainer>
+      <BarsContainer>
+        {data.length ? (
+          data.map(renderChartBars)
+        ) : (
+          <GeneralInfoContainer>
+            <NoChartDataDisplay />
+          </GeneralInfoContainer>
+        )}
+      </BarsContainer>
 
       <BarChartAxis />
     </div>
