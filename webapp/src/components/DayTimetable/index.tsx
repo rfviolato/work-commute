@@ -47,23 +47,16 @@ export const DayTimetable: React.FC = () => {
   }
 
   return (
-    <>
-      {error && (
-        <QueryErrorContainer>
-          <QueryErrorIcon />
-        </QueryErrorContainer>
-      )}
-
-      <TimetableDisplay
-        icon={faClock}
-        isLoading={loading}
-        timetables={[
-          { label: LABELS.HOME_LEAVE },
-          { label: LABELS.WORK_ARRIVE },
-          { label: LABELS.WORK_LEAVE },
-          { label: LABELS.HOME_ARRIVE },
-        ]}
-      />
-    </>
+    <TimetableDisplay
+      icon={faClock}
+      isLoading={loading}
+      hasError={!!error}
+      timetables={[
+        { label: LABELS.HOME_LEAVE },
+        { label: LABELS.WORK_ARRIVE },
+        { label: LABELS.WORK_LEAVE },
+        { label: LABELS.HOME_ARRIVE },
+      ]}
+    />
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IIconLabelProps } from './interface';
+import { QueryErrorIcon } from '../QueryErrorIcon';
 
 const Root = styled.div`
   display: flex;
@@ -11,6 +12,7 @@ const Root = styled.div`
 `;
 
 const IconContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,14 +46,27 @@ const Content = styled.div`
   line-height: 1;
 `;
 
+const QueryErrorContainer = styled.div`
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  font-size: 17px;
+`;
+
 export const IconLabel: React.FC<IIconLabelProps> = ({
   children,
   icon,
   label,
+  hasError,
 }) => {
   return (
     <Root>
       <IconContainer>
+        {hasError && (
+          <QueryErrorContainer>
+            <QueryErrorIcon />
+          </QueryErrorContainer>
+        )}
         <Icon icon={icon} />
       </IconContainer>
 

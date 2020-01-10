@@ -3,7 +3,8 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Skeleton from 'react-loading-skeleton';
-import { ITimetableDisplay } from './interface';
+import { ITimetableDisplayProps } from './interface';
+import { QueryErrorIcon } from '../QueryErrorIcon';
 
 const CSS_VARIABLES = {
   LABEL_MIN_WIDTH: 125,
@@ -69,15 +70,34 @@ const TimetableTimestamp = styled.span`
   font-weight: bold;
 `;
 
-export const TimetableDisplay: React.FC<ITimetableDisplay> = ({
+const DisplayIconContainer = styled.div`
+  position: relative;
+`;
+
+const QueryErrorContainer = styled.div`
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  font-size: 17px;
+`;
+
+export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
   icon,
   timetables,
   isLoading,
+  hasError,
 }) => {
   return (
     <Root>
       <IconContainer>
-        <FontAwesomeIcon icon={icon} />
+        <DisplayIconContainer>
+          {hasError && (
+            <QueryErrorContainer>
+              <QueryErrorIcon />
+            </QueryErrorContainer>
+          )}
+          <FontAwesomeIcon icon={icon} />
+        </DisplayIconContainer>
       </IconContainer>
 
       <TimetableContainer>

@@ -41,12 +41,6 @@ const Root = styled.div`
   }
 `;
 
-const QueryErrorContainer = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-`;
-
 export const DayTotal: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
   const { data, loading, error } = useQuery<IDayTotalQuery>(query, {
@@ -81,21 +75,27 @@ export const DayTotal: React.FC = () => {
 
   return (
     <Root>
-      {error && (
-        <QueryErrorContainer>
-          <QueryErrorIcon />
-        </QueryErrorContainer>
-      )}
-
-      <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
+      <IconLabel
+        hasError={!!error}
+        icon={faSunHaze}
+        label={LABELS.MORNING_COMMUTE}
+      >
         <TimeDisplay isLoading={loading} />
       </IconLabel>
 
-      <IconLabel icon={faBuilding} label={LABELS.TIME_AT_THE_OFFICE}>
+      <IconLabel
+        hasError={!!error}
+        icon={faBuilding}
+        label={LABELS.TIME_AT_THE_OFFICE}
+      >
         <TimeDisplay isLoading={loading} />
       </IconLabel>
 
-      <IconLabel icon={faCloudsMoon} label={LABELS.TOTAL_EVENING_COMMUTE}>
+      <IconLabel
+        hasError={!!error}
+        icon={faCloudsMoon}
+        label={LABELS.TOTAL_EVENING_COMMUTE}
+      >
         <TimeDisplay isLoading={loading} />
       </IconLabel>
     </Root>

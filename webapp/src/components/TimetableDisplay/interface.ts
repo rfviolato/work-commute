@@ -5,8 +5,9 @@ export interface ITimetable {
   label: string;
 }
 
-export interface ITimetableDisplay {
+export interface ITimetableDisplayProps {
   icon: IconProp;
   timetables: ITimetable[];
   isLoading?: boolean;
+  hasError?: boolean;
 }

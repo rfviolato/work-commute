@@ -5,4 +5,5 @@ export interface IIconLabelProps {
   children: ReactNode;
   label: string;
   icon: IconProp;
+  hasError?: boolean;
 }
