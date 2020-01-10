@@ -12,6 +12,7 @@ import { IS_DEV, DEVELOPMENT_DAY } from '../../constants';
 import { IconLabel } from '../IconLabel';
 import { TimeDisplay } from '../TimeDisplay';
 import { IDayTotalQuery } from './interface';
+import { QueryErrorIcon } from '../QueryErrorIcon';
 
 const LABELS = {
   MORNING_COMMUTE: 'Morning commute',
@@ -40,9 +41,15 @@ const Root = styled.div`
   }
 `;
 
+const QueryErrorContainer = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+`;
+
 export const DayTotal: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
-  const { data, loading } = useQuery<IDayTotalQuery>(query, {
+  const { data, loading, error } = useQuery<IDayTotalQuery>(query, {
     variables: { day },
   });
 
@@ -74,6 +81,12 @@ export const DayTotal: React.FC = () => {
 
   return (
     <Root>
+      {error && (
+        <QueryErrorContainer>
+          <QueryErrorIcon />
+        </QueryErrorContainer>
+      )}
+
       <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
         <TimeDisplay isLoading={loading} />
       </IconLabel>

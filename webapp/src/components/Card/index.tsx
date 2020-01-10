@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { ICardProps } from './interface';
 
 const Root = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
