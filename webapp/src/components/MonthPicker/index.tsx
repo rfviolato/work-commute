@@ -5,6 +5,8 @@ import posed, { PoseGroup } from 'react-pose';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-solid-svg-icons';
 import { faCalendarAlt } from '@fortawesome/pro-regular-svg-icons';
+import { useQuery } from '@apollo/react-hooks';
+import Skeleton from 'react-loading-skeleton';
 import {
   IMonthPickerProps,
   ICalendarMonth,
@@ -15,9 +17,8 @@ import {
   IMonthPickerQuery,
 } from './interface';
 import { ListItemPicker } from '../ListItemPicker';
+import { QueryErrorIcon } from '../QueryErrorIcon';
 import query from './query';
-import { useQuery } from '@apollo/react-hooks';
-import Skeleton from 'react-loading-skeleton';
 
 const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
@@ -213,10 +214,12 @@ const PickerYearContainer = styled.div`
   justify-content: center;
 `;
 
+const ErrorDisplay = styled(QueryErrorIcon)``;
+
 const today = moment();
 
 export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
-  const { loading, data } = useQuery<IMonthPickerQuery>(query);
+  const { loading, data, error } = useQuery<IMonthPickerQuery>(query);
 
   if (data && data.FirstRecord) {
     const {
@@ -234,7 +237,9 @@ export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
     );
   }
 
-  return <MonthPickerComponent {...props} isLoading={loading} />;
+  return (
+    <MonthPickerComponent {...props} hasError={!!error} isLoading={loading} />
+  );
 };
 
 export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
@@ -245,6 +250,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   currentYear,
   currentMonth,
   isLoading,
+  hasError,
   onSwitch = () => {},
 }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -368,7 +374,11 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
               )}
             </RetractedTriggerBtnText>
 
-            <FontAwesomeIcon icon={faCalendarAlt} />
+            {hasError ? (
+              <ErrorDisplay />
+            ) : (
+              <FontAwesomeIcon icon={faCalendarAlt} />
+            )}
           </RetractedTriggerBtn>
         )}
 

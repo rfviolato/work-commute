@@ -15,6 +15,7 @@ export interface IMonthPickerComponentProps extends IMonthPickerProps {
   minYear?: string;
   minMonth?: string;
   isLoading?: boolean;
+  hasError?: boolean;
 }
 
 export interface IMonthPickerQuery {
