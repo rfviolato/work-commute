@@ -46,11 +46,10 @@ const Content = styled.div`
   line-height: 1;
 `;
 
-const QueryErrorContainer = styled.div`
+const ErrorDisplay = styled(QueryErrorIcon)`
   position: absolute;
   top: -12px;
   right: -12px;
-  font-size: 17px;
 `;
 
 export const IconLabel: React.FC<IIconLabelProps> = ({
@@ -62,11 +61,7 @@ export const IconLabel: React.FC<IIconLabelProps> = ({
   return (
     <Root>
       <IconContainer>
-        {hasError && (
-          <QueryErrorContainer>
-            <QueryErrorIcon />
-          </QueryErrorContainer>
-        )}
+        {hasError && <ErrorDisplay />}
         <Icon icon={icon} />
       </IconContainer>
 

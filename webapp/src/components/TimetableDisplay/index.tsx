@@ -74,11 +74,10 @@ const DisplayIconContainer = styled.div`
   position: relative;
 `;
 
-const QueryErrorContainer = styled.div`
+const ErrorDisplay = styled(QueryErrorIcon)`
   position: absolute;
   top: -12px;
   right: -12px;
-  font-size: 17px;
 `;
 
 export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
@@ -91,11 +90,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
     <Root>
       <IconContainer>
         <DisplayIconContainer>
-          {hasError && (
-            <QueryErrorContainer>
-              <QueryErrorIcon />
-            </QueryErrorContainer>
-          )}
+          {hasError && <ErrorDisplay />}
           <FontAwesomeIcon icon={icon} />
         </DisplayIconContainer>
       </IconContainer>
