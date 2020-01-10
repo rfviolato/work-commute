@@ -52,18 +52,14 @@ export const Averages: React.FC<IAveragesProps> = ({
     );
   }
 
-  return (
-    <AveragesComponent
-      isLoading={loading}
-      averageTimeCommuting={{ hours: 0, minutes: 0 }}
-      averageTimeAtOffice={{ hours: 0, minutes: 0 }}
-    />
-  );
+  return <AveragesComponent isLoading={loading} />;
 };
 
+const DEFAULT_TIME_PROP = { hours: 0, minutes: 0 };
+
 export const AveragesComponent: React.FC<IAveragesComponentProps> = ({
-  averageTimeCommuting,
-  averageTimeAtOffice,
+  averageTimeCommuting = DEFAULT_TIME_PROP,
+  averageTimeAtOffice = DEFAULT_TIME_PROP,
   isLoading,
 }) => {
   return (

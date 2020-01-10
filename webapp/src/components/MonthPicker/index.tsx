@@ -234,19 +234,12 @@ export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
     );
   }
 
-  return (
-    <MonthPickerComponent
-      {...props}
-      isLoading={loading}
-      minYear={today.format('YYYY')}
-      minMonth={today.format('MM')}
-    />
-  );
+  return <MonthPickerComponent {...props} isLoading={loading} />;
 };
 
 export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
-  minYear,
-  maxYear,
+  minYear = today.format('YYYY'),
+  maxYear = today.format('MM'),
   minMonth,
   maxMonth,
   currentYear,

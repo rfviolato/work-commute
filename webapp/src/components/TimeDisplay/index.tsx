@@ -17,8 +17,8 @@ const UnitDisplay = styled.div`
 `;
 
 export const TimeDisplay: React.FC<ITimeDisplayProps> = ({
-  hours,
-  minutes,
+  hours = 0,
+  minutes = 0,
   isLoading,
 }) => {
   return (

@@ -75,15 +75,15 @@ export const DayTotal: React.FC = () => {
   return (
     <Root>
       <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
-        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
+        <TimeDisplay isLoading={loading} />
       </IconLabel>
 
       <IconLabel icon={faBuilding} label={LABELS.TIME_AT_THE_OFFICE}>
-        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
+        <TimeDisplay isLoading={loading} />
       </IconLabel>
 
       <IconLabel icon={faCloudsMoon} label={LABELS.TOTAL_EVENING_COMMUTE}>
-        <TimeDisplay isLoading={loading} hours={0} minutes={0} />
+        <TimeDisplay isLoading={loading} />
       </IconLabel>
     </Root>
   );

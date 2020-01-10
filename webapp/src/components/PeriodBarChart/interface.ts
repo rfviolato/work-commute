@@ -11,7 +11,7 @@ export interface IPeriodChartProps {
 }
 
 export interface IPeriodChartComponentProps {
-  data: TimetableChartData[];
+  data?: TimetableChartData[];
   periodStart: string;
   periodEnd: string;
   isLoading?: boolean;

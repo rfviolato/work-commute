@@ -198,7 +198,6 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
 
   return (
     <PeriodBarChartComponent
-      data={[]}
       isLoading={loading}
       periodStart={periodStart}
       periodEnd={periodEnd}
@@ -207,7 +206,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
 };
 
 export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
-  data,
+  data = [],
   periodStart,
   periodEnd,
   isLoading,
