@@ -35,13 +35,13 @@ const App: React.FC = () => {
           <Switch>
             <Content>
               <Route exact path="/">
-                <Section title="Today">
+                <Section>
                   <Today />
                 </Section>
               </Route>
 
               <Route path="/period">
-                <Section title="Period">
+                <Section>
                   <Period />
                 </Section>
               </Route>

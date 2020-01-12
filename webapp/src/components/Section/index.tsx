@@ -3,18 +3,6 @@ import { ISectionProps } from './interface';
 
 import styled from '@emotion/styled';
 
-const Title = styled.h1`
-  position: relative;
-  left: -2px;
-  font-size: 40px;
-  margin-bottom: 16px;
-
-  @media (max-width: 960px) {
-    left: 0;
-    text-align: center;
-  }
-`;
-
 const Content = styled.div`
   display: flex;
   align-items: center;
@@ -24,11 +12,10 @@ const Content = styled.div`
   }
 `;
 
-export const Section: React.FC<ISectionProps> = ({ title, children }) => {
+export const Section: React.FC<ISectionProps> = ({ children }) => {
   return (
-    <article>
-      <Title>{title}</Title>
+    <section>
       <Content>{children}</Content>
-    </article>
+    </section>
   );
 };
