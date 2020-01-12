@@ -8,10 +8,11 @@ const Root = styled.span`
   font-size: 18px;
 `;
 
+export const faIcon = faExclamationCircle;
 export const QueryErrorIcon: React.FC<{ className?: string }> = ({
   className,
 }) => (
   <Root>
-    <FontAwesomeIcon className={className} icon={faExclamationCircle} />
+    <FontAwesomeIcon className={className} icon={faIcon} />
   </Root>
 );

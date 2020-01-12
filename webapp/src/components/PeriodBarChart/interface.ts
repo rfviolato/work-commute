@@ -15,10 +15,16 @@ export interface IPeriodChartComponentProps {
   periodStart: string;
   periodEnd: string;
   isLoading?: boolean;
+  hasError?: boolean;
 }
 
 export interface IPeriodQueryData {
   Period: {
     timetableChart: TimetableChartData[];
   };
+}
+
+export interface IStatusInfoProps
+  extends Pick<IPeriodChartComponentProps, 'hasError'> {
+  noData?: boolean;
 }

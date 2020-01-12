@@ -19,7 +19,7 @@ import {
 import query from './query';
 import { useQuery } from '@apollo/react-hooks';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { NoChartDataDisplay } from './no-chart-data-display';
+import { StatusInformation } from './status-information';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -126,7 +126,7 @@ const BarContainer = styled.div<IBarContainerProps>`
   }
 `;
 
-const GeneralInfoContainer = styled.div`
+const StatusInformationContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +176,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
   periodStart,
   periodEnd,
 }) => {
-  const { loading, data } = useQuery<IPeriodQueryData>(query, {
+  const { loading, data, error } = useQuery<IPeriodQueryData>(query, {
     variables: {
       periodStart,
       periodEnd,
@@ -200,6 +200,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
   return (
     <PeriodBarChartComponent
       isLoading={loading}
+      hasError={!!error}
       periodStart={periodStart}
       periodEnd={periodEnd}
     />
@@ -211,6 +212,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   periodStart,
   periodEnd,
   isLoading,
+  hasError,
 }) => {
   const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
   const [chartDataMaxYValue, setChartDataMaxYValue] = React.useState<number>(0);
@@ -347,9 +349,9 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return (
       <div ref={chartContainerRef}>
         <BarsContainer>
-          <GeneralInfoContainer>
+          <StatusInformationContainer>
             <LoadingSpinner />
-          </GeneralInfoContainer>
+          </StatusInformationContainer>
         </BarsContainer>
 
         <BarChartAxis />
@@ -383,21 +385,19 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return (
       <div ref={chartContainerRef}>
-        {data.length ? (
-          <>
-            <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
-              <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-                {slides}
-              </Slider>
-            </ChartBarsSlider>
+        <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
+          <Slider infinite={false} arrows={false} dots ref={sliderRef}>
+            <StatusInformationContainer>
+              <StatusInformation
+                hasError={hasError}
+                noData={data.length === 0}
+              />
+            </StatusInformationContainer>
+            {slides}
+          </Slider>
+        </ChartBarsSlider>
 
-            <BarChartAxis />
-          </>
-        ) : (
-          <GeneralInfoContainer>
-            <NoChartDataDisplay />
-          </GeneralInfoContainer>
-        )}
+        <BarChartAxis />
       </div>
     );
   }
@@ -405,13 +405,11 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   return (
     <div ref={chartContainerRef}>
       <BarsContainer>
-        {data.length ? (
-          data.map(renderChartBars)
-        ) : (
-          <GeneralInfoContainer>
-            <NoChartDataDisplay />
-          </GeneralInfoContainer>
-        )}
+        <StatusInformationContainer>
+          <StatusInformation hasError={hasError} noData={data.length === 0} />
+        </StatusInformationContainer>
+
+        {data.map(renderChartBars)}
       </BarsContainer>
 
       <BarChartAxis />
