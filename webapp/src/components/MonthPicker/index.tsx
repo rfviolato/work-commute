@@ -260,16 +260,20 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
     year: currentYear,
     month: currentMonth,
   });
+
   const [availableYearList, setAvailableYearList] = React.useState<string[]>(
     [],
   );
+
   const [calendarMonthLabels, setCalendarMonthLabels] = React.useState<
     ICalendarMonthPerYear
   >({});
+
   const onYearChange = React.useCallback(
     (year: string) => setBrowsingYear(year),
     [],
   );
+
   const onComponentLeave = React.useCallback(() => {
     if (isOpen) {
       setIsOpen(false);
@@ -323,7 +327,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
         years,
       );
 
-    const calendarMonthsStartDate = moment('12-01', 'MM-DD');
+    const calendarMonthsStartDate = moment('12-01', 'MM-DD'); // starts at December because first iteration already add 1 month
     const calendarMonthsPerYear: ICalendarMonthPerYear = yearList.reduce(
       (accum: { [key: string]: any }, year: string) => {
         return {
@@ -349,6 +353,17 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
     setAvailableYearList(yearList);
     setCalendarMonthLabels(calendarMonthsPerYear);
   }, [minYear, maxYear, minMonth, maxMonth, isLoading]);
+
+  React.useEffect(() => {
+    const availableYearIndex = availableYearList.indexOf(browsingYear);
+    const isYearAvailable = availableYearIndex >= 0;
+
+    if (!isYearAvailable) {
+      const latestAvailableYearIndex = availableYearList.length - 1;
+
+      setBrowsingYear(availableYearList[latestAvailableYearIndex]);
+    }
+  }, [availableYearList]);
 
   return (
     <Root onMouseLeave={onComponentLeave}>
@@ -399,38 +414,36 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
               />
             </PickerYearContainer>
 
-            {calendarMonthLabels[browsingYear] && (
-              <PickerMonthContainer>
-                {calendarMonthLabels[browsingYear].map(
-                  ({ text, month, isAvailable }: ICalendarMonth) => {
-                    const isCurrent =
-                      currentValue.month === month &&
-                      currentValue.year === browsingYear;
+            <PickerMonthContainer>
+              {calendarMonthLabels[browsingYear].map(
+                ({ text, month, isAvailable }: ICalendarMonth) => {
+                  const isCurrent =
+                    currentValue.month === month &&
+                    currentValue.year === browsingYear;
 
-                    const onClick = () => {
-                      if (isAvailable) {
-                        const newValue = { year: browsingYear, month };
+                  const onClick = () => {
+                    if (isAvailable) {
+                      const newValue = { year: browsingYear, month };
 
-                        setIsOpen(false);
-                        setCurrentValue(newValue);
-                        onSwitch(newValue);
-                      }
-                    };
+                      setIsOpen(false);
+                      setCurrentValue(newValue);
+                      onSwitch(newValue);
+                    }
+                  };
 
-                    return (
-                      <PickerMonth
-                        isCurrent={isCurrent}
-                        isAvailable={isAvailable}
-                        onClick={onClick}
-                        key={month}
-                      >
-                        {text}
-                      </PickerMonth>
-                    );
-                  },
-                )}
-              </PickerMonthContainer>
-            )}
+                  return (
+                    <PickerMonth
+                      isCurrent={isCurrent}
+                      isAvailable={isAvailable}
+                      onClick={onClick}
+                      key={month}
+                    >
+                      {text}
+                    </PickerMonth>
+                  );
+                },
+              )}
+            </PickerMonthContainer>
           </Picker>
         )}
       </PoseGroup>

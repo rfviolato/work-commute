@@ -1,11 +1,13 @@
 import React from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import styled from '@emotion/styled';
 import { Card } from '../Card';
 import { PeriodBarChart } from '../PeriodBarChart';
 import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
 import { Averages } from '../Averages';
+
+const PERIOD_QUERY_STRING = 'p';
 
 const Root = styled.div`
   position: relative;
@@ -29,22 +31,42 @@ const ChartContainer = styled.div`
 
 interface IPeriodProps {}
 
+const getPeriodEnd = (date: Moment): Moment =>
+  moment(date)
+    .endOf('month')
+    .add(1, 'day');
+
+const getPeriodStart = (date: Moment): Moment => moment(date).startOf('month');
+
 const today = moment();
-const defaultPeriodEndDate = moment()
-  .endOf('month')
-  .add(1, 'day');
-const defaultPeriodStartDate = moment().startOf('month');
-const defaultPeriodEnd = defaultPeriodEndDate.format('YYYY-MM-DD');
-const defaultPeriodStart = defaultPeriodStartDate.format('YYYY-MM-DD');
+let defaultPeriodStartDate = getPeriodStart(today);
+let defaultPeriodEndDate = getPeriodEnd(today);
+
+const urlParams = new URLSearchParams(window.location.search);
+
+for (const queryStringEntry of urlParams.entries()) {
+  if (queryStringEntry[0] === PERIOD_QUERY_STRING) {
+    const date = moment(queryStringEntry[1], 'YYYY-MM');
+
+    if (date.isValid()) {
+      defaultPeriodStartDate = getPeriodStart(date);
+      defaultPeriodEndDate = getPeriodEnd(date);
+    }
+  }
+}
 
 export const Period: React.FC<IPeriodProps> = () => {
-  const [periodStart, setPeriodStart] = React.useState(defaultPeriodStart);
-  const [periodEnd, setPeriodEnd] = React.useState(defaultPeriodEnd);
+  const [periodStart, setPeriodStart] = React.useState(
+    defaultPeriodStartDate.format('YYYY-MM-DD'),
+  );
+  const [periodEnd, setPeriodEnd] = React.useState(
+    defaultPeriodEndDate.format('YYYY-MM-DD'),
+  );
   const [currentSelectedMonth, setCurrentSelectedMonth] = React.useState(
     defaultPeriodStartDate.format('MM'),
   );
   const [currentSelectedYear, setCurrentSelectedYear] = React.useState(
-    defaultPeriodEndDate.format('YYYY'),
+    defaultPeriodStartDate.format('YYYY'),
   );
   const onPeriodSwitch = React.useCallback(
     ({ year, month }: IMonthPickerValue) => {
