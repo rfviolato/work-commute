@@ -60,6 +60,10 @@ const Link = styled(NavLink)`
       transform: scaleX(1);
     }
   }
+
+  &:hover:not(.active) {
+    opacity: 0.8;
+  }
 `;
 
 export const Navigation: React.FC = () => {

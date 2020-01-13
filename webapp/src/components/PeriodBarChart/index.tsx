@@ -343,7 +343,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     if (isYValueDoneAnimating && isMobileView && sliderRef.current) {
       sliderRef.current.slickGoTo(numberOfSlides);
     }
-  }, [isMobileView, isYValueDoneAnimating]);
+  }, [isMobileView, isYValueDoneAnimating, periodStart, periodEnd]);
 
   if (barWidth === BAR_WIDTH_INITIAL_VALUE || isLoading) {
     return (
@@ -387,12 +387,12 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       <div ref={chartContainerRef}>
         <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
           <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-            <StatusInformationContainer>
-              <StatusInformation
-                hasError={hasError}
-                noData={data.length === 0}
-              />
-            </StatusInformationContainer>
+            {!data.length && (
+              <StatusInformationContainer>
+                <StatusInformation hasError={hasError} noData={!data.length} />
+              </StatusInformationContainer>
+            )}
+
             {slides}
           </Slider>
         </ChartBarsSlider>
