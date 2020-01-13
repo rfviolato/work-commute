@@ -102,7 +102,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
 
           if (timetableDate && !timetableDate.isValid()) {
             return (
-              <Timetable>
+              <Timetable key={label}>
                 <TimetableLabel>
                   {isLoading ? <Skeleton width={100} /> : timetableLabel}
                 </TimetableLabel>
@@ -114,7 +114,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
           }
 
           return (
-            <Timetable>
+            <Timetable key={label}>
               <TimetableLabel>{timetableLabel}</TimetableLabel>
               <TimetableTimestamp>
                 {timetableDate.format('HH:mm')}
