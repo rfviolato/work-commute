@@ -7,7 +7,6 @@ import { TimetableDisplay } from '../TimetableDisplay';
 import { DEVELOPMENT_DAY, IS_DEV } from '../../constants';
 import query from './query';
 import { IDayTimetableQuery } from './interface';
-import { QueryErrorIcon } from '../QueryErrorIcon';
 
 const LABELS = {
   HOME_LEAVE: 'Home leave time',
@@ -15,12 +14,6 @@ const LABELS = {
   WORK_LEAVE: 'Work leave time',
   WORK_ARRIVE: 'Home arrive time',
 };
-
-const QueryErrorContainer = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-`;
 
 export const DayTimetable: React.FC = () => {
   const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
