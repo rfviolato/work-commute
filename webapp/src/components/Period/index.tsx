@@ -21,7 +21,7 @@ const MonthPickerContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `;
 
 const ChartContainer = styled.div`
