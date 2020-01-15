@@ -1,6 +1,6 @@
 # Work commute webapp
 
-![readme/illustration.png](readme/illustration.png)
+<img src="readme/illustration.png" width="400" />
 
 Webapp for tracking how much time I spent commuting and working every day.
 
@@ -31,7 +31,7 @@ This part was the one that had to put most thought on, I really wanted to simpli
 
 At first I though of doing some scheduled browser push-notifications, but that would take me much more development time, so as I mentioned earlier I am very obsessed with time and I also really like to atomate some aspects of my life, so I really like the iOS Shortcuts app for making some repepetitive tasks more trivial, and while investigating its features, I noticed that you could do network requests on those shortcuts, so this was the perfect way of logging those time events.
 
-![readme/shortcuts_1.jpeg](readme/shortcuts_1.jpeg)
+<img src="readme/shortcuts_1.jpeg" width="200" />
 
 On late 2019, there was an update on the Shortcuts app which you could now make automations to run shortcuts, and one of those automations involve geolocation, so you can trigger any shortcut depending on where you are arriving and leaving, so that was the perfect use case for the reminder need.
 
@@ -45,13 +45,13 @@ This was the most straight-forward part to think of, It had to be just that good
 
 ### Today section
 
-![readme/webapp_1.png](readme/webapp_1.png)
+<img src="readme/webapp_1.png" />
 
 This is for the most day-to-day use. I always want to check how much time I took to get to work or how much time I have been working already for that day.
 
 ### Period section
 
-![readme/webapp_2.png](readme/webapp_2.png)
+<img src="readme/webapp_2.png" width="700" />
 
 Here is where I would be able to visualize how a period has been. For now, it is only possible to select a month period, so the chart looks nicer and and is not cluttered and that have been proving to be enough so far.
 
@@ -59,7 +59,7 @@ Here is where I would be able to visualize how a period has been. For now, it is
 
 There were a couple of challenges that I put to myself in order to learn some things that I really wanted.
 
-## Hooks
+### Hooks
 
 Try to do all React related code using functional components, and to achieve that hooks were an amazing tool and was nice to start getting used to how they work and the caveats of only using hooks for common patterns that I was used to solve with classes' lifecycle callbacks. So far I have not seen any case that I would have been done better or easier with classes.
 
