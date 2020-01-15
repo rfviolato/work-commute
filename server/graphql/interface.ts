@@ -1,4 +1,5 @@
-import { Collection } from 'mongodb';
+import { IDb } from '../lib/interface';
+import DataLoader from 'dataloader';
 export interface IDayTimetable {
   _id: string;
   date: string;
@@ -11,8 +12,12 @@ export interface IDayTimetable {
     [key: string]: string;
   }[];
 }
+
+export interface IDataLoaders {
+  dayQueryLoader: DataLoader<string, unknown, string>;
+}
+
 export interface IGQLContext {
-  db: {
-    workTimetable: Collection<any>;
-  };
+  db: IDb;
+  dataLoaders: IDataLoaders;
 }

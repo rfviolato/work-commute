@@ -1,10 +1,11 @@
 import { MongoClient } from 'mongodb';
+import { IDb } from './interface';
 
 const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
 const MONGODB_URL = `mongodb+srv://${username}:${password}@cluster0-uk48d.mongodb.net/work-commute?retryWrites=true&w=majority`;
 
-export const createDbClient = async () => {
+export const createDbClient = async (): Promise<IDb> => {
   const client = await MongoClient.connect(MONGODB_URL, {
     useUnifiedTopology: true,
   }).catch((err) => {

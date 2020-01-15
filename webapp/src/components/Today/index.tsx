@@ -57,9 +57,7 @@ export const Today: React.FC = () => {
   return (
     <Root>
       <DayTimetableContainer>
-        <Card>
-          <DayTimetable />
-        </Card>
+        <Card>{/* <DayTimetable /> */}</Card>
       </DayTimetableContainer>
 
       <DayTotalContainerCard>
