@@ -1,12 +1,14 @@
-# Work commute webapp
+# Work commute web app
 
 <img src="readme/illustration.png" width="400" />
 
 Webapp for tracking how much time I spent commuting and working every day.
 
+###[Check it out!](https://work-commute-demo.now.sh/)
+
 # Motivation
 
-I am a bit obsessed with my own time and how it is being spent, and just like most of modern humans, we spend a good amount of our time working and commuting to work, so I though I could write a webapp to keep track of how much time I spend doing that.
+I am a bit obsessed with my own time and how it is being spent, and just like most of the modern humans, we spend a good amount of our time working and commuting to work, so I thought I could write a web app to keep track of how much time I spend doing that.
 
 Besides wanting to give myself a more full-stack challenge, I also wanted to learn some technical stuff that I did not have the chance of using before in an application, which are:
 
@@ -22,22 +24,22 @@ And what is a better way of learning something other than getting your hands dir
 
 # How it works
 
-The needs of a time tracker are very straight-forward, you have to log time and visualize it in a way you can clearly see how much time you're spending. So I though to have a more granular way of measuring time, I could just use a few events to mark when I started or stopped doing something so I could show more information.
-As for visualization, now only I wanted a quick way to check how my day has been going, but also have a way of checking previous days, so I could have an idea of how much time I was spending on those past periods.
+The needs of a time tracker are very straight-forward, you have to log time and visualize it in a way you can see how much time you're spending. So I thought to have a more granular way of measuring time, I could just use a few events to mark when I started or stopped doing something so I could show more information.
+As for visualization, now only I wanted a quick way to check how my day has been going, but I also have a way of checking previous days, so I could have an idea of how much time I was spending on those past periods.
 
 ## Logging
 
-This part was the one that had to put most thought on, I really wanted to simplify the way I can log those time events, otherwise this task would become tedious and there should be a way for this webapp to remind me or give me daily hints, otherwise I would end up forget doing it in a daily-basis.
+This part was the one that had to put most thought on, I really wanted to simplify the way I can log those time events, otherwise, this task would become tedious and there should be a way for this web app to remind me or give me daily hints, otherwise, I would end up forget doing it in a daily basis.
 
-At first I though of doing some scheduled browser push-notifications, but that would take me much more development time, so as I mentioned earlier I am very obsessed with time and I also really like to atomate some aspects of my life, so I really like the iOS Shortcuts app for making some repepetitive tasks more trivial, and while investigating its features, I noticed that you could do network requests on those shortcuts, so this was the perfect way of logging those time events.
+At first, I thought of doing some scheduled browser push-notifications, but that would take me much more development time, so as I mentioned earlier I am very obsessed with time and I also really like to automate some aspects of my life, so I really like the iOS Shortcuts app for making some repetitive tasks more trivial, and while investigating its features, I noticed that you could do network requests on those shortcuts, so this was the perfect way of logging those time events.
 
 <img src="readme/shortcuts_1.jpeg" width="200" />
 
-On late 2019, there was an update on the Shortcuts app which you could now make automations to run shortcuts, and one of those automations involve geolocation, so you can trigger any shortcut depending on where you are arriving and leaving, so that was the perfect use case for the reminder need.
+On late 2019, there was an update on the Shortcuts app which you could now make automation to run shortcuts, and one of the automation features involve geolocation, so you can trigger any shortcut depending on where you are arriving and leaving, so that was the perfect use case for the reminder need.
 
 ### Time Event API
 
-In order for those shortcuts to work, I created a REST API that is simple enough for those shortcuts to call it, and I decided to use Zeit Now's serverless functions for creating small and simple functions that would become endpoints.
+For those shortcuts to work, I created a REST API that is simple enough for those shortcuts to call it, and I decided to use Zeit Now's serverless functions for creating small and simple functions that would become endpoints.
 
 ## Displaying the data
 
@@ -53,53 +55,53 @@ This is for the most day-to-day use. I always want to check how much time I took
 
 <img src="readme/webapp_2.png" width="700" />
 
-Here is where I would be able to visualize how a period has been. For now, it is only possible to select a month period, so the chart looks nicer and and is not cluttered and that have been proving to be enough so far.
+Here is where I would be able to visualize how a period has been. For now, it is only possible to select a month period, so the chart looks nicer and is not cluttered and that has been proving to be enough so far.
 
 # Challenges
 
-There were a couple of challenges that I put to myself in order to learn some things that I really wanted.
+There were a couple of challenges that I put to myself to learn some things that I wanted.
 
 ### Hooks
 
-Try to do all React related code using functional components, and to achieve that hooks were an amazing tool and was nice to start getting used to how they work and the caveats of only using hooks for common patterns that I was used to solve with classes' lifecycle callbacks. So far I have not seen any case that I would have been done better or easier with classes.
+Try to do all React related code using functional components, and to achieve that hooks were an amazing tool and were nice to start getting used to how they work and the caveats of only using hooks for common patterns that I was used to solving with classes' lifecycle callbacks. So far I have not seen any case that I would have been done better or easier with classes.
 
 ### GraphQL
 
-Before this project I did only hello-world tiny projects to play around with it, but never had the pleasure of working with it, so I wanted to challenge myself to not only use GQL, but also to try to craft the resolvers and the schema in a way which the UI becomes very "dumb" and only worries about UI-specific state and logic, so all the business logic and data normalization processes are centered on the GQL side. And oh boy, how that was indeed proven to be a nice way to do things.
+Before this project I did only hello-world tiny projects to play around with it but never had the pleasure of working with it, so I wanted to challenge myself to not only use GQL but also to try to craft the resolvers and the schema in a way which the UI becomes very "dumb" and only worries about UI-specific state and logic, so all the business logic and data normalization processes are centered on the GQL side. And oh boy, how that was indeed proven to be a nice way to do things.
 
-I haven't felt the need to install redux (or try to use mobx which I still want to create a project to use it) at any time, and it made things so much simpler. Coding the UI was a fluid and natural process of only thinking about how the UI is going to behave and nothing else.
+I haven't felt the need to install redux (or try to use mobx which I still want to create a project to use it) at any time, and it made things so much simpler. Coding the UI was fluid and natural process of only thinking about how the UI is going to behave and nothing else.
 
-Also I wanted to try-out something I always thought that GQL could shine, which is making per-component queries that gather only the data that is necessary for that component and nothing else, and apollo really helped making this process very pleasant, specially with its custom hook.
+Also, I wanted to try-out something I always thought that GQL could shine, which is making per-component queries that gather only the data that is necessary for that component and nothing else, and apollo really helped making this process very pleasant, especially with its custom hook.
 
 ### Typescript
 
-In all my career I have been mostly reluctant to using types on JS. At my first years, I have used strong-typed languages such as Java and C#, so when I've made the switch to dynamically typed languages such as PHP and Javascript that felt like freedom.
+In all my career I have been mostly reluctant to using types on JS. In my first years, I have used strong-typed languages such as Java and C#, so when I've made the switch to dynamically typed languages such as PHP and Javascript that felt like freedom.
 
-But as years went by on my career, working with lots of humans coding the same codebase have showed me that it is quite a challenge to maintain a good level of cohesion and "understandability" of the code you're reading and writing, so TS really helps with that. Not knowing the shape of data you're dealing with can, not only make things harder to reason about, but also help introducing bugs to the codebase.
+But as years went by on my career, working with lots of humans coding the same codebase has shown me that it is quite a challenge to maintain a good level of cohesion and "understandability" of the code you're reading and writing, so TS helps with that. Not knowing the shape of data you're dealing with can, not only make things harder to reason about, but also help to introduce bugs to the codebase.
 
-But the one of the best parts of using it in this project was that I could catch bugs earlier and suddenly VSCode got super powers and the auto-complete was meaningfully helping me for the first time. Moving code around has also proven to be much a easier task.
+But one of the best parts of using it in this project was that I could catch bugs earlier and suddenly VSCode got superpowers and the auto-complete was meaningfully helping me for the first time. Moving code around has also proven to be such an easier task.
 
 ### Hand-crafted UI components
 
-I think one of the things I most love, if not the biggest, is crafting UI components that when you use them you "feel good". Something like "Aaahhh that's so smooth!", I love using websites and apps that offer that kind of experience so I had to be able to not only craft those components, but also make them feel smooth.
+I think one of the things I most love, if not the biggest, is crafting UI components that when you use them you "feel good". Something like "Aaahhh that's so smooth!", I love using websites and apps that offer that kind of experience so I had to be able to not only craft those components but also make them feel smooth.
 
-The biggest highlights for me are definitely the bar chart and the month picker. For the chart, I wanted to find a way which it would be pleasent how it presented it self, so that's why I decided to transition the bars, so it feels smooth when you're switching between periods. And for the month picker, I really wanted to make something that uses the "UI morphing" technique, which I believe is one of the best ways of showing the user that a context is being switched.
+The biggest highlights for me are definitely the bar chart and the month picker. For the chart, I wanted to find a way in which it would be pleased how it presented itself, so that's why I decided to transition the bars, so it feels smooth when you're switching between periods. And for the month picker, I wanted to make something that uses the "UI morphing" technique, which I believe is one of the best ways of showing the user that a context is being switched.
 
 ### It can be used on any viewport
 
 Well, **it's fucking 2020.**
 
-But seriously, you can't think of any web app without giving proper mobile support nowadays, so that by itself was already a challenge I had put to myself, to not only think about the UI on a desktop, but also a UI that can adapt to any viewport.
+But seriously, you can't think of any web app without giving proper mobile support nowadays, so that by itself was already a challenge I had put to myself, to not only think about the UI on a desktop but also a UI that can adapt to any viewport.
 
 I also had the need of checking the data anytime I want, so no better than having proper mobile support.
 
 ### Micro-interactions
 
-This is another aspect that I absolutely love about doing UI development. Handling all user micro-interactions in a smooth way is something I love to see and to do, so I tried to very attentious to those details.
+This is another aspect that I absolutely love about doing UI development. Handling all user micro-interactions in a smooth way is something I love to see and to do, so I tried to very attention to those details.
 
-Also I really like creating UIs that can handle all sorts of states in a more meaningful way. What I mean by that is that when something errors, I don't want to show a fucking pop-up saying "something went wrong" or if something is loading I don't want to show a page-filling spinner.
+Also, I really like creating UIs that can handle all sorts of states in a more meaningful way. What I mean by that is that when something errors, I don't want to show a fucking pop-up saying "something went wrong" or if something is loading I don't want to show a page-filling spinner.
 
-I believe UIs are much more pleasant and clear when the state of a piece of UI can also be shown right where the information is being displayed. That is why I chose to handle all request errors, loading and missing-data states right where the data is displayed, and by following the challenge of each dataful component having its own query made this task much easier.
+I believe UIs are much more pleasant and clear when the state of a piece of UI can also be shown right where the information is being displayed. That is why I chose to handle all request errors, loading, and missing-data states right where the data is displayed, and by following the challenge of each data component having its query made this task much easier.
 
 # Features To-do
 
@@ -110,7 +112,7 @@ There are still some things that I want to create and fine-tune:
 - Display day events
 - Give month picker proper mobile UI layout
 - Query batching
-- Fine-tune easings and transitions to favour smoothness
+- Fine-tune easings and transitions to favor smoothness
 - Cover some UI edge-cases (e.g.: displaying something on not worked days)
 
 # Project To-do
