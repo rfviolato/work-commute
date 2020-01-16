@@ -10,9 +10,9 @@ import { IDayTimetableQuery } from './interface';
 
 const LABELS = {
   HOME_LEAVE: 'Home leave time',
-  HOME_ARRIVE: 'Work arrive time',
+  HOME_ARRIVE: 'Home arrive time',
   WORK_LEAVE: 'Work leave time',
-  WORK_ARRIVE: 'Home arrive time',
+  WORK_ARRIVE: 'Work arrive time',
 };
 
 export const DayTimetable: React.FC = () => {
