@@ -1,8 +1,13 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import ApolloClient from 'apollo-boost';
-import styled from '@emotion/styled';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { ApolloLink } from 'apollo-link';
+import { BatchHttpLink } from 'apollo-link-batch-http';
 import { ApolloProvider } from '@apollo/react-hooks';
+import styled from '@emotion/styled';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Section } from './components/Section';
 import { Period } from './components/Period';
@@ -12,7 +17,27 @@ import { Navigation } from './components/Navigation';
 import GlobalStyles from './GlobalStyles';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
-const client = new ApolloClient({ uri: '/gql' });
+const uri = '/gql';
+const client = new ApolloClient({
+  // link: ApolloLink.from([
+  //   onError(({ graphQLErrors, networkError }) => {
+  //     if (graphQLErrors)
+  //       graphQLErrors.forEach(({ message, locations, path }) =>
+  //         console.log(
+  //           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+  //         ),
+  //       );
+  //     if (networkError) console.log(`[Network error]: ${networkError}`);
+  //   }),
+  //   new HttpLink({
+  //     uri,
+  //     credentials: 'same-origin',
+  //   }),
+  //   new BatchHttpLink({ uri }), // headers: { batch: 'true ' }
+  // ]),
+  link: new BatchHttpLink({ uri }),
+  cache: new InMemoryCache(),
+});
 
 const Content = styled.section`
   width: 100%;

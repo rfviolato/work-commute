@@ -6,6 +6,7 @@ export default async (
   { day }: IDayQueryParams,
   { db }: IGQLContext,
 ) => {
+  console.log('day: db req');
   return await db.workTimetable.findOne({
     day: {
       $eq: day,
