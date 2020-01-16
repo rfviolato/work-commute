@@ -4,7 +4,7 @@
 
 Webapp for tracking how much time I spent commuting and working every day.
 
-###[Check it out!](https://work-commute-demo.now.sh/)
+### [Check it out!](https://work-commute-demo.now.sh/)
 
 # Motivation
 
@@ -124,3 +124,6 @@ There is still much to be done to make this repository more organized:
 - More scalable folder structure
 - Tidy-up big components
 - Add instructions of how to run the project to the Readme file
+
+---
+Crafted with ♥️ by [@rfviolato](https://twitter.com/rfviolato)
