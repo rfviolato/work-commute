@@ -4,13 +4,13 @@ import ApolloClient from 'apollo-boost';
 import styled from '@emotion/styled';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { SkeletonTheme } from 'react-loading-skeleton';
 import { Section } from './components/Section';
 import { Period } from './components/Period';
 import { Today } from './components/Today';
 import { Navigation } from './components/Navigation';
 
 import GlobalStyles from './GlobalStyles';
-import { SkeletonTheme } from 'react-loading-skeleton';
 
 const client = new ApolloClient({ uri: '/gql' });
 

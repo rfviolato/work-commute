@@ -1,7 +1,6 @@
 import React from 'react';
-import { ISectionProps } from './interface';
-
 import styled from '@emotion/styled';
+import { ISectionProps } from './interface';
 
 const Content = styled.div`
   display: flex;

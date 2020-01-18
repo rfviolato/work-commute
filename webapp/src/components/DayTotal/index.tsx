@@ -12,7 +12,6 @@ import { IS_DEV, DEVELOPMENT_DAY } from '../../constants';
 import { IconLabel } from '../IconLabel';
 import { TimeDisplay } from '../TimeDisplay';
 import { IDayTotalQuery } from './interface';
-import { QueryErrorIcon } from '../QueryErrorIcon';
 
 const LABELS = {
   MORNING_COMMUTE: 'Morning commute',
