@@ -21,6 +21,9 @@ export default gql`
   }
 
   type Day {
+    date: String
+    day: String
+    events: [String]
     homeArriveTime: String
     homeLeaveTime: String
     workArriveTime: String
@@ -33,11 +36,11 @@ export default gql`
   type TimetableChartResult {
     date: String
     day: String
+    events: [String]
     homeArriveTime: String
     homeLeaveTime: String
     workArriveTime: String
     workLeaveTime: String
-    events: [String]
     totalTimeAtOffice: TotalTimeAtOfficeResult
     totalMorningCommuteTime: TotalMorningCommuteTime
     totalEveningCommuteTime: TotalEveningCommuteTime

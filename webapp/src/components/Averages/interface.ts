@@ -1,13 +1,12 @@
-export interface ITime {
-  hours: number;
-  minutes: number;
-}
+import { ITime, IPeriodResult } from '../../interfaces';
+
+type PeriodQueryData = Pick<
+  IPeriodResult,
+  'averageTimeAtOffice' | 'averageTimeCommuting'
+>;
 
 export interface IAveragesQueryData {
-  Period: {
-    averageTimeAtOffice: ITime;
-    averageTimeCommuting: ITime;
-  };
+  Period: PeriodQueryData;
 }
 
 export interface IAveragesProps {

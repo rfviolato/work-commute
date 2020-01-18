@@ -1,12 +1,10 @@
-export interface ITime {
-  hours: number;
-  minutes: number;
-}
+import { IDayResult } from '../../interfaces';
+
+type DayTimetableQueryData = Pick<
+  IDayResult,
+  'totalMorningCommuteTime' | 'totalEveningCommuteTime' | 'totalTimeAtOffice'
+>;
 
 export interface IDayTotalQuery {
-  Day: {
-    totalMorningCommuteTime: ITime;
-    totalEveningCommuteTime: ITime;
-    totalTimeAtOffice: ITime;
-  };
+  Day: DayTimetableQueryData;
 }

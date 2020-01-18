@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
-import styled from '@emotion/styled';
 import { TimetableDisplay } from '../TimetableDisplay';
 import { DEVELOPMENT_DAY, IS_DEV } from '../../constants';
 import query from './query';

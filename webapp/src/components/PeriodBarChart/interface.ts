@@ -1,27 +1,22 @@
-import { TimetableChartData } from '../Period/interface';
-
-export interface ITime {
-  hours: number;
-  minutes: number;
-}
+import { IPeriodResult, ITimetableChartResult } from '../../interfaces';
 
 export interface IPeriodChartProps {
   periodStart: string;
   periodEnd: string;
 }
 
+type PeriodQueryData = Pick<IPeriodResult, 'timetableChart'>;
+
+export interface IPeriodQueryData {
+  Period: PeriodQueryData;
+}
+
 export interface IPeriodChartComponentProps {
-  data?: TimetableChartData[];
+  data?: ITimetableChartResult[];
   periodStart: string;
   periodEnd: string;
   isLoading?: boolean;
   hasError?: boolean;
-}
-
-export interface IPeriodQueryData {
-  Period: {
-    timetableChart: TimetableChartData[];
-  };
 }
 
 export interface IStatusInfoProps

@@ -1,4 +1,4 @@
-import { ITime } from '../Period/interface';
+import { ITime } from '../../interfaces';
 
 export function getArrayMaxValue(array: any[], acessor: Function): number {
   return array.reduce((accum: number, currentItem: any) => {

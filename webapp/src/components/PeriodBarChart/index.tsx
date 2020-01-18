@@ -8,8 +8,8 @@ import {
   IPeriodChartComponentProps,
   IPeriodQueryData,
 } from './interface';
+import { useQuery } from '@apollo/react-hooks';
 import { Slider } from './../Slider';
-import { TimetableChartData } from '../Period/interface';
 import {
   getTotalMinutesFromTime,
   getBarHeight,
@@ -17,9 +17,9 @@ import {
   getArrayMaxValue,
 } from './utils';
 import query from './query';
-import { useQuery } from '@apollo/react-hooks';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { StatusInformation } from './status-information';
+import { ITimetableChartResult } from '../../interfaces';
 
 const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -246,7 +246,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   }, 100);
 
   const renderChartBars = (
-    { totalTimeAtOffice, day }: TimetableChartData,
+    { totalTimeAtOffice, day }: ITimetableChartResult,
     i: number,
   ) => {
     const { hours, minutes } = totalTimeAtOffice;

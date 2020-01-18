@@ -1,3 +1,5 @@
+import { IFirstRecordResult } from '../../interfaces';
+
 export interface IMonthPickerValue {
   year: string;
   month: string;
@@ -18,10 +20,10 @@ export interface IMonthPickerComponentProps extends IMonthPickerProps {
   hasError?: boolean;
 }
 
+type FirstRecordData = Pick<IFirstRecordResult, 'day'>;
+
 export interface IMonthPickerQuery {
-  FirstRecord: {
-    day: string;
-  };
+  FirstRecord: FirstRecordData;
 }
 
 export interface ICalendarMonth {
