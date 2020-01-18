@@ -119,11 +119,11 @@ There are still some things that I want to create and fine-tune:
 
 There is still much to be done to make this repository more organized:
 
-- Improve folder structure
-- DRY types
-- More scalable folder structure
 - Tidy-up big components
+- Improve folder structure
+- More scalable folder structure
 - Add instructions of how to run the project to the Readme file
 
 ---
+
 Crafted with ♥️ by [@rfviolato](https://twitter.com/rfviolato)
