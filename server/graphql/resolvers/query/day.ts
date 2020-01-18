@@ -1,14 +1,17 @@
-import { IDayQueryParams } from './interface';
-import { IGQLContext } from './../../interface';
+import { IGQLContext, IDayQueryParams } from './../../interface';
 
 export default async (
   parent: any,
   { day }: IDayQueryParams,
   { db }: IGQLContext,
-) => {
-  return await db.workTimetable.findOne({
-    day: {
-      $eq: day,
-    },
-  });
+): Promise<any> => {
+  try {
+    return await db.workTimetable.findOne({
+      day: {
+        $eq: day,
+      },
+    });
+  } catch (e) {
+    throw new Error(e);
+  }
 };

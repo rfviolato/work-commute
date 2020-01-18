@@ -1,7 +1,4 @@
-interface ITime {
-  hours: number;
-  minutes: number;
-}
+import { ITime } from '../interfaces';
 
 export const getTimeFromMinutes = (totalMinutes: number): ITime => {
   const hours = Math.floor(totalMinutes / 60);

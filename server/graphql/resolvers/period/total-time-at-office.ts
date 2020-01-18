@@ -1,10 +1,12 @@
 import moment from 'moment';
 import { TIME_FORMAT } from '../../../constants';
-import { IDayTimetable } from '../../interface';
-import { ITotalTimeAtOffice } from './interface';
 import { getTimeFromMinutes } from '../../../utils/get-time-from-minutes';
+import { IDayTimetableRecord } from '../../../interfaces';
+import { ITotalTimeAtOfficeResolverResult } from '../../interface';
 
-export default (timetables: IDayTimetable[]): ITotalTimeAtOffice => {
+export default (
+  timetables: IDayTimetableRecord[],
+): ITotalTimeAtOfficeResolverResult => {
   try {
     const totalMinutesAtOffice = timetables.reduce(
       (accum, { workArriveTime, workLeaveTime, day }) => {
