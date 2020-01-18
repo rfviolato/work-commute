@@ -114,7 +114,12 @@ export const StatusInformationContainer = styled.div`
   font-size: 40px;
 `;
 
-export const BarRectangleContainer = styled.div`
+interface IBarRectangleContainerProps {
+  barHeight: number;
+}
+
+export const BarRectangleContainer = styled.div<IBarRectangleContainerProps>`
+  height: ${({ barHeight }) => `${barHeight}px`};
   overflow: hidden;
 `;
 

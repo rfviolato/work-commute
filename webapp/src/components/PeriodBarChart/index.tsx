@@ -125,11 +125,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return (
       <BarContainer barWidth={barWidth} key={day}>
-        <BarRectangleContainer
-          style={{
-            height: `${height}px`,
-          }}
-        >
+        <BarRectangleContainer barHeight={height}>
           <BarRectangle
             index={i}
             pose={isChartVisible ? 'visible' : 'invisible'}
