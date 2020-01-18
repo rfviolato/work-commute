@@ -1,20 +1,7 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import Skeleton from 'react-loading-skeleton';
 import { ITimeDisplayProps } from './interface';
-
-const Root = styled.div`
-  display: flex;
-`;
-
-const Unit = styled.span`
-  font-size: 0.6em;
-`;
-
-const UnitDisplay = styled.div`
-  font-size: 28px;
-  font-weight: bold;
-`;
+import { UnitDisplay, Root, Unit } from './styled';
 
 export const TimeDisplay: React.FC<ITimeDisplayProps> = ({
   hours = 0,

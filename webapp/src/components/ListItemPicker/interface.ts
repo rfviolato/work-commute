@@ -3,7 +3,3 @@ export interface IListItemPickerProps {
   index: number;
   onChange?: (currentValue: string, currentIndex: number) => void;
 }
-
-export interface INavigationButtonProps {
-  isUnavailable: boolean;
-}

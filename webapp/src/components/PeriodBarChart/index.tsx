@@ -1,6 +1,4 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import posed from 'react-pose';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import {
@@ -20,152 +18,19 @@ import query from './query';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { StatusInformation } from './status-information';
 import { ITimetableChartResult } from '../../interfaces';
-
-const DIMENSIONS = {
-  CHART_HEIGHT: 375,
-  BAR_GUTTER: 8,
-  MIN_BAR_WIDTH: 25,
-};
-const SLIDER_FIRST_TRANSFORM_TIMING = 700;
-
-interface IChartBarsSliderProps {
-  isChartDoneAnimating?: boolean;
-}
-const ChartBarsSlider = styled.div<IChartBarsSliderProps>`
-  height: ${DIMENSIONS.CHART_HEIGHT}px;
-
-  .slick-track {
-    ${({ isChartDoneAnimating }: IChartBarsSliderProps) => {
-      return isChartDoneAnimating
-        ? {}
-        : {
-            transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
-          };
-    }}
-  }
-`;
-
-const AnimatedBarLabel = posed.div({
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      default: { duration: 400, ease: [0.215, 0.61, 0.355, 1] },
-    },
-  },
-  invisible: { opacity: 0, y: 3 },
-});
-
-const BarChartYValueLabel = styled(AnimatedBarLabel)`
-  position: absolute;
-  width: 100%;
-  top: 7px;
-  left: 0;
-  font-size: 1em;
-  text-align: center;
-`;
-
-interface IBarChartXValueProps {
-  isMobile?: boolean;
-}
-
-const BarChartXValue = styled.div<IBarChartXValueProps>`
-  position: absolute;
-  width: 100%;
-  bottom: ${({ isMobile }) => (isMobile ? '5px' : '-26px')};
-  left: 0;
-  font-size: 1.2em;
-  text-align: center;
-`;
-
-interface IBarsContainerProps {
-  isCarouselItem?: boolean;
-  isCentered?: boolean;
-}
-
-const BarsContainer = styled.div<IBarsContainerProps>`
-  display: ${({ isCarouselItem }) =>
-    isCarouselItem ? 'inline-flex !important' : 'flex'};
-  align-items: flex-end;
-  justify-content: ${({ isCentered }) =>
-    isCentered ? 'flex-start' : 'center'};
-  padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
-  height: ${DIMENSIONS.CHART_HEIGHT}px;
-  outline: 0;
-`;
-
-function getBarContainerFontSize(barWidth: number) {
-  if (barWidth >= 50) {
-    return '12px';
-  }
-
-  if (barWidth >= 40) {
-    return '11px';
-  }
-
-  if (barWidth >= 30) {
-    return '10px';
-  }
-
-  return '9px';
-}
-
-interface IBarContainerProps {
-  barWidth: number;
-}
-
-const BarContainer = styled.div<IBarContainerProps>`
-  position: relative;
-  flex: 1;
-  font-size: ${({ barWidth }) => getBarContainerFontSize(barWidth)};
-  width: ${({ barWidth }) => barWidth}px;
-  max-width: 100px;
-
-  &:not(:first-of-type) {
-    margin-left: ${DIMENSIONS.BAR_GUTTER}px;
-  }
-`;
-
-const StatusInformationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 40px;
-`;
-
-const BarRectangleContainer = styled.div`
-  overflow: hidden;
-`;
-
-const AnimatedBar = posed.div({
-  visible: {
-    y: 0,
-    transition: ({ index }: { index: number }) => ({
-      y: {
-        duration: 1000,
-        ease: [0.645, 0.045, 0.355, 1],
-        delay: index * 30,
-      },
-    }),
-  },
-  invisible: { y: '100%' },
-});
-
-const BarRectangle = styled(AnimatedBar)`
-  height: 100%;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  background-color: #4edfa5;
-  transform-origin: bottom left;
-`;
-
-const BarChartAxis = styled.div`
-  height: 4px;
-  width: 100%;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-`;
+import {
+  BarChartXValue,
+  SLIDER_FIRST_TRANSFORM_TIMING,
+  BarContainer,
+  BarRectangleContainer,
+  BarRectangle,
+  BarChartYValueLabel,
+  BarsContainer,
+  StatusInformationContainer,
+  BarChartAxis,
+  ChartBarsSlider,
+  DIMENSIONS,
+} from './styled';
 
 const chartContainerRef = React.createRef<HTMLDivElement>();
 const sliderRef = React.createRef<any>();

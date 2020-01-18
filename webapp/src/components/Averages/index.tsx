@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
@@ -10,23 +9,7 @@ import {
   IAveragesComponentProps,
   IAveragesProps,
 } from './interface';
-
-const CSS_VARS = {
-  GRID_GUTTER: 32,
-  GRID_COL_SIZE: 200,
-};
-
-const Root = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, ${CSS_VARS.GRID_COL_SIZE}px);
-  grid-column-gap: ${CSS_VARS.GRID_GUTTER}px;
-
-  @media (max-width: 520px) {
-    grid-template-columns: ${CSS_VARS.GRID_COL_SIZE}px;
-    grid-column-gap: 0;
-    grid-row-gap: ${CSS_VARS.GRID_GUTTER}px;
-  }
-`;
+import { Root } from './styled';
 
 export const Averages: React.FC<IAveragesProps> = ({
   periodStart,

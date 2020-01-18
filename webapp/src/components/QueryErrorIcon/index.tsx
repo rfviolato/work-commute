@@ -2,11 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationCircle } from '@fortawesome/pro-regular-svg-icons';
-
-const Root = styled.span`
-  color: orangered;
-  font-size: 18px;
-`;
+import { Root } from './styled';
 
 export const faIcon = faExclamationCircle;
 export const QueryErrorIcon: React.FC<{ className?: string }> = ({

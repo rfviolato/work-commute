@@ -1,33 +1,13 @@
 import React from 'react';
 import moment, { Moment } from 'moment';
-import styled from '@emotion/styled';
 import { Card } from '../Card';
 import { PeriodBarChart } from '../PeriodBarChart';
 import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
 import { Averages } from '../Averages';
+import { ChartContainer, Root, MonthPickerContainer } from './styled';
 
 const PERIOD_QUERY_STRING = 'p';
-
-const Root = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const MonthPickerContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 40px;
-`;
-
-const ChartContainer = styled.div`
-  width: 100%;
-  margin-bottom: 60px;
-`;
 
 interface IPeriodProps {}
 
