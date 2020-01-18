@@ -7,7 +7,7 @@ import {
   faCloudsMoon,
 } from '@fortawesome/pro-solid-svg-icons';
 import query from './query';
-import { IS_DEV, DEVELOPMENT_DAY } from '../../constants';
+import { IS_DEV, DEVELOPMENT_DAY, DATE_FORMAT } from '../../constants';
 import { IconLabel } from '../IconLabel';
 import { TimeDisplay } from '../TimeDisplay';
 import { IDayTotalQuery } from './interface';
@@ -20,7 +20,7 @@ const LABELS = {
 };
 
 export const DayTotal: React.FC = () => {
-  const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
+  const day = IS_DEV ? DEVELOPMENT_DAY : moment().format(DATE_FORMAT);
   const { data, loading, error } = useQuery<IDayTotalQuery>(query, {
     variables: { day },
   });

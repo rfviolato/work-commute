@@ -6,6 +6,7 @@ import { MonthPicker } from '../MonthPicker';
 import { IMonthPickerValue } from '../MonthPicker/interface';
 import { Averages } from '../Averages';
 import { ChartContainer, Root, MonthPickerContainer } from './styled';
+import { DATE_FORMAT, MONTH_DATE_FORMAT } from '../../constants';
 
 const PERIOD_QUERY_STRING = 'p';
 
@@ -26,7 +27,7 @@ const urlParams = new URLSearchParams(window.location.search);
 
 for (const queryStringEntry of urlParams.entries()) {
   if (queryStringEntry[0] === PERIOD_QUERY_STRING) {
-    const date = moment(queryStringEntry[1], 'YYYY-MM');
+    const date = moment(queryStringEntry[1], MONTH_DATE_FORMAT);
 
     if (date.isValid()) {
       defaultPeriodStartDate = getPeriodStart(date);
@@ -37,10 +38,10 @@ for (const queryStringEntry of urlParams.entries()) {
 
 export const Period: React.FC<IPeriodProps> = () => {
   const [periodStart, setPeriodStart] = React.useState(
-    defaultPeriodStartDate.format('YYYY-MM-DD'),
+    defaultPeriodStartDate.format(DATE_FORMAT),
   );
   const [periodEnd, setPeriodEnd] = React.useState(
-    defaultPeriodEndDate.format('YYYY-MM-DD'),
+    defaultPeriodEndDate.format(DATE_FORMAT),
   );
   const [currentSelectedMonth, setCurrentSelectedMonth] = React.useState(
     defaultPeriodStartDate.format('MM'),
@@ -50,11 +51,11 @@ export const Period: React.FC<IPeriodProps> = () => {
   );
   const onPeriodSwitch = React.useCallback(
     ({ year, month }: IMonthPickerValue) => {
-      const newPeriodStartDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
+      const newPeriodStartDate = moment(`${year}-${month}-01`, DATE_FORMAT);
       const newPeriodEndDate = moment(newPeriodStartDate).endOf('month');
 
-      setPeriodStart(newPeriodStartDate.format('YYYY-MM-DD'));
-      setPeriodEnd(newPeriodEndDate.add(1, 'day').format('YYYY-MM-DD'));
+      setPeriodStart(newPeriodStartDate.format(DATE_FORMAT));
+      setPeriodEnd(newPeriodEndDate.add(1, 'day').format(DATE_FORMAT));
       setCurrentSelectedMonth(newPeriodStartDate.format('MM'));
       setCurrentSelectedYear(newPeriodStartDate.format('YYYY'));
     },

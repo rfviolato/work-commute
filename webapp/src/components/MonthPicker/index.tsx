@@ -30,6 +30,7 @@ import {
   PickerMonth,
   POSE_NAMES,
 } from './styled';
+import { MONTH_DATE_FORMAT } from '../../constants';
 
 const today = moment();
 
@@ -102,8 +103,8 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
 
   React.useEffect(() => {
     if (!isLoading) {
-      const startDate = moment(`${minYear}-${minMonth}`, 'YYYY-MM');
-      const endDate = moment(`${maxYear}-${maxMonth}`, 'YYYY-MM');
+      const startDate = moment(`${minYear}-${minMonth}`, MONTH_DATE_FORMAT);
+      const endDate = moment(`${maxYear}-${maxMonth}`, MONTH_DATE_FORMAT);
       const monthCount = endDate.diff(startDate, 'months') + 1;
       const yearCount = parseInt(maxYear, 10) - parseInt(minYear, 10) + 1;
       const yearsStartDate = moment(startDate).subtract(1, 'year');
@@ -199,7 +200,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
               ) : (
                 moment(
                   `${currentValue.year}-${currentValue.month}`,
-                  'YYYY-MM',
+                  MONTH_DATE_FORMAT,
                 ).format('MMMM YYYY')
               )}
             </RetractedTriggerBtnText>

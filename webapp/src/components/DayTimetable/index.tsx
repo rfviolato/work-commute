@@ -3,7 +3,7 @@ import moment from 'moment';
 import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
 import { TimetableDisplay } from '../TimetableDisplay';
-import { DEVELOPMENT_DAY, IS_DEV } from '../../constants';
+import { DEVELOPMENT_DAY, IS_DEV, DATE_FORMAT } from '../../constants';
 import query from './query';
 import { IDayTimetableQuery } from './interface';
 
@@ -15,7 +15,7 @@ const LABELS = {
 };
 
 export const DayTimetable: React.FC = () => {
-  const day = IS_DEV ? DEVELOPMENT_DAY : moment().format('YYYY-MM-DD');
+  const day = IS_DEV ? DEVELOPMENT_DAY : moment().format(DATE_FORMAT);
   const { loading, data, error } = useQuery<IDayTimetableQuery>(query, {
     variables: { day },
   });
