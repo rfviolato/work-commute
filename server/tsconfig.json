@@ -14,8 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "noEmit": true
   },
-  "include": ["webapp/**/*", "server/**/*"]
+  "exclude": ["node_modules"]
 }
