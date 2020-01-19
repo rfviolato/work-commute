@@ -20,7 +20,7 @@ export const ListItemPicker: React.FC<IListItemPickerProps> = ({
       setCurrentIndex(newIndex);
       onChange(list[newIndex], newIndex);
     }
-  }, [currentIndex]);
+  }, [currentIndex, onChange, list]);
   const onNextClick = React.useCallback(() => {
     if (currentIndex < list.length - 1) {
       const newIndex = currentIndex + 1;
@@ -28,7 +28,7 @@ export const ListItemPicker: React.FC<IListItemPickerProps> = ({
       setCurrentIndex(newIndex);
       onChange(list[newIndex], newIndex);
     }
-  }, [currentIndex]);
+  }, [currentIndex, onChange, list]);
 
   React.useEffect(() => {
     setCurrentIndex(index);

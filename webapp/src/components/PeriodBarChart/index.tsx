@@ -168,7 +168,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setBarWidth(barWidth);
       return setIsMobileView(false);
     }
-  }, [windowWidth, isLoading]);
+  }, [windowWidth, isLoading, data.length]);
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -178,7 +178,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         ),
       );
     }
-  }, [periodStart, periodEnd, isLoading]);
+  }, [periodStart, periodEnd, isLoading, data]);
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -204,7 +204,13 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     if (isYValueDoneAnimating && isMobileView && sliderRef.current) {
       sliderRef.current.slickGoTo(numberOfSlides);
     }
-  }, [isMobileView, isYValueDoneAnimating, periodStart, periodEnd]);
+  }, [
+    isMobileView,
+    isYValueDoneAnimating,
+    periodStart,
+    periodEnd,
+    numberOfSlides,
+  ]);
 
   if (barWidth === BAR_WIDTH_INITIAL_VALUE || isLoading) {
     return (

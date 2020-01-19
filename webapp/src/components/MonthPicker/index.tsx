@@ -169,17 +169,21 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
 
       setAvailableYearList(yearList);
       setCalendarMonthLabels(calendarMonthsPerYear);
-
-      const availableYearIndex = yearList.indexOf(browsingYear);
-      const isYearAvailable = availableYearIndex >= 0;
-
-      if (!isYearAvailable) {
-        const latestAvailableYearIndex = yearList.length - 1;
-
-        setBrowsingYear(yearList[latestAvailableYearIndex]);
-      }
     }
   }, [minYear, maxYear, minMonth, maxMonth, isLoading]);
+
+  React.useEffect(() => {
+    if (availableYearList.length) {
+      const availableYearIndex = availableYearList.indexOf(currentYear);
+      const isYearUnavailable = availableYearIndex < 0;
+
+      if (isYearUnavailable) {
+        const latestAvailableYearIndex = availableYearList.length - 1;
+
+        setBrowsingYear(availableYearList[latestAvailableYearIndex]);
+      }
+    }
+  }, [availableYearList, currentYear]);
 
   return (
     <Root onMouseLeave={onComponentLeave}>
