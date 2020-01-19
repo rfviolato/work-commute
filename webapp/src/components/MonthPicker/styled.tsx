@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import posed from 'react-pose';
 import { QueryErrorIcon } from '../QueryErrorIcon';
+import { COLORS } from '../../global-styles';
 
 export const DIMENSIONS = {
   RETRACTED_HEIGHT: 45,
@@ -143,7 +144,7 @@ export const PickerMonth = styled.li<IPickerMonth>`
 
     return 'pointer';
   }};
-  color: ${({ isCurrent }) => (isCurrent ? '#4edfa5' : 'currentColor')};
+  color: ${({ isCurrent }) => (isCurrent ? COLORS.CHART_BAR : 'currentColor')};
 
   &:hover {
     ${({ isAvailable, isCurrent }) =>
@@ -175,9 +176,9 @@ export const ScaledBg = styled(AnimatedScaledBg)`
   width: ${DIMENSIONS.RETRACTED_WIDTH}px;
   height: ${DIMENSIONS.RETRACTED_HEIGHT}px;
   border-radius: 4px;
-  background-color: #626262;
+  background-color: ${COLORS.DARK_GRAY};
   transform-origin: top right;
-  border: 1px solid #f1f1f1;
+  border: 1px solid ${COLORS.GRAY};
 `;
 
 export const PickerYearContainer = styled.div`

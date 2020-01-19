@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
+import { COLORS } from '../../global-styles';
 
 export const Root = styled.nav`
   display: flex;
@@ -7,7 +8,7 @@ export const Root = styled.nav`
   justify-content: center;
   width: 100%;
   height: 50px;
-  background-color: #404040;
+  background-color: ${COLORS.LIGHT_BLACK};
   border-bottom: 1px solid #aaa;
 `;
 
@@ -19,7 +20,7 @@ export const Link = styled(NavLink)`
   position: relative;
   top: -2px;
   opacity: 0.6;
-  color: #fff;
+  color: ${COLORS.WHITE};
   text-decoration: none;
   font-size: 20px;
   transition: opacity 300ms ease-out;

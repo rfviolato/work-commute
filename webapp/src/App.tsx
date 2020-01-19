@@ -10,7 +10,7 @@ import { Period } from './components/Period';
 import { Today } from './components/Today';
 import { Navigation } from './components/Navigation';
 
-import GlobalStyles from './GlobalStyles';
+import { GlobalStyles } from './global-styles';
 
 const client = new ApolloClient({ uri: '/gql' });
 

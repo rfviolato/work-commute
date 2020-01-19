@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { COLORS } from '../../global-styles';
 
 export const Root = styled.div`
   position: relative;
@@ -9,7 +10,7 @@ export const Root = styled.div`
   align-items: center;
   justify-content: center;
   padding: 30px;
-  border: 1px solid #f1f1f1;
+  border: 1px solid ${COLORS.GRAY};
   border-radius: 4px;
-  background-color: #404040;
+  background-color: ${COLORS.LIGHT_BLACK};
 `;

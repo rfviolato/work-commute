@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import posed from 'react-pose';
+import { COLORS } from '../../global-styles';
 
 export const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -141,13 +142,13 @@ export const BarRectangle = styled(AnimatedBar)`
   height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background-color: #4edfa5;
+  background-color: ${COLORS.CHART_BAR};
   transform-origin: bottom left;
 `;
 
 export const BarChartAxis = styled.div`
   height: 4px;
   width: 100%;
-  background-color: #f1f1f1;
+  background-color: ${COLORS.GRAY};
   border-radius: 8px;
 `;

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { QueryErrorIcon } from '../QueryErrorIcon';
+import { COLORS } from '../../global-styles';
 
 export const Root = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ export const IconContainer = styled.div`
   justify-content: center;
   width: 64px;
   height: 64px;
-  border: 2px solid #f1f1f1;
+  border: 2px solid ${COLORS.GRAY};
   border-radius: 50%;
 `;
 
