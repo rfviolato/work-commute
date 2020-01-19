@@ -8,7 +8,6 @@ import {
   Root,
   DisplayIconContainer,
   ErrorDisplay,
-  TimetableContainer,
   Timetable,
   TimetableLabel,
   TimetableTimestamp,
@@ -29,7 +28,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
         </DisplayIconContainer>
       </IconContainer>
 
-      <TimetableContainer>
+      <ul>
         {timetables.map(({ timestamp, label }) => {
           const timetableDate = moment(timestamp, 'HH:mm:ssZ');
           const timetableLabel = `${label}: `;
@@ -56,7 +55,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
             </Timetable>
           );
         })}
-      </TimetableContainer>
+      </ul>
     </Root>
   );
 };

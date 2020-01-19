@@ -88,7 +88,6 @@ export const Picker = styled(AnimatedPicker)`
   width: ${DIMENSIONS.EXPANDED_WIDTH}px;
   height: ${DIMENSIONS.EXPANDED_HEIGHT}px;
   padding: 30px 15px 35px 15px;
-  list-style: none;
 
   &:focus {
     outline: 0;
@@ -99,11 +98,6 @@ export const ExpandedTriggerBtn = styled.button`
   position: absolute;
   top: 5px;
   right: 5px;
-  background-color: transparent;
-  border: 0;
-  color: currentColor;
-  font-size: 1em;
-  cursor: pointer;
   transition: opacity 300ms ease;
   width: 30px;
   height: 30px;
@@ -125,8 +119,6 @@ export const PickerMonthContainer = styled.ul`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: 10px;
-  margin: 0;
-  padding: 0;
 `;
 
 interface IPickerMonth {

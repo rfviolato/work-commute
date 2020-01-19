@@ -30,12 +30,6 @@ export const IconContainer = styled.div`
   }
 `;
 
-export const TimetableContainer = styled.ul`
-  padding: 0;
-  margin: 0;
-  list-style: none;
-`;
-
 interface ITimetableProps {
   isLoading?: boolean;
 }

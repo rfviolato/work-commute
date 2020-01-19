@@ -23,6 +23,20 @@ const styles = css`
     margin: 0;
   }
 
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  button {
+    border: 0;
+    background: transparent;
+    color: currentColor;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
   *,
   *::before,
   *::after {

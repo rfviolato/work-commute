@@ -5,9 +5,6 @@ export interface INavigationButtonProps {
 }
 
 export const NavigationButton = styled.button<INavigationButtonProps>`
-  border: 0;
-  background: transparent;
-  color: currentColor;
   font-size: 16px;
   transition: opacity 300ms ease;
   cursor: ${({ isUnavailable }) => (isUnavailable ? 'default' : 'pointer')};
