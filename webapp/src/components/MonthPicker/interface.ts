@@ -29,6 +29,7 @@ export interface IMonthPickerQuery {
 export interface ICalendarMonth {
   text: string;
   month: string;
+  year: string;
   isAvailable: boolean;
 }
 
@@ -36,6 +37,6 @@ export interface ICalendarMonthPerYear {
   [key: string]: ICalendarMonth[];
 }
 
-export interface IMonthsPerYear {
+export interface IMonthsWithDataPerYear {
   [key: string]: string[];
 }

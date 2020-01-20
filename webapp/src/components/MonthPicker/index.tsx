@@ -163,10 +163,9 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
 
             <PickerMonthContainer>
               {calendarMonthLabels[browsingYear].map(
-                ({ text, month, isAvailable }: ICalendarMonth) => {
+                ({ text, month, year, isAvailable }: ICalendarMonth) => {
                   const isCurrent =
-                    currentValue.month === month &&
-                    currentValue.year === browsingYear;
+                    currentValue.month === month && currentValue.year === year;
 
                   const onClick = () => {
                     if (isAvailable) {

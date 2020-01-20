@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
-import { ICalendarMonthPerYear, IMonthsPerYear } from './interface';
+import { ICalendarMonthPerYear, IMonthsWithDataPerYear } from './interface';
 import { MONTH_DATE_FORMAT } from '../../constants';
 
 interface IUseCalendarDataParameters {
@@ -26,9 +26,12 @@ export function useCalendarData({
   useEffect(() => {
     if (minMonth) {
       const startDate = moment(`${minYear}-${minMonth}`, MONTH_DATE_FORMAT);
-      const endDate = moment(`${maxYear}-${maxMonth}`, MONTH_DATE_FORMAT);
-      const monthCount = endDate.diff(startDate, 'months') + 1;
-      const yearCount = parseInt(maxYear, 10) - parseInt(minYear, 10) + 1;
+      const endDate = moment(`${maxYear}-${maxMonth}`, MONTH_DATE_FORMAT).endOf(
+        'month',
+      );
+      const minYearNumber = parseInt(minYear, 10);
+      const maxYearNumber = parseInt(maxYear, 10);
+      const yearCount = maxYearNumber - minYearNumber + 1;
       const yearsStartDate = moment(startDate).subtract(1, 'year');
 
       const years = Array(yearCount)
@@ -40,33 +43,9 @@ export function useCalendarData({
           }),
           {},
         );
-      const yearList = Object.keys(years);
-
-      const monthsStartDate = moment(startDate).subtract(1, 'month');
-      const monthsPerYear: IMonthsPerYear = Array(monthCount)
-        .fill(monthCount)
-        .map(() => {
-          const date = monthsStartDate.add(1, 'month');
-
-          return {
-            year: date.format('YYYY'),
-            month: date.format('MM'),
-          };
-        })
-        .reduce(
-          (
-            accum: { [key: string]: string[] },
-            { year, month }: { year: string; month: string },
-          ) => {
-            return {
-              ...accum,
-              [year]: [...accum[year], month],
-            };
-          },
-          years,
-        );
 
       const calendarMonthsStartDate = moment('12-01', 'MM-DD'); // starts at December because first iteration already adds 1 month
+      const yearList = Object.keys(years);
       const calendarMonthsPerYear: ICalendarMonthPerYear = yearList.reduce(
         (accum: { [key: string]: any }, year: string) => {
           return {
@@ -74,13 +53,20 @@ export function useCalendarData({
             [year]: Array(12)
               .fill(12)
               .map(() => {
-                const date = calendarMonthsStartDate.add(1, 'month');
-                const month = date.format('MM');
-                const isAvailable = monthsPerYear[year].includes(month);
+                const referenceDate = calendarMonthsStartDate.add(1, 'month');
+                const month = referenceDate.format('MM');
+                const currentDate = moment(
+                  `${year}-${month}`,
+                  MONTH_DATE_FORMAT,
+                );
+                const isAvailable =
+                  currentDate.isSameOrAfter(startDate) &&
+                  currentDate.isSameOrBefore(endDate);
 
                 return {
+                  year,
                   month,
-                  text: date.format('MMM').toUpperCase(),
+                  text: referenceDate.format('MMM').toUpperCase(),
                   isAvailable,
                 };
               }),
