@@ -9,9 +9,7 @@ import Skeleton from 'react-loading-skeleton';
 import {
   IMonthPickerProps,
   ICalendarMonth,
-  IMonthsPerYear,
   IMonthPickerValue,
-  ICalendarMonthPerYear,
   IMonthPickerComponentProps,
   IMonthPickerQuery,
 } from './interface';
@@ -31,6 +29,7 @@ import {
   POSE_NAMES,
 } from './styled';
 import { MONTH_DATE_FORMAT } from '../../constants';
+import { useCalendarData } from './use-calendar-data';
 
 const today = moment();
 
@@ -61,12 +60,12 @@ export const MonthPicker: React.FC<IMonthPickerProps> = (props) => {
 export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   minYear = today.format('YYYY'),
   maxYear = today.format('MM'),
+  isLoading = false,
+  hasError = false,
   minMonth,
   maxMonth,
   currentYear,
   currentMonth,
-  isLoading,
-  hasError,
   onSwitch = () => {},
 }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -76,14 +75,13 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
     year: currentYear,
     month: currentMonth,
   });
-
-  const [availableYearList, setAvailableYearList] = React.useState<string[]>(
-    [],
-  );
-
-  const [calendarMonthLabels, setCalendarMonthLabels] = React.useState<
-    ICalendarMonthPerYear
-  >({});
+  const { availableYearList, calendarMonthLabels } = useCalendarData({
+    isLoading,
+    minYear,
+    maxYear,
+    minMonth,
+    maxMonth,
+  });
 
   const onYearChange = React.useCallback(
     (year: string) => setBrowsingYear(year),
@@ -100,77 +98,6 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
     () => setCurrentValue({ month: currentMonth, year: currentYear }),
     [currentMonth, currentYear],
   );
-
-  React.useEffect(() => {
-    if (!isLoading) {
-      const startDate = moment(`${minYear}-${minMonth}`, MONTH_DATE_FORMAT);
-      const endDate = moment(`${maxYear}-${maxMonth}`, MONTH_DATE_FORMAT);
-      const monthCount = endDate.diff(startDate, 'months') + 1;
-      const yearCount = parseInt(maxYear, 10) - parseInt(minYear, 10) + 1;
-      const yearsStartDate = moment(startDate).subtract(1, 'year');
-
-      const years = Array(yearCount)
-        .fill(yearCount)
-        .reduce(
-          (accum: {}) => ({
-            ...accum,
-            [yearsStartDate.add(1, 'year').format('YYYY')]: [],
-          }),
-          {},
-        );
-      const yearList = Object.keys(years);
-
-      const monthsStartDate = moment(startDate).subtract(1, 'month');
-      const monthsPerYear: IMonthsPerYear = Array(monthCount)
-        .fill(monthCount)
-        .map(() => {
-          const date = monthsStartDate.add(1, 'month');
-
-          return {
-            year: date.format('YYYY'),
-            month: date.format('MM'),
-          };
-        })
-        .reduce(
-          (
-            accum: { [key: string]: string[] },
-            { year, month }: { year: string; month: string },
-          ) => {
-            return {
-              ...accum,
-              [year]: [...accum[year], month],
-            };
-          },
-          years,
-        );
-
-      const calendarMonthsStartDate = moment('12-01', 'MM-DD'); // starts at December because first iteration already add 1 month
-      const calendarMonthsPerYear: ICalendarMonthPerYear = yearList.reduce(
-        (accum: { [key: string]: any }, year: string) => {
-          return {
-            ...accum,
-            [year]: Array(12)
-              .fill(12)
-              .map(() => {
-                const date = calendarMonthsStartDate.add(1, 'month');
-                const month = date.format('MM');
-                const isAvailable = monthsPerYear[year].includes(month);
-
-                return {
-                  month,
-                  text: date.format('MMM').toUpperCase(),
-                  isAvailable,
-                };
-              }),
-          };
-        },
-        {},
-      );
-
-      setAvailableYearList(yearList);
-      setCalendarMonthLabels(calendarMonthsPerYear);
-    }
-  }, [minYear, maxYear, minMonth, maxMonth, isLoading]);
 
   React.useEffect(() => {
     if (availableYearList.length) {
