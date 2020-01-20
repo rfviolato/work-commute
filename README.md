@@ -106,21 +106,16 @@ I believe UIs are much more pleasant and clear when the state of a piece of UI c
 # Features To-do
 
 There are still some things that I want to create and fine-tune:
-
 - "Add to home screen" support
 - Display a nice UI when offline
 - Display day events
 - Give month picker proper mobile UI layout
-- Query batching
 - Fine-tune easings and transitions to favor smoothness
-- Cover some UI edge-cases (e.g.: displaying something on not worked days)
+- Cover some UI edge-cases (e.g.: displaying something on not-worked days)
 
 # Project To-do
 
 There is still much to be done to make this repository more organized:
-
-- Tidy-up big components
-- Improve folder structure
 - More scalable folder structure
 - Add instructions of how to run the project to the Readme file
 
