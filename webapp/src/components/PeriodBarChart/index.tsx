@@ -98,9 +98,11 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [windowWidth, setWindowWidth] = React.useState<number>(
     window.innerWidth,
   );
+
   const onBarAnimationComplete = debounce(() => {
     setAreBarsDoneAnimating(true);
   }, 100);
+
   const onYAxisValueAnimationComplete = debounce(() => {
     setIsYValueDoneAnimating(true);
 
@@ -152,48 +154,56 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   React.useEffect(() => {
     if (chartContainerRef.current) {
       const { offsetWidth } = chartContainerRef.current;
-      const barWidth = Math.round(
+      const predictedBarWidth = Math.round(
         offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
       );
 
-      if (barWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
-        const barWidth = Math.round(
+      if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
+        const mobilePredictedBarWidth = Math.round(
           offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
         );
 
-        setBarWidth(barWidth);
-        return setIsMobileView(true);
+        setBarWidth(mobilePredictedBarWidth);
+        setIsMobileView(true);
+
+        return;
       }
 
-      setBarWidth(barWidth);
-      return setIsMobileView(false);
+      setBarWidth(predictedBarWidth);
+      setIsMobileView(false);
     }
   }, [windowWidth, isLoading, data.length]);
 
   React.useEffect(() => {
-    if (!isLoading) {
+    if (data.length) {
       setChartDataMaxYValue(
         getArrayMaxValue(data, (day: any) =>
           getTotalMinutesFromTime(day.totalTimeAtOffice),
         ),
       );
     }
-  }, [periodStart, periodEnd, isLoading, data]);
+  }, [periodStart, periodEnd, data]);
 
   React.useEffect(() => {
-    if (!isLoading) {
-      const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
-
-      window.addEventListener('resize', onResize);
-      setTimeout(() => setIsChartVisible(true), 300);
-
-      return () => window.removeEventListener('resize', onResize);
-    } else {
+    /**
+     * This is necessary for returning the component's state to
+     * its original default state between period switches
+     */
+    if (isLoading) {
       setIsChartVisible(false);
       setIsChartDoneAnimating(false);
       setAreBarsDoneAnimating(false);
       setIsYValueDoneAnimating(false);
+
+      return;
     }
+
+    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+
+    window.addEventListener('resize', onResize);
+    setTimeout(() => setIsChartVisible(true), 300);
+
+    return () => window.removeEventListener('resize', onResize);
   }, [isLoading]);
 
   React.useEffect(() => {
