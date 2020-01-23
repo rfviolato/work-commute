@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
-import { ICalendarMonthPerYear, IMonthsWithDataPerYear } from './interface';
+import { ICalendarMonthPerYear } from './interface';
 import { MONTH_DATE_FORMAT } from '../../constants';
 
 interface IUseCalendarDataParameters {
