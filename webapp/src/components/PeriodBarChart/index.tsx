@@ -282,9 +282,11 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   return (
     <div ref={chartContainerRef}>
       <BarsContainer>
-        <StatusInformationContainer>
-          <StatusInformation hasError={hasError} noData={data.length === 0} />
-        </StatusInformationContainer>
+        {!data.length && (
+          <StatusInformationContainer>
+            <StatusInformation hasError={hasError} noData={data.length === 0} />
+          </StatusInformationContainer>
+        )}
 
         {data.map(renderChartBars)}
       </BarsContainer>
