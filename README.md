@@ -33,9 +33,9 @@ This part was the one that had to put most thought on, I really wanted to simpli
 
 At first, I thought of doing some scheduled browser push-notifications, but that would take me much more development time, so as I mentioned earlier I am very obsessed with time and I also really like to automate some aspects of my life, so I really like the iOS Shortcuts app for making some repetitive tasks more trivial, and while investigating its features, I noticed that you could do network requests on those shortcuts, so this was the perfect way of logging those time events.
 
-<img src="readme/shortcuts_1.jpeg" width="200" />
-
 On late 2019, there was an update on the Shortcuts app which you could now make automation to run shortcuts, and one of the automation features involve geolocation, so you can trigger any shortcut depending on where you are arriving and leaving, so that was the perfect use case for the reminder need.
+
+<img src="readme/shortcuts_1.jpeg" width="200" />
 
 ### Time Event API
 
