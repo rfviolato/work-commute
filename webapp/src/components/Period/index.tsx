@@ -10,7 +10,7 @@ import { DATE_FORMAT, MONTH_DATE_FORMAT } from '../../constants';
 
 const PERIOD_QUERY_STRING = 'p';
 
-interface IPeriodProps {}
+interface IPeriodProps { }
 
 const getPeriodEnd = (date: Moment): Moment =>
   moment(date)

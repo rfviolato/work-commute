@@ -17,12 +17,12 @@ export const ChartBarsSlider = styled.div<IChartBarsSliderProps>`
 
   .slick-track {
     ${({ isChartDoneAnimating }: IChartBarsSliderProps) => {
-      return isChartDoneAnimating
-        ? {}
-        : {
-            transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
-          };
-    }}
+    return isChartDoneAnimating
+      ? {}
+      : {
+        transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
+      };
+  }}
   }
 `;
 
@@ -120,7 +120,7 @@ interface IBarRectangleContainerProps {
 }
 
 export const BarRectangleContainer = styled.div<IBarRectangleContainerProps>`
-  height: ${({ barHeight }) => `${barHeight}px`};
+  height: ${({ barHeight }) => barHeight}px;
   overflow: hidden;
 `;
 
