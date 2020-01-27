@@ -129,7 +129,7 @@ export const AnimatedBar = posed.div({
     y: 0,
     transition: ({ index }: { index: number }) => ({
       y: {
-        duration: 1000,
+        duration: 900,
         ease: [0.645, 0.045, 0.355, 1],
         delay: index * 30,
       },
@@ -144,6 +144,7 @@ export const BarRectangle = styled(AnimatedBar)`
   border-top-right-radius: 5px;
   background-color: ${COLORS.CHART_BAR};
   transform-origin: bottom left;
+  will-change: transform;
 `;
 
 export const BarChartAxis = styled.div`
