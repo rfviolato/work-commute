@@ -29,12 +29,19 @@ export const ChartBarsSlider = styled.div<IChartBarsSliderProps>`
 export const AnimatedBarLabel = posed.div({
   visible: {
     opacity: 1,
+    scaleX: 1,
+    scaleY: 1,
     y: 0,
     transition: {
-      default: { duration: 400, ease: [0.215, 0.61, 0.355, 1] },
+      default: { duration: 350, ease: [0.215, 0.61, 0.355, 1] },
     },
   },
-  invisible: { opacity: 0, y: 3 },
+  invisible: {
+    opacity: 0,
+    scaleX: 0.875,
+    scaleY: 0.875,
+    y: 2,
+  },
 });
 
 export const BarChartYValueLabel = styled(AnimatedBarLabel)`
@@ -44,6 +51,8 @@ export const BarChartYValueLabel = styled(AnimatedBarLabel)`
   left: 0;
   font-size: 1em;
   text-align: center;
+  transform-origin: center center;
+  will-change: transform, opacity;
 `;
 
 interface IBarChartXValueProps {
