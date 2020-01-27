@@ -20,6 +20,10 @@ export const Root = styled.div`
   width: ${DIMENSIONS.RETRACTED_WIDTH}px;
   height: ${DIMENSIONS.RETRACTED_HEIGHT}px;
   color: #e0e0e0;
+
+  &:hover .scaled-bg {
+    background-color: ${COLORS.DARK_GRAY};
+  }
 `;
 
 export const animatedScaleBgTransition = {
@@ -148,10 +152,10 @@ export const PickerMonth = styled.li<IPickerMonth>`
 
   &:hover {
     ${({ isAvailable, isCurrent }) =>
-      isAvailable &&
-      !isCurrent && {
-        opacity: 0.7,
-      }}
+    isAvailable &&
+    !isCurrent && {
+      opacity: 0.7,
+    }}
   }
 `;
 
@@ -176,9 +180,10 @@ export const ScaledBg = styled(AnimatedScaledBg)`
   width: ${DIMENSIONS.RETRACTED_WIDTH}px;
   height: ${DIMENSIONS.RETRACTED_HEIGHT}px;
   border-radius: 4px;
-  background-color: ${COLORS.DARK_GRAY};
+  background-color: ${COLORS.LIGHT_BLACK};
   transform-origin: top right;
   border: 1px solid ${COLORS.GRAY};
+  transition: background-color 300ms ease;
 `;
 
 export const PickerYearContainer = styled.div`

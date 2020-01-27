@@ -66,7 +66,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   maxMonth,
   currentYear,
   currentMonth,
-  onSwitch = () => {},
+  onSwitch = () => { },
 }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
@@ -115,6 +115,10 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
   return (
     <Root onMouseLeave={onComponentLeave}>
       <ScaledBg
+        /* TODO: remove this "className" once babel-plugin-emotion can be installed
+         * and child emotion components can be referenced
+        */
+        className="scaled-bg"
         pose={isExpanded ? POSE_NAMES.BG_EXPAND : POSE_NAMES.BG_RETRACT}
       ></ScaledBg>
 
@@ -129,18 +133,18 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
               {isLoading ? (
                 <Skeleton width={100} />
               ) : (
-                moment(
-                  `${currentValue.year}-${currentValue.month}`,
-                  MONTH_DATE_FORMAT,
-                ).format('MMMM YYYY')
-              )}
+                  moment(
+                    `${currentValue.year}-${currentValue.month}`,
+                    MONTH_DATE_FORMAT,
+                  ).format('MMMM YYYY')
+                )}
             </RetractedTriggerBtnText>
 
             {hasError ? (
               <ErrorDisplay />
             ) : (
-              <FontAwesomeIcon icon={faCalendarAlt} />
-            )}
+                <FontAwesomeIcon icon={faCalendarAlt} />
+              )}
           </RetractedTriggerBtn>
         )}
 
