@@ -115,7 +115,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return getArrayMaxValue(data, (day: any) =>
       getTotalMinutesFromTime(day.totalTimeAtOffice),
     );
-  }, [periodStart, periodEnd, data]);
+  }, [data]);
 
   const renderChartBars = (
     { totalTimeAtOffice, day }: ITimetableChartResult,
