@@ -72,15 +72,18 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
   );
 };
 
+const defaultDataValue: any = [];
+let isFirstLoaded = false;
+
 export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
-  data = [],
+  data = defaultDataValue,
   periodStart,
   periodEnd,
-  isLoading,
-  hasError,
+  isLoading = false,
+  hasError = false,
 }) => {
-  const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
   const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
+  const [chartData, setChartData] = React.useState(data);
   const [areBarsDoneAnimating, setAreBarsDoneAnimating] = React.useState<
     boolean
   >(false);
@@ -97,6 +100,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [windowWidth, setWindowWidth] = React.useState<number>(
     window.innerWidth,
   );
+  const numberOfSlides = Math.ceil(chartData.length / BARS_PER_PAGE);
 
   const onBarAnimationComplete = debounce(() => {
     setAreBarsDoneAnimating(true);
@@ -112,10 +116,40 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   }, 100);
 
   const chartDataMaxYValue = React.useMemo(() => {
-    return getArrayMaxValue(data, (day: any) =>
+    return getArrayMaxValue(chartData, (day: any) =>
       getTotalMinutesFromTime(day.totalTimeAtOffice),
     );
-  }, [data]);
+  }, [chartData]);
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      setChartData(data);
+      setTimeout(() => setIsChartVisible(true), 300);
+    }
+
+    if (!isFirstLoaded && data.length) {
+      isFirstLoaded = true;
+    }
+  }, [data, isLoading]);
+
+  React.useEffect(() => {
+    if (isLoading && data.length === 0 && isFirstLoaded) {
+      setIsYValueDoneAnimating(false);
+      setIsChartDoneAnimating(false);
+      setAreBarsDoneAnimating(false);
+
+      setTimeout(() => {
+        setIsChartVisible(false);
+      }, 300);
+    }
+  }, [isChartVisible, isChartDoneAnimating, areBarsDoneAnimating, isYValueDoneAnimating, data, isLoading]);
+
+  console.log({
+    isChartVisible,
+    areBarsDoneAnimating,
+    isYValueDoneAnimating,
+    isChartDoneAnimating,
+  })
 
   const renderChartBars = (
     { totalTimeAtOffice, day }: ITimetableChartResult,
@@ -157,10 +191,10 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   };
 
   React.useEffect(() => {
-    if (chartContainerRef.current && data.length) {
+    if (chartContainerRef.current && chartData.length) {
       const { offsetWidth } = chartContainerRef.current;
       const predictedBarWidth = Math.round(
-        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
+        offsetWidth / chartData.length - DIMENSIONS.BAR_GUTTER,
       );
 
       if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
@@ -177,29 +211,15 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setBarWidth(predictedBarWidth);
       setIsMobileView(false);
     }
-  }, [windowWidth, periodStart, periodEnd, data.length]);
+  }, [windowWidth, periodStart, periodEnd, chartData.length]);
 
   React.useEffect(() => {
-    /**
-     * This is necessary for returning the component's state to
-     * its original default state between period switches
-     */
-    if (isLoading) {
-      setIsChartVisible(false);
-      setIsChartDoneAnimating(false);
-      setAreBarsDoneAnimating(false);
-      setIsYValueDoneAnimating(false);
-
-      return;
-    }
-
     const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
 
     window.addEventListener('resize', onResize);
-    setTimeout(() => setIsChartVisible(true), 300);
 
     return () => window.removeEventListener('resize', onResize);
-  }, [isLoading]);
+  }, []);
 
   React.useEffect(() => {
     /**
@@ -217,7 +237,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     numberOfSlides,
   ]);
 
-  if (barWidth === BAR_WIDTH_INITIAL_VALUE || isLoading) {
+  if (barWidth === BAR_WIDTH_INITIAL_VALUE) {
     return (
       <div ref={chartContainerRef}>
         <BarsContainer>
@@ -241,7 +261,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           <BarsContainer
             isCarouselItem
             isCentered={
-              !isMobileView || (isMobileView && data.length < BARS_PER_PAGE)
+              !isMobileView || (isMobileView && chartData.length < BARS_PER_PAGE)
             }
             key={i}
           >
@@ -259,9 +279,9 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       <div ref={chartContainerRef}>
         <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
           <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-            {!data.length && (
+            {!chartData.length && (
               <StatusInformationContainer>
-                <StatusInformation hasError={hasError} noData={!data.length} />
+                <StatusInformation hasError={hasError} noData={!chartData.length} />
               </StatusInformationContainer>
             )}
 
@@ -277,13 +297,13 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   return (
     <div ref={chartContainerRef}>
       <BarsContainer>
-        {!data.length && (
+        {!chartData.length && (
           <StatusInformationContainer>
-            <StatusInformation hasError={hasError} noData={data.length === 0} />
+            <StatusInformation hasError={hasError} noData={chartData.length === 0} />
           </StatusInformationContainer>
         )}
 
-        {data.map(renderChartBars)}
+        {chartData.map(renderChartBars)}
       </BarsContainer>
 
       <BarChartAxis />

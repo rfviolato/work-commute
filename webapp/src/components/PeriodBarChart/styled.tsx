@@ -144,7 +144,13 @@ export const AnimatedBar = posed.div({
       },
     }),
   },
-  invisible: { y: '100%' },
+  invisible: {
+    y: '100%',
+    transition: {
+      duration: 600,
+      ease: [0.645, 0.045, 0.355, 1],
+    }
+  },
 });
 
 export const BarRectangle = styled(AnimatedBar)`
