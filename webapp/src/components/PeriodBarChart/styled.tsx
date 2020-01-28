@@ -9,6 +9,18 @@ export const DIMENSIONS = {
 };
 export const SLIDER_FIRST_TRANSFORM_TIMING = 700;
 
+export const Root = styled.div`
+  position: relative;
+`;
+
+export const LoadingSpinnerContainer = styled.div`
+  font-size: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 interface IChartBarsSliderProps {
   isChartDoneAnimating?: boolean;
 }
@@ -44,7 +56,7 @@ export const AnimatedBarLabel = posed.div({
   },
 });
 
-export const BarChartYValueLabel = styled(AnimatedBarLabel)`
+export const BarChartYValueLabel = styled.div`
   position: absolute;
   width: 100%;
   top: 7px;
@@ -52,7 +64,8 @@ export const BarChartYValueLabel = styled(AnimatedBarLabel)`
   font-size: 1em;
   text-align: center;
   transform-origin: center center;
-  will-change: transform, opacity;
+  will-change: transform;
+  opacity: 0;
 `;
 
 interface IBarChartXValueProps {
@@ -147,13 +160,14 @@ export const AnimatedBar = posed.div({
   invisible: { y: '100%' },
 });
 
-export const BarRectangle = styled(AnimatedBar)`
+export const BarRectangle = styled.div`
   height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   background-color: ${COLORS.CHART_BAR};
   transform-origin: bottom left;
   will-change: transform;
+  transform: translateY(100%);
 `;
 
 export const BarChartAxis = styled.div`
