@@ -7,7 +7,7 @@ export const DIMENSIONS = {
   BAR_GUTTER: 8,
   MIN_BAR_WIDTH: 25,
 };
-export const SLIDER_FIRST_TRANSFORM_TIMING = 700;
+export const SLIDER_FIRST_TRANSFORM_TIMING = 800;
 
 export const Root = styled.div`
   position: relative;

@@ -118,6 +118,18 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [windowWidth, setWindowWidth] = React.useState<number>(
     window.innerWidth,
   );
+  console.log({
+    areBarsRendered,
+    isYValueDoneAnimating,
+    isChartDoneAnimating,
+    isMobileView,
+    barWidth,
+    data,
+    periodStart,
+    periodEnd,
+    isLoading,
+    hasError,
+  });
 
   const watchBarRender = React.useCallback(node => {
     if (node === null) {
@@ -125,6 +137,14 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     }
 
     setAreBarsRendered(true);
+  }, []);
+
+  React.useEffect(() => {
+    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+
+    window.addEventListener('resize', onResize);
+
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   const chartDataMaxYValue = React.useMemo(() => {
@@ -189,27 +209,25 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   }, [windowWidth, periodStart, periodEnd, data.length]);
 
   React.useEffect(() => {
-    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
-
-    window.addEventListener('resize', onResize);
-
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-
-  React.useEffect(() => {
     if (areBarsRendered) {
-      console.log('hook ran!');
       const showDataTimeline = anime.timeline({
         autoplay: false,
         easing: 'easeOutCubic',
       });
 
+      /**
+       * Be aware that if the loading spinner infinitely animates
+       * And that can interfere with the overall aniamtion performance
+       * So I should come up with a nice strategy to show & hide it
+       * In a way that won't interfere with the animation, so setting the state
+       * can be dangerous, I should probably set the state and then wait for idle main thread
+       */
       // Loading spinner animation
-      showDataTimeline.add({
-        targets: '.loading-spinner',
-        duration: 300,
-        opacity: [1, 0],
-      });
+      // showDataTimeline.add({
+      //   targets: '.loading-spinner',
+      //   duration: 300,
+      //   opacity: [1, 0],
+      // });
 
       // Chart bars animation
       showDataTimeline.add({
@@ -233,11 +251,15 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
       showDataTimeline.complete = () => {
         if (isMobileView) {
-          setTimeout(() => setIsChartDoneAnimating(true), SLIDER_FIRST_TRANSFORM_TIMING);
+          setTimeout(
+            () => window.requestIdleCallback(() => setIsChartDoneAnimating(true)),
+            SLIDER_FIRST_TRANSFORM_TIMING + 100,
+            // 100ms to add a bit of room so React's reconciliation process happens a bit after animation is done
+          );
         }
       };
 
-      setTimeout(showDataTimeline.play, 100);
+      window.requestIdleCallback(showDataTimeline.play);
     }
   }, [areBarsRendered, isMobileView]);
 
@@ -247,7 +269,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
      * Slick's `initialSlide` prop won't work.
      */
     if (isYValueDoneAnimating && isMobileView && sliderRef.current) {
-      setTimeout(() => sliderRef.current.slickGoTo(numberOfSlides), 100);
+      window.requestIdleCallback(() => sliderRef.current.slickGoTo(numberOfSlides));
     }
   }, [
     isMobileView,
@@ -302,11 +324,11 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
   return (
     <Root ref={chartContainerRef}>
-      <LoadingSpinnerContainer>
-        <div className="loading-spinner">
+      {isLoading && (
+        <LoadingSpinnerContainer>
           <LoadingSpinner />
-        </div>
-      </LoadingSpinnerContainer>
+        </LoadingSpinnerContainer>
+      )}
 
       {!data.length && !isLoading && (
         <StatusInformationContainer>
