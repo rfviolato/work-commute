@@ -198,6 +198,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
   React.useEffect(() => {
     if (areBarsRendered) {
+      console.log('hook ran!');
       const showDataTimeline = anime.timeline({
         autoplay: false,
         easing: 'easeOutCubic',
@@ -227,11 +228,18 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         scaleX: [0.875, 1],
         scaleY: [0.875, 1],
         translateY: [2, 0],
+        complete: () => setIsYValueDoneAnimating(true),
       });
 
-      showDataTimeline.play();
+      showDataTimeline.complete = () => {
+        if (isMobileView) {
+          setTimeout(() => setIsChartDoneAnimating(true), SLIDER_FIRST_TRANSFORM_TIMING);
+        }
+      };
+
+      setTimeout(showDataTimeline.play, 100);
     }
-  }, [areBarsRendered]);
+  }, [areBarsRendered, isMobileView]);
 
   React.useEffect(() => {
     /**
@@ -239,7 +247,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
      * Slick's `initialSlide` prop won't work.
      */
     if (isYValueDoneAnimating && isMobileView && sliderRef.current) {
-      sliderRef.current.slickGoTo(numberOfSlides);
+      setTimeout(() => sliderRef.current.slickGoTo(numberOfSlides), 100);
     }
   }, [
     isMobileView,
@@ -305,6 +313,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           <StatusInformation hasError={hasError} noData={data.length === 0} />
         </StatusInformationContainer>
       )}
+
       <BarsContainer>
         {data.map(renderChartBars)}
       </BarsContainer>
