@@ -217,7 +217,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     numberOfSlides,
   ]);
 
-  if (barWidth === BAR_WIDTH_INITIAL_VALUE || isLoading) {
+  if (barWidth === BAR_WIDTH_INITIAL_VALUE && isLoading) {
     return (
       <div ref={chartContainerRef}>
         <BarsContainer>
