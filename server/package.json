@@ -1,9 +1,6 @@
 {
   "name": "server",
   "description": "work-commut server",
-  "engines": {
-    "node": "12.x"
-  },
   "dependencies": {
     "@now/node": "^1.1.2",
     "@types/mongodb": "^3.3.11",
