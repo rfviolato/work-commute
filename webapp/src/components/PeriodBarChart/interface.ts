@@ -39,6 +39,6 @@ export interface IPeriodChartComponentProps {
 }
 
 export interface IStatusInfoProps
-  extends Pick<IPeriodChartComponentProps, 'hasError'> {
+  extends Pick<IPeriodChartComponentProps, 'hasError' | 'isLoading'> {
   noData?: boolean;
 }

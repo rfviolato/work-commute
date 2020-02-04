@@ -13,7 +13,7 @@ export const Root = styled.div`
   position: relative;
 `;
 
-export const LoadingSpinnerContainer = styled.div`
+export const StatusInformationContainer = styled.div`
   font-size: 40px;
   position: absolute;
   top: 50%;
@@ -29,12 +29,12 @@ export const ChartBarsSlider = styled.div<IChartBarsSliderProps>`
 
   .slick-track {
     ${({ isChartDoneAnimating }: IChartBarsSliderProps) => {
-    return isChartDoneAnimating
-      ? {}
-      : {
-        transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
-      };
-  }}
+      return isChartDoneAnimating
+        ? {}
+        : {
+            transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
+          };
+    }}
   }
 `;
 
@@ -127,14 +127,6 @@ export const BarContainer = styled.div<IBarContainerProps>`
   &:not(:first-of-type) {
     margin-left: ${DIMENSIONS.BAR_GUTTER}px;
   }
-`;
-
-export const StatusInformationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 40px;
 `;
 
 interface IBarRectangleContainerProps {
