@@ -7681,6 +7681,11 @@ react-error-overlay@^6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.3.tgz#c378c4b0a21e88b2e159a3e62b2f531fd63bf60d"
 
+react-hooks-use-previous@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-hooks-use-previous/-/react-hooks-use-previous-1.0.0.tgz#95b902ef25c838a622ff096795b9db1b4f5e5583"
+  integrity sha512-vLNYA7HCRwKd8BzS/Hsl3v3aOdz362+owldYTxc7vhRWI61A0177oiaISZmAzWbf3xfHrtSvAG0HGnGG7JDiLg==
+
 react-hot-loader@^4.12.18:
   version "4.12.18"
   resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.18.tgz#a9029e34af2690d76208f9a35189d73c2dfea6a7"

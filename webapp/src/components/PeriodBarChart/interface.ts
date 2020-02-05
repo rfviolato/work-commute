@@ -6,16 +6,16 @@ type RequestIdleCallbackOptions = {
 };
 type RequestIdleCallbackDeadline = {
   readonly didTimeout: boolean;
-  timeRemaining: (() => number);
+  timeRemaining: () => number;
 };
 
 declare global {
   interface Window {
-    requestIdleCallback: ((
-      callback: ((deadline: RequestIdleCallbackDeadline) => void),
+    requestIdleCallback: (
+      callback: (deadline: RequestIdleCallbackDeadline) => void,
       opts?: RequestIdleCallbackOptions,
-    ) => RequestIdleCallbackHandle);
-    cancelIdleCallback: ((handle: RequestIdleCallbackHandle) => void);
+    ) => RequestIdleCallbackHandle;
+    cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
   }
 }
 
@@ -30,10 +30,11 @@ export interface IPeriodQueryData {
   Period: PeriodQueryData;
 }
 
+export type IChartData = ITimetableChartResult[];
+
 export interface IPeriodChartComponentProps {
-  data?: ITimetableChartResult[];
-  periodStart: string;
-  periodEnd: string;
+  data?: IChartData;
+  periodId: string;
   isLoading?: boolean;
   hasError?: boolean;
 }

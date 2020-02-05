@@ -2,11 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { useQuery } from '@apollo/react-hooks';
-import anime from 'animejs';
+import anime, { AnimeTimelineInstance } from 'animejs';
+import usePrevious from 'react-hooks-use-previous';
 import {
   IPeriodChartProps,
   IPeriodChartComponentProps,
   IPeriodQueryData,
+  IChartData,
 } from './interface';
 import { Slider } from './../Slider';
 import {
@@ -48,6 +50,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
       periodEnd,
     },
   });
+  const periodId = `${periodStart}_${periodEnd}`;
 
   // const [data, setData] = React.useState([]);
   // const [isLoading, setIsLoading] = React.useState(true);
@@ -74,11 +77,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
     } = data;
 
     return (
-      <PeriodBarChartComponent
-        data={timetableChart}
-        periodStart={periodStart}
-        periodEnd={periodEnd}
-      />
+      <PeriodBarChartComponent data={timetableChart} periodId={periodId} />
     );
   }
 
@@ -86,27 +85,25 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
     <PeriodBarChartComponent
       isLoading={loading}
       hasError={!!error}
-      periodStart={periodStart}
-      periodEnd={periodEnd}
+      periodId={periodId}
     />
   );
 };
 
+const DATA_INITIAL_PROP: any[] = [];
 export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
-  data = [],
-  periodStart,
-  periodEnd,
+  data = DATA_INITIAL_PROP,
+  periodId,
   isLoading,
   hasError,
 }) => {
   const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
+  const [chartData, setChartData] = React.useState<IChartData>(data);
   const [areBarsRendered, setAreBarsRendered] = React.useState<boolean>(false);
   const [isYValueDoneAnimating, setIsYValueDoneAnimating] = React.useState<
     boolean
   >(false);
-  const [isChartDoneAnimating, setIsChartDoneAnimating] = React.useState<
-    boolean
-  >(false);
+  const [areBarsVisible, setAreBarsVisible] = React.useState<boolean>(false);
   const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
   const [barWidth, setBarWidth] = React.useState<number>(
     BAR_WIDTH_INITIAL_VALUE,
@@ -121,6 +118,8 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     setAreBarsRendered(true);
   }, []);
+  const previousPeriodId = usePrevious(periodId, periodId);
+  const hasPeriodChanged = periodId !== previousPeriodId;
 
   React.useEffect(() => {
     const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
@@ -131,10 +130,10 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   }, []);
 
   const chartDataMaxYValue = React.useMemo(() => {
-    return getArrayMaxValue(data, (day: any) =>
+    return getArrayMaxValue(chartData, (day: any) =>
       getTotalMinutesFromTime(day.totalTimeAtOffice),
     );
-  }, [data]);
+  }, [chartData]);
 
   const renderChartBars = (
     { totalTimeAtOffice, day }: ITimetableChartResult,
@@ -189,22 +188,70 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setBarWidth(predictedBarWidth);
       setIsMobileView(false);
     }
-  }, [windowWidth, periodStart, periodEnd, data.length]);
+  }, [windowWidth, periodId, data.length]);
 
   React.useEffect(() => {
-    if (areBarsRendered) {
-      const showDataTimeline = anime.timeline({
+    if (!areBarsVisible && data.length) {
+      setChartData(data);
+    }
+  }, [areBarsVisible, data]);
+
+  React.useEffect(() => {
+    if (hasPeriodChanged && areBarsVisible) {
+      const animationTimeline = anime.timeline({
         autoplay: false,
         easing: 'easeOutCubic',
       });
 
-      /**
-       * Be aware that if the loading spinner infinitely animates
-       * And that can interfere with the overall aniamtion performance
-       * So I should come up with a nice strategy to show & hide it
-       * In a way that won't interfere with the animation, so setting the state
-       * can be dangerous, I should probably set the state and then wait for idle main thread
-       */
+      // Y value labels animation
+      animationTimeline.add({
+        targets: '.y-label',
+        duration: 200,
+        opacity: [1, 0],
+        scaleX: [1, 0.875],
+        scaleY: [1, 0.875],
+        translateY: [0, 2],
+        complete: () => setIsYValueDoneAnimating(false),
+      });
+
+      // Chart bars animation
+      animationTimeline.add({
+        targets: '.bar-rect',
+        duration: 600,
+        translateY: [0, '100%'],
+        easing: 'easeInOutCubic',
+      });
+
+      animationTimeline.complete = () => {
+        if (isMobileView) {
+          setTimeout(
+            () =>
+              window.requestIdleCallback(() => {
+                setChartData(data);
+                setAreBarsVisible(false);
+              }),
+            SLIDER_FIRST_TRANSFORM_TIMING + 100,
+            // 100ms to add a bit of room so React's reconciliation process happens a bit after animation is done
+          );
+        } else {
+          window.requestIdleCallback(() => {
+            setChartData(data);
+            setAreBarsVisible(false);
+          });
+        }
+      };
+
+      window.requestIdleCallback(animationTimeline.play);
+    }
+  }, [areBarsVisible, data, hasPeriodChanged]);
+
+  React.useEffect(() => {
+    if (areBarsRendered && !areBarsVisible) {
+      const animationTimeline = anime.timeline({
+        autoplay: false,
+        easing: 'easeOutCubic',
+      });
+
       // Loading spinner animation
       // showDataTimeline.add({
       //   targets: '.loading-spinner',
@@ -213,7 +260,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       // });
 
       // Chart bars animation
-      showDataTimeline.add({
+      animationTimeline.add({
         targets: '.bar-rect',
         duration: 900,
         translateY: ['100%', 0],
@@ -222,7 +269,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       });
 
       // Y value labels animation
-      showDataTimeline.add({
+      animationTimeline.add({
         targets: '.y-label',
         duration: 300,
         opacity: [0, 1],
@@ -232,20 +279,22 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         complete: () => setIsYValueDoneAnimating(true),
       });
 
-      showDataTimeline.complete = () => {
+      animationTimeline.complete = () => {
         if (isMobileView) {
           setTimeout(
-            () =>
-              window.requestIdleCallback(() => setIsChartDoneAnimating(true)),
+            // TODO: is `requestIdleCallback` or the "+ 100" really necessary here?
+            () => window.requestIdleCallback(() => setAreBarsVisible(true)),
             SLIDER_FIRST_TRANSFORM_TIMING + 100,
             // 100ms to add a bit of room so React's reconciliation process happens a bit after animation is done
           );
+        } else {
+          window.requestIdleCallback(() => setAreBarsVisible(true));
         }
       };
 
-      window.requestIdleCallback(showDataTimeline.play);
+      window.requestIdleCallback(animationTimeline.play);
     }
-  }, [areBarsRendered, isMobileView]);
+  }, [areBarsRendered, areBarsVisible, data, isMobileView]);
 
   React.useEffect(() => {
     /**
@@ -257,13 +306,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         sliderRef.current.slickGoTo(numberOfSlides),
       );
     }
-  }, [
-    isMobileView,
-    isYValueDoneAnimating,
-    periodStart,
-    periodEnd,
-    numberOfSlides,
-  ]);
+  }, [isMobileView, isYValueDoneAnimating, periodId, numberOfSlides]);
 
   if (isMobileView) {
     const slides = Array(numberOfSlides)
@@ -275,11 +318,12 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           <BarsContainer
             isCarouselItem
             isCentered={
-              !isMobileView || (isMobileView && data.length < BARS_PER_PAGE)
+              !isMobileView ||
+              (isMobileView && chartData.length < BARS_PER_PAGE)
             }
             key={i}
           >
-            {data
+            {chartData
               .slice(
                 currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
                 currentPage * BARS_PER_PAGE,
@@ -291,11 +335,15 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return (
       <Root ref={chartContainerRef}>
-        <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
+        {/* TODO: `isChartDoneAnimating` needs to be created for mobile */}
+        <ChartBarsSlider isChartDoneAnimating={areBarsVisible}>
           <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-            {!data.length && (
+            {!chartData.length && (
               <StatusInformationContainer>
-                <StatusInformation hasError={hasError} noData={!data.length} />
+                <StatusInformation
+                  hasError={hasError}
+                  noData={!chartData.length}
+                />
               </StatusInformationContainer>
             )}
 
@@ -310,15 +358,17 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
   return (
     <Root ref={chartContainerRef}>
-      <StatusInformationContainer>
-        <StatusInformation
-          isLoading={isLoading}
-          hasError={hasError}
-          noData={data.length === 0}
-        />
-      </StatusInformationContainer>
+      {!areBarsVisible && (
+        <StatusInformationContainer>
+          <StatusInformation
+            isLoading={isLoading}
+            hasError={hasError}
+            noData={chartData.length === 0}
+          />
+        </StatusInformationContainer>
+      )}
 
-      <BarsContainer>{data.map(renderChartBars)}</BarsContainer>
+      <BarsContainer>{chartData.map(renderChartBars)}</BarsContainer>
 
       <BarChartAxis />
     </Root>
