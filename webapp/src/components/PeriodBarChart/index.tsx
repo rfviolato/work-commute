@@ -192,6 +192,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
   React.useEffect(() => {
     if (!areBarsVisible && data.length) {
+      console.warn('setChartData', { data });
       setChartData(data);
     }
   }, [areBarsVisible, data]);
@@ -356,6 +357,8 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     );
   }
 
+  console.log({ areBarsVisible, isLoading, chartData });
+
   return (
     <Root ref={chartContainerRef}>
       {!areBarsVisible && (
@@ -363,7 +366,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           <StatusInformation
             isLoading={isLoading}
             hasError={hasError}
-            noData={chartData.length === 0}
+            noData={data.length === 0}
           />
         </StatusInformationContainer>
       )}
