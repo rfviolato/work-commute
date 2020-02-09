@@ -7,7 +7,6 @@ export const DIMENSIONS = {
   BAR_GUTTER: 8,
   MIN_BAR_WIDTH: 25,
 };
-export const SLIDER_FIRST_TRANSFORM_TIMING = 800;
 
 export const Root = styled.div`
   position: relative;
@@ -21,21 +20,8 @@ export const StatusInformationContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-interface IChartBarsSliderProps {
-  isChartDoneAnimating?: boolean;
-}
-export const ChartBarsSlider = styled.div<IChartBarsSliderProps>`
+export const ChartBarsSlider = styled.div`
   height: ${DIMENSIONS.CHART_HEIGHT}px;
-
-  .slick-track {
-    ${({ isChartDoneAnimating }: IChartBarsSliderProps) => {
-      return isChartDoneAnimating
-        ? {}
-        : {
-            transition: `transform ${SLIDER_FIRST_TRANSFORM_TIMING}ms cubic-bezier(0.645, 0.045, 0.355, 1) !important`,
-          };
-    }}
-  }
 `;
 
 export const AnimatedBarLabel = posed.div({
