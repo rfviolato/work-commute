@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 import posed from 'react-pose';
 import { COLORS } from '../../global-styles';
+import {
+  CarouselProvider as PRCCarouselProvider,
+  Slider as PRCSlider,
+  Slide as PRCSlide,
+} from 'pure-react-carousel';
 
 export const DIMENSIONS = {
   CHART_HEIGHT: 375,
@@ -153,4 +158,16 @@ export const BarChartAxis = styled.div`
   width: 100%;
   background-color: ${COLORS.GRAY};
   border-radius: 8px;
+`;
+
+export const CarouselProvider = styled(PRCCarouselProvider)`
+  height: 100%;
+`;
+
+export const Slider = styled(PRCSlider)`
+  height: 100%;
+`;
+
+export const Slide = styled(PRCSlide)`
+  height: 100%;
 `;

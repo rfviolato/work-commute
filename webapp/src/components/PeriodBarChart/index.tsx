@@ -10,7 +10,6 @@ import {
   IPeriodQueryData,
   IChartData,
 } from './interface';
-import { Slider } from './../Slider';
 import {
   getTotalMinutesFromTime,
   getBarHeight,
@@ -32,7 +31,12 @@ import {
   StatusInformationContainer,
   BarChartAxis,
   ChartBarsSlider,
+  CarouselProvider,
+  Slider,
+  Slide,
 } from './styled';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import { CarouselContext } from 'pure-react-carousel';
 
 const chartContainerRef = React.createRef<HTMLDivElement>();
 const sliderRef = React.createRef<any>();
@@ -83,6 +87,9 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
   const [chartData, setChartData] = React.useState<IChartData>(data);
   const [areBarsRendered, setAreBarsRendered] = React.useState<boolean>(false);
+  const carouselContext = React.useContext(CarouselContext);
+  console.log({ CarouselContext });
+  const [currentSlide, setCurrentSlide] = React.useState(0);
   const [chartDoneAnimating, setChartDoneAnimating] = React.useState<boolean>(
     false,
   );
@@ -197,7 +204,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         });
 
         animationTimeline.complete = () => {
-          sliderRef.current && sliderRef.current.slickGoTo(0, true);
+          setCurrentSlide(0);
 
           window.requestIdleCallback(() => {
             setIsAnimating(false);
@@ -239,7 +246,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         });
 
         animationTimeline.complete = () => {
-          sliderRef.current && sliderRef.current.slickGoTo(0, true);
+          setCurrentSlide(0);
 
           window.requestIdleCallback(() => {
             setIsAnimating(false);
@@ -289,12 +296,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
         animationTimeline.complete = () => {
           if (isMobileView) {
-            console.log('goTo', numberOfSlides);
-            window.requestIdleCallback(
-              () =>
-                sliderRef.current &&
-                sliderRef.current.slickGoTo(numberOfSlides),
-            );
+            window.requestIdleCallback(() => setCurrentSlide(numberOfSlides));
 
             setTimeout(
               () =>
@@ -340,21 +342,22 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         const currentPage = i + 1;
 
         return (
-          <BarsContainer
-            isCarouselItem
-            isCentered={
-              !isMobileView ||
-              (isMobileView && chartData.length < BARS_PER_PAGE)
-            }
-            key={i}
-          >
-            {chartData
-              .slice(
-                currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
-                currentPage * BARS_PER_PAGE,
-              )
-              .map(renderChartBars)}
-          </BarsContainer>
+          <Slide key={i} index={i}>
+            <BarsContainer
+              isCarouselItem
+              isCentered={
+                !isMobileView ||
+                (isMobileView && chartData.length < BARS_PER_PAGE)
+              }
+            >
+              {chartData
+                .slice(
+                  currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
+                  currentPage * BARS_PER_PAGE,
+                )
+                .map(renderChartBars)}
+            </BarsContainer>
+          </Slide>
         );
       });
 
@@ -371,22 +374,22 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
             </StatusInformationContainer>
           )}
 
-          <Slider
-            infinite={false}
-            arrows={false}
-            dots
-            ref={sliderRef}
-            easing="cubic-bezier(0.645, 0.045, 0.355, 1)"
-            speed={SLIDER_SPEED}
+          <CarouselProvider
+            naturalSlideWidth={100}
+            naturalSlideHeight={100}
+            totalSlides={numberOfSlides}
           >
-            {slides}
-          </Slider>
+            <Slider style={{ height: '100%' }}>{slides}</Slider>
+          </CarouselProvider>
         </ChartBarsSlider>
 
         <BarChartAxis />
       </Root>
     );
   }
+
+  // easing="cubic-bezier(0.645, 0.045, 0.355, 1)"
+  // speed={SLIDER_SPEED}
 
   return (
     <Root ref={chartContainerRef}>
