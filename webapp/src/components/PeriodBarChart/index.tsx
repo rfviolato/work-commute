@@ -79,6 +79,8 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   isLoading,
   hasError,
 }) => {
+  const animateBarsInTimeline = React.useRef<any>();
+  const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
   const [chartData, setChartData] = React.useState<IChartData>(data);
   const [areBarsRendered, setAreBarsRendered] = React.useState<boolean>(false);
   const [chartDoneAnimating, setChartDoneAnimating] = React.useState<boolean>(
@@ -101,6 +103,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const numberOfSlides = Math.ceil(chartData.length / BARS_PER_PAGE);
   const previousPeriodId = usePrevious(periodId, periodId);
   const hasPeriodChanged = periodId !== previousPeriodId;
+  const isDataLoaded = data === chartData;
 
   React.useEffect(() => {
     const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
@@ -149,10 +152,10 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   };
 
   React.useEffect(() => {
-    if (chartContainerRef.current && data.length) {
+    if (chartContainerRef.current && chartData.length) {
       const { offsetWidth } = chartContainerRef.current;
       const predictedBarWidth = Math.round(
-        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
+        offsetWidth / chartData.length - DIMENSIONS.BAR_GUTTER,
       );
 
       if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
@@ -169,101 +172,166 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       setBarWidth(predictedBarWidth);
       setIsMobileView(false);
     }
-  }, [windowWidth, periodId, data]);
+  }, [windowWidth, periodId, chartData]);
 
   React.useEffect(() => {
     setChartDoneAnimating(false);
   }, [isMobileView]);
 
+  React.useEffect(
+    function reverseAnimationEffect() {
+      if (hasPeriodChanged && isAnimating && !chartDoneAnimating) {
+        animateBarsInTimeline.current.pause();
+
+        const animationTimeline = anime.timeline({
+          autoplay: false,
+          easing: 'easeOutCubic',
+        });
+
+        // Chart bars animation
+        animationTimeline.add({
+          targets: '.bar-rect',
+          duration: 450,
+          translateY: '100%',
+          easing: 'easeInOutCubic',
+        });
+
+        animationTimeline.complete = () => {
+          sliderRef.current && sliderRef.current.slickGoTo(0, true);
+
+          window.requestIdleCallback(() => {
+            setIsAnimating(false);
+            setChartDoneAnimating(false);
+          });
+        };
+
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [hasPeriodChanged, data, chartDoneAnimating, isAnimating],
+  );
+
+  React.useEffect(
+    function animateBarsOut() {
+      if (hasPeriodChanged && chartDoneAnimating && data !== chartData) {
+        const animationTimeline = anime.timeline({
+          autoplay: false,
+          easing: 'easeOutCubic',
+        });
+
+        // Y value labels animation
+        animationTimeline.add({
+          targets: '.y-label',
+          duration: 200,
+          opacity: [1, 0],
+          scaleX: [1, 0.875],
+          scaleY: [1, 0.875],
+          translateY: [0, 2],
+        });
+
+        // Chart bars animation
+        animationTimeline.add({
+          targets: '.bar-rect',
+          duration: 600,
+          translateY: [0, '100%'],
+          easing: 'easeInOutCubic',
+        });
+
+        animationTimeline.complete = () => {
+          sliderRef.current && sliderRef.current.slickGoTo(0, true);
+
+          window.requestIdleCallback(() => {
+            setIsAnimating(false);
+            setChartDoneAnimating(false);
+          });
+        };
+
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [chartDoneAnimating, data, chartData, hasPeriodChanged],
+  );
+
+  React.useEffect(
+    function animateBarsIn() {
+      if (
+        areBarsRendered &&
+        isDataLoaded &&
+        chartData.length &&
+        !chartDoneAnimating
+      ) {
+        const animationTimeline = anime.timeline({
+          autoplay: false,
+          easing: 'easeOutCubic',
+        });
+        animateBarsInTimeline.current = animationTimeline;
+
+        // Chart bars animation
+        animationTimeline.add({
+          targets: '.bar-rect',
+          duration: 900,
+          translateY: ['100%', 0],
+          delay: (el: any, i: number) => i * 30,
+          easing: 'easeInOutCubic',
+        });
+
+        // Y value labels animation
+        animationTimeline.add({
+          targets: '.y-label',
+          duration: 300,
+          opacity: [0, 1],
+          scaleX: [0.875, 1],
+          scaleY: [0.875, 1],
+          translateY: [2, 0],
+        });
+
+        animationTimeline.complete = () => {
+          if (isMobileView) {
+            console.log('goTo', numberOfSlides);
+            window.requestIdleCallback(
+              () =>
+                sliderRef.current &&
+                sliderRef.current.slickGoTo(numberOfSlides),
+            );
+
+            setTimeout(
+              () =>
+                window.requestIdleCallback(() => {
+                  setIsAnimating(false);
+                  setChartDoneAnimating(true);
+                }),
+              SLIDER_SPEED,
+            );
+          } else {
+            window.requestIdleCallback(() => {
+              setIsAnimating(false);
+              setChartDoneAnimating(true);
+            });
+          }
+        };
+
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [
+      areBarsRendered,
+      chartDoneAnimating,
+      data,
+      chartData,
+      isMobileView,
+      numberOfSlides,
+      isDataLoaded,
+    ],
+  );
+
   React.useEffect(() => {
-    if (!chartDoneAnimating && data.length) {
+    if (!chartDoneAnimating && !isAnimating) {
       setChartData(data);
     }
-  }, [chartDoneAnimating, data]);
-
-  React.useEffect(() => {
-    if (hasPeriodChanged && chartDoneAnimating) {
-      const animationTimeline = anime.timeline({
-        autoplay: false,
-        easing: 'easeOutCubic',
-      });
-
-      // Y value labels animation
-      animationTimeline.add({
-        targets: '.y-label',
-        duration: 200,
-        opacity: [1, 0],
-        scaleX: [1, 0.875],
-        scaleY: [1, 0.875],
-        translateY: [0, 2],
-      });
-
-      // Chart bars animation
-      animationTimeline.add({
-        targets: '.bar-rect',
-        duration: 600,
-        translateY: [0, '100%'],
-        easing: 'easeInOutCubic',
-      });
-
-      animationTimeline.complete = () => {
-        console.warn('SLICK GO TO');
-        sliderRef.current.slickGoTo(0, true);
-
-        window.requestIdleCallback(() => {
-          setChartData(data);
-          setChartDoneAnimating(false);
-        });
-      };
-
-      window.requestIdleCallback(animationTimeline.play);
-    }
-  }, [chartDoneAnimating, data, hasPeriodChanged]);
-
-  React.useEffect(() => {
-    if (areBarsRendered && !chartDoneAnimating) {
-      const animationTimeline = anime.timeline({
-        autoplay: false,
-        easing: 'easeOutCubic',
-      });
-
-      // Chart bars animation
-      animationTimeline.add({
-        targets: '.bar-rect',
-        duration: 900,
-        translateY: ['100%', 0],
-        delay: (el: any, i: number) => i * 30,
-        easing: 'easeInOutCubic',
-      });
-
-      // Y value labels animation
-      animationTimeline.add({
-        targets: '.y-label',
-        duration: 300,
-        opacity: [0, 1],
-        scaleX: [0.875, 1],
-        scaleY: [0.875, 1],
-        translateY: [2, 0],
-      });
-
-      animationTimeline.complete = () => {
-        if (isMobileView) {
-          window.requestIdleCallback(() =>
-            sliderRef.current.slickGoTo(numberOfSlides),
-          );
-
-          setTimeout(
-            () => window.requestIdleCallback(() => setChartDoneAnimating(true)),
-            SLIDER_SPEED,
-          );
-        } else {
-          window.requestIdleCallback(() => setChartDoneAnimating(true));
-        }
-      };
-
-      window.requestIdleCallback(animationTimeline.play);
-    }
-  }, [areBarsRendered, chartDoneAnimating, data, isMobileView, numberOfSlides]);
+  }, [chartDoneAnimating, isAnimating, data]);
 
   if (isMobileView) {
     const slides = Array(numberOfSlides)
@@ -289,15 +357,6 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           </BarsContainer>
         );
       });
-
-    // console.log({ isLoading, hasError, periodId, hasPeriodChanged });
-    // console.log({ data, chartData });
-    // console.log({
-    //   areBarsRendered,
-    //   isMobileView,
-    //   barWidth,
-    //   chartDoneAnimating,
-    // });
 
     return (
       <Root ref={chartContainerRef}>
