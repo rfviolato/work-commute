@@ -13,11 +13,10 @@ export const Root = styled.div`
 `;
 
 export const StatusInformationContainer = styled.div`
-  font-size: 40px;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  font-size: 40px;
 `;
 
 export const ChartBarsSlider = styled.div`
