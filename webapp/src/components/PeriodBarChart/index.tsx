@@ -188,6 +188,16 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           easing: 'easeOutCubic',
         });
 
+        // Y value labels animation
+        animationTimeline.add({
+          targets: '.y-label',
+          duration: 50,
+          opacity: 0,
+          scaleX: 0.875,
+          scaleY: 0.875,
+          translateY: 2,
+        });
+
         // Chart bars animation
         animationTimeline.add({
           targets: '.bar-rect',
@@ -289,7 +299,6 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
         animationTimeline.complete = () => {
           if (isMobileView) {
-            console.log('goTo', numberOfSlides);
             window.requestIdleCallback(
               () =>
                 sliderRef.current &&
