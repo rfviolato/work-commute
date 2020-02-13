@@ -77,3 +77,4 @@ build/
 
 # Local mongodb script
 db_script.js
+.now

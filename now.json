@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "work-commute",
   "build": {
     "env": {
       "FONTAWESOME_NPM_AUTH_TOKEN": "@font-awesome-npm-token"
