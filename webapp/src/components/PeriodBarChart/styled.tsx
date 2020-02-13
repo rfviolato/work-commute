@@ -65,6 +65,9 @@ export const BarChartXValue = styled.div<IBarChartXValueProps>`
   left: 0;
   font-size: 1.2em;
   text-align: center;
+   transform-origin: center center;
+  will-change: transform;
+  opacity: 0;
 `;
 
 interface IBarsContainerProps {

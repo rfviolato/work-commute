@@ -152,7 +152,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           </BarChartYValueLabel>
         )}
 
-        <BarChartXValue isMobile={isMobileView}>
+        <BarChartXValue data-animation-id={ANIMATION_IDS.BAR_X_VALUE_LABEL} isMobile={isMobileView}>
           {moment(day).format('DD/MM')}
         </BarChartXValue>
       </BarContainer>
