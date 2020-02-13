@@ -43,3 +43,9 @@ export interface IStatusInfoProps
   extends Pick<IPeriodChartComponentProps, 'hasError' | 'isLoading'> {
   noData?: boolean;
 }
+
+export interface ICarouselChartProps {
+  numberOfSlides: number;
+  chartData: IChartData;
+  renderChartBars(chartResult: ITimetableChartResult): JSX.Element;
+}

@@ -9,7 +9,6 @@ import {
   IPeriodQueryData,
   IChartData,
 } from './interface';
-import { Slider } from './../Slider';
 import {
   getTotalMinutesFromTime,
   getBarHeight,
@@ -25,6 +24,7 @@ import {
   createReverseBarsOutAnimationTimeline,
   ANIMATION_IDS,
 } from './animations';
+import { BARS_PER_PAGE, SLIDER_SPEED, CarouselChart } from './carousel-chart';
 import {
   DIMENSIONS,
   Root,
@@ -41,7 +41,6 @@ import {
 
 const chartContainerRef = React.createRef<HTMLDivElement>();
 const sliderRef = React.createRef<any>();
-const BARS_PER_PAGE = 5;
 const BAR_WIDTH_INITIAL_VALUE = -1;
 
 export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
@@ -76,7 +75,6 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
 };
 
 const DATA_INITIAL_PROP: any[] = [];
-const SLIDER_SPEED = 800;
 
 export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   data = DATA_INITIAL_PROP,
@@ -109,8 +107,14 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const previousPeriodId = usePrevious(periodId, periodId);
   const hasPeriodChanged = periodId !== previousPeriodId;
   const isDataLoaded = data === chartData;
+  const noData = data.length === 0;
+  const chartDataMaxYValue = React.useMemo(() => {
+    return getArrayMaxValue(chartData, (day: any) =>
+      getTotalMinutesFromTime(day.totalTimeAtOffice),
+    );
+  }, [chartData]);
 
-  React.useEffect(() => {
+  React.useEffect(function windowResizeHook() {
     const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
 
     window.addEventListener('resize', onResize);
@@ -118,16 +122,10 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const chartDataMaxYValue = React.useMemo(() => {
-    return getArrayMaxValue(chartData, (day: any) =>
-      getTotalMinutesFromTime(day.totalTimeAtOffice),
-    );
-  }, [chartData]);
-
-  const renderChartBars = (
-    { totalTimeAtOffice, day }: ITimetableChartResult,
-    i: number,
-  ) => {
+  const renderChartBars = ({
+    totalTimeAtOffice,
+    day,
+  }: ITimetableChartResult) => {
     const { hours, minutes } = totalTimeAtOffice;
     const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
     const height = getBarHeight(
@@ -161,32 +159,38 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     );
   };
 
-  React.useEffect(() => {
-    if (chartContainerRef.current && chartData.length) {
-      const { offsetWidth } = chartContainerRef.current;
-      const predictedBarWidth = Math.round(
-        offsetWidth / chartData.length - DIMENSIONS.BAR_GUTTER,
-      );
-
-      if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
-        const mobilePredictedBarWidth = Math.round(
-          offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+  React.useEffect(
+    function barWidthCalculationEffect() {
+      if (chartContainerRef.current && chartData.length) {
+        const { offsetWidth } = chartContainerRef.current;
+        const predictedBarWidth = Math.round(
+          offsetWidth / chartData.length - DIMENSIONS.BAR_GUTTER,
         );
 
-        setBarWidth(mobilePredictedBarWidth);
-        setIsMobileView(true);
+        if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
+          const mobilePredictedBarWidth = Math.round(
+            offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+          );
 
-        return;
+          setBarWidth(mobilePredictedBarWidth);
+          setIsMobileView(true);
+
+          return;
+        }
+
+        setBarWidth(predictedBarWidth);
+        setIsMobileView(false);
       }
+    },
+    [windowWidth, periodId, chartData],
+  );
 
-      setBarWidth(predictedBarWidth);
-      setIsMobileView(false);
-    }
-  }, [windowWidth, periodId, chartData]);
-
-  React.useEffect(() => {
-    setChartDoneAnimating(false);
-  }, [isMobileView]);
+  React.useEffect(
+    function mobileViewSwitchEffect() {
+      setChartDoneAnimating(false);
+    },
+    [isMobileView],
+  );
 
   React.useEffect(
     function reverseAnimationEffect() {
@@ -292,27 +296,6 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   );
 
   if (isMobileView) {
-    const slides = Array(numberOfSlides)
-      .fill(numberOfSlides)
-      .map((current, i) => {
-        const currentPage = i + 1;
-
-        return (
-          <BarsContainer
-            isCarouselItem
-            isCentered={chartData.length < BARS_PER_PAGE}
-            key={i}
-          >
-            {chartData
-              .slice(
-                currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
-                currentPage * BARS_PER_PAGE,
-              )
-              .map(renderChartBars)}
-          </BarsContainer>
-        );
-      });
-
     return (
       <Root ref={chartContainerRef}>
         <ChartBarsSlider>
@@ -321,21 +304,17 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
               <StatusInformation
                 isLoading={isLoading}
                 hasError={hasError}
-                noData={data.length === 0}
+                noData={noData}
               />
             </StatusInformationContainer>
           )}
 
-          <Slider
-            infinite={false}
-            arrows={false}
-            dots
+          <CarouselChart
+            numberOfSlides={numberOfSlides}
+            chartData={chartData}
+            renderChartBars={renderChartBars}
             ref={sliderRef}
-            easing="cubic-bezier(0.645, 0.045, 0.355, 1)"
-            speed={SLIDER_SPEED}
-          >
-            {slides}
-          </Slider>
+          />
         </ChartBarsSlider>
 
         <BarChartAxis />
@@ -350,7 +329,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
           <StatusInformation
             isLoading={isLoading}
             hasError={hasError}
-            noData={data.length === 0}
+            noData={noData}
           />
         </StatusInformationContainer>
       )}
