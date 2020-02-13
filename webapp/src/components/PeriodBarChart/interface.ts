@@ -1,5 +1,24 @@
 import { IPeriodResult, ITimetableChartResult } from '../../interfaces';
 
+type RequestIdleCallbackHandle = any;
+type RequestIdleCallbackOptions = {
+  timeout: number;
+};
+type RequestIdleCallbackDeadline = {
+  readonly didTimeout: boolean;
+  timeRemaining: () => number;
+};
+
+declare global {
+  interface Window {
+    requestIdleCallback: (
+      callback: (deadline: RequestIdleCallbackDeadline) => void,
+      opts?: RequestIdleCallbackOptions,
+    ) => RequestIdleCallbackHandle;
+    cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
+  }
+}
+
 export interface IPeriodChartProps {
   periodStart: string;
   periodEnd: string;
@@ -11,15 +30,22 @@ export interface IPeriodQueryData {
   Period: PeriodQueryData;
 }
 
+export type IChartData = ITimetableChartResult[];
+
 export interface IPeriodChartComponentProps {
-  data?: ITimetableChartResult[];
-  periodStart: string;
-  periodEnd: string;
+  data?: IChartData;
+  periodId: string;
   isLoading?: boolean;
   hasError?: boolean;
 }
 
 export interface IStatusInfoProps
-  extends Pick<IPeriodChartComponentProps, 'hasError'> {
+  extends Pick<IPeriodChartComponentProps, 'hasError' | 'isLoading'> {
   noData?: boolean;
+}
+
+export interface ICarouselChartProps {
+  numberOfSlides: number;
+  chartData: IChartData;
+  renderChartBars(chartResult: ITimetableChartResult): JSX.Element;
 }

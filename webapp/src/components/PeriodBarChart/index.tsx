@@ -1,13 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
+import { useQuery } from '@apollo/react-hooks';
+import usePrevious from 'react-hooks-use-previous';
 import {
   IPeriodChartProps,
   IPeriodChartComponentProps,
   IPeriodQueryData,
+  IChartData,
 } from './interface';
-import { useQuery } from '@apollo/react-hooks';
-import { Slider } from './../Slider';
 import {
   getTotalMinutesFromTime,
   getBarHeight,
@@ -15,12 +16,19 @@ import {
   getArrayMaxValue,
 } from './utils';
 import query from './query';
-import { LoadingSpinner } from '../LoadingSpinner';
 import { StatusInformation } from './status-information';
 import { ITimetableChartResult } from '../../interfaces';
 import {
+  createBarsInAnimationTimeline,
+  createBarsOutAnimationTimeline,
+  createReverseBarsOutAnimationTimeline,
+  ANIMATION_IDS,
+} from './animations';
+import { BARS_PER_PAGE, SLIDER_SPEED, CarouselChart } from './carousel-chart';
+import {
+  DIMENSIONS,
+  Root,
   BarChartXValue,
-  SLIDER_FIRST_TRANSFORM_TIMING,
   BarContainer,
   BarRectangleContainer,
   BarRectangle,
@@ -29,12 +37,10 @@ import {
   StatusInformationContainer,
   BarChartAxis,
   ChartBarsSlider,
-  DIMENSIONS,
 } from './styled';
 
 const chartContainerRef = React.createRef<HTMLDivElement>();
 const sliderRef = React.createRef<any>();
-const BARS_PER_PAGE = 5;
 const BAR_WIDTH_INITIAL_VALUE = -1;
 
 export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
@@ -47,6 +53,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
       periodEnd,
     },
   });
+  const periodId = `${periodStart}_${periodEnd}`;
 
   if (!loading && data && data.Period) {
     const {
@@ -54,11 +61,7 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
     } = data;
 
     return (
-      <PeriodBarChartComponent
-        data={timetableChart}
-        periodStart={periodStart}
-        periodEnd={periodEnd}
-      />
+      <PeriodBarChartComponent data={timetableChart} periodId={periodId} />
     );
   }
 
@@ -66,30 +69,26 @@ export const PeriodBarChart: React.FC<IPeriodChartProps> = ({
     <PeriodBarChartComponent
       isLoading={loading}
       hasError={!!error}
-      periodStart={periodStart}
-      periodEnd={periodEnd}
+      periodId={periodId}
     />
   );
 };
 
+const DATA_INITIAL_PROP: any[] = [];
+
 export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
-  data = [],
-  periodStart,
-  periodEnd,
+  data = DATA_INITIAL_PROP,
+  periodId,
   isLoading,
   hasError,
 }) => {
-  const numberOfSlides = Math.ceil(data.length / BARS_PER_PAGE);
-  const [isChartVisible, setIsChartVisible] = React.useState<boolean>(false);
-  const [areBarsDoneAnimating, setAreBarsDoneAnimating] = React.useState<
-    boolean
-  >(false);
-  const [isYValueDoneAnimating, setIsYValueDoneAnimating] = React.useState<
-    boolean
-  >(false);
-  const [isChartDoneAnimating, setIsChartDoneAnimating] = React.useState<
-    boolean
-  >(false);
+  const animateBarsInTimeline = React.useRef<any>();
+  const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
+  const [chartData, setChartData] = React.useState<IChartData>(data);
+  const [areBarsRendered, setAreBarsRendered] = React.useState<boolean>(false);
+  const [chartDoneAnimating, setChartDoneAnimating] = React.useState<boolean>(
+    false,
+  );
   const [isMobileView, setIsMobileView] = React.useState<boolean>(false);
   const [barWidth, setBarWidth] = React.useState<number>(
     BAR_WIDTH_INITIAL_VALUE,
@@ -97,30 +96,36 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [windowWidth, setWindowWidth] = React.useState<number>(
     window.innerWidth,
   );
+  const watchBarRender = React.useCallback((node) => {
+    if (node === null) {
+      return setAreBarsRendered(false);
+    }
 
-  const onBarAnimationComplete = debounce(() => {
-    setAreBarsDoneAnimating(true);
-  }, 100);
-
-  const onYAxisValueAnimationComplete = debounce(() => {
-    setIsYValueDoneAnimating(true);
-
-    setTimeout(
-      () => setIsChartDoneAnimating(true),
-      isMobileView ? SLIDER_FIRST_TRANSFORM_TIMING : 0,
-    );
-  }, 100);
-
+    setAreBarsRendered(true);
+  }, []);
+  const numberOfSlides = Math.ceil(chartData.length / BARS_PER_PAGE);
+  const previousPeriodId = usePrevious(periodId, periodId);
+  const hasPeriodChanged = periodId !== previousPeriodId;
+  const isDataLoaded = data === chartData;
+  const noData = data.length === 0;
   const chartDataMaxYValue = React.useMemo(() => {
-    return getArrayMaxValue(data, (day: any) =>
+    return getArrayMaxValue(chartData, (day: any) =>
       getTotalMinutesFromTime(day.totalTimeAtOffice),
     );
-  }, [data]);
+  }, [chartData]);
 
-  const renderChartBars = (
-    { totalTimeAtOffice, day }: ITimetableChartResult,
-    i: number,
-  ) => {
+  React.useEffect(function windowResizeHook() {
+    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+
+    window.addEventListener('resize', onResize);
+
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const renderChartBars = ({
+    totalTimeAtOffice,
+    day,
+  }: ITimetableChartResult) => {
     const { hours, minutes } = totalTimeAtOffice;
     const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
     const height = getBarHeight(
@@ -134,16 +139,14 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       <BarContainer barWidth={barWidth} key={day}>
         <BarRectangleContainer barHeight={height}>
           <BarRectangle
-            index={i}
-            pose={isChartVisible ? 'visible' : 'invisible'}
-            onPoseComplete={onBarAnimationComplete}
+            data-animation-id={ANIMATION_IDS.BAR_ANIMATED_RECTANGLE}
+            ref={watchBarRender}
           />
         </BarRectangleContainer>
 
         {shouldDisplayYValue && (
           <BarChartYValueLabel
-            pose={areBarsDoneAnimating ? 'visible' : 'invisible'}
-            onPoseComplete={onYAxisValueAnimationComplete}
+            data-animation-id={ANIMATION_IDS.BAR_Y_VALUE_LABEL}
           >
             {hours}h{formatMinutes(minutes)}
           </BarChartYValueLabel>
@@ -156,137 +159,184 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     );
   };
 
-  React.useEffect(() => {
-    if (chartContainerRef.current && data.length) {
-      const { offsetWidth } = chartContainerRef.current;
-      const predictedBarWidth = Math.round(
-        offsetWidth / data.length - DIMENSIONS.BAR_GUTTER,
-      );
-
-      if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
-        const mobilePredictedBarWidth = Math.round(
-          offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+  React.useEffect(
+    function barWidthCalculationEffect() {
+      if (chartContainerRef.current && chartData.length) {
+        const { offsetWidth } = chartContainerRef.current;
+        const predictedBarWidth = Math.round(
+          offsetWidth / chartData.length - DIMENSIONS.BAR_GUTTER,
         );
 
-        setBarWidth(mobilePredictedBarWidth);
-        setIsMobileView(true);
+        if (predictedBarWidth <= DIMENSIONS.MIN_BAR_WIDTH) {
+          const mobilePredictedBarWidth = Math.round(
+            offsetWidth / BARS_PER_PAGE - DIMENSIONS.BAR_GUTTER,
+          );
 
-        return;
+          setBarWidth(mobilePredictedBarWidth);
+          setIsMobileView(true);
+
+          return;
+        }
+
+        setBarWidth(predictedBarWidth);
+        setIsMobileView(false);
       }
+    },
+    [windowWidth, periodId, chartData],
+  );
 
-      setBarWidth(predictedBarWidth);
-      setIsMobileView(false);
-    }
-  }, [windowWidth, periodStart, periodEnd, data.length]);
+  React.useEffect(
+    function mobileViewSwitchEffect() {
+      setChartDoneAnimating(false);
+    },
+    [isMobileView],
+  );
 
-  React.useEffect(() => {
-    /**
-     * This is necessary for returning the component's state to
-     * its original default state between period switches
-     */
-    if (isLoading) {
-      setIsChartVisible(false);
-      setIsChartDoneAnimating(false);
-      setAreBarsDoneAnimating(false);
-      setIsYValueDoneAnimating(false);
+  React.useEffect(
+    function reverseAnimationEffect() {
+      if (hasPeriodChanged && isAnimating && !chartDoneAnimating) {
+        animateBarsInTimeline.current.pause();
 
-      return;
-    }
+        const animationTimeline = createReverseBarsOutAnimationTimeline();
 
-    const onResize = debounce(() => setWindowWidth(window.innerWidth), 100);
+        animationTimeline.complete = () => {
+          sliderRef.current && sliderRef.current.slickGoTo(0, true);
 
-    window.addEventListener('resize', onResize);
-    setTimeout(() => setIsChartVisible(true), 300);
+          window.requestIdleCallback(() => {
+            setIsAnimating(false);
+            setChartDoneAnimating(false);
+          });
+        };
 
-    return () => window.removeEventListener('resize', onResize);
-  }, [isLoading]);
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [hasPeriodChanged, data, chartDoneAnimating, isAnimating],
+  );
 
-  React.useEffect(() => {
-    /**
-     * Unfortunately when resizing and changing the component on the fly
-     * Slick's `initialSlide` prop won't work.
-     */
-    if (isYValueDoneAnimating && isMobileView && sliderRef.current) {
-      sliderRef.current.slickGoTo(numberOfSlides);
-    }
-  }, [
-    isMobileView,
-    isYValueDoneAnimating,
-    periodStart,
-    periodEnd,
-    numberOfSlides,
-  ]);
+  React.useEffect(
+    function animateBarsOut() {
+      if (hasPeriodChanged && chartDoneAnimating && data !== chartData) {
+        const animationTimeline = createBarsOutAnimationTimeline();
 
-  if (barWidth === BAR_WIDTH_INITIAL_VALUE && isLoading) {
-    return (
-      <div ref={chartContainerRef}>
-        <BarsContainer>
-          <StatusInformationContainer>
-            <LoadingSpinner />
-          </StatusInformationContainer>
-        </BarsContainer>
+        animationTimeline.complete = () => {
+          sliderRef.current && sliderRef.current.slickGoTo(0, true);
 
-        <BarChartAxis />
-      </div>
-    );
-  }
+          window.requestIdleCallback(() => {
+            setIsAnimating(false);
+            setChartDoneAnimating(false);
+          });
+        };
+
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [chartDoneAnimating, data, chartData, hasPeriodChanged],
+  );
+
+  React.useEffect(
+    function animateBarsInEffect() {
+      if (
+        areBarsRendered &&
+        isDataLoaded &&
+        chartData.length &&
+        !chartDoneAnimating
+      ) {
+        const animationTimeline = createBarsInAnimationTimeline();
+
+        animateBarsInTimeline.current = animationTimeline;
+        animationTimeline.complete = () => {
+          if (isMobileView) {
+            window.requestIdleCallback(
+              () =>
+                sliderRef.current &&
+                sliderRef.current.slickGoTo(numberOfSlides),
+            );
+
+            setTimeout(
+              () =>
+                window.requestIdleCallback(() => {
+                  setIsAnimating(false);
+                  setChartDoneAnimating(true);
+                }),
+              SLIDER_SPEED,
+            );
+          } else {
+            window.requestIdleCallback(() => {
+              setIsAnimating(false);
+              setChartDoneAnimating(true);
+            });
+          }
+        };
+
+        setIsAnimating(true);
+        window.requestIdleCallback(animationTimeline.play);
+      }
+    },
+    [
+      areBarsRendered,
+      chartDoneAnimating,
+      data,
+      chartData,
+      isMobileView,
+      numberOfSlides,
+      isDataLoaded,
+    ],
+  );
+
+  React.useEffect(
+    function freshDataEffect() {
+      if (!chartDoneAnimating && !isAnimating) {
+        setChartData(data);
+      }
+    },
+    [chartDoneAnimating, isAnimating, data],
+  );
 
   if (isMobileView) {
-    const slides = Array(numberOfSlides)
-      .fill(numberOfSlides)
-      .map((current, i) => {
-        const currentPage = i + 1;
-
-        return (
-          <BarsContainer
-            isCarouselItem
-            isCentered={
-              !isMobileView || (isMobileView && data.length < BARS_PER_PAGE)
-            }
-            key={i}
-          >
-            {data
-              .slice(
-                currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
-                currentPage * BARS_PER_PAGE,
-              )
-              .map(renderChartBars)}
-          </BarsContainer>
-        );
-      });
-
     return (
-      <div ref={chartContainerRef}>
-        <ChartBarsSlider isChartDoneAnimating={isChartDoneAnimating}>
-          <Slider infinite={false} arrows={false} dots ref={sliderRef}>
-            {!data.length && (
-              <StatusInformationContainer>
-                <StatusInformation hasError={hasError} noData={!data.length} />
-              </StatusInformationContainer>
-            )}
+      <Root ref={chartContainerRef}>
+        <ChartBarsSlider>
+          {!chartDoneAnimating && (
+            <StatusInformationContainer>
+              <StatusInformation
+                isLoading={isLoading}
+                hasError={hasError}
+                noData={noData}
+              />
+            </StatusInformationContainer>
+          )}
 
-            {slides}
-          </Slider>
+          <CarouselChart
+            numberOfSlides={numberOfSlides}
+            chartData={chartData}
+            renderChartBars={renderChartBars}
+            ref={sliderRef}
+          />
         </ChartBarsSlider>
 
         <BarChartAxis />
-      </div>
+      </Root>
     );
   }
 
   return (
-    <div ref={chartContainerRef}>
-      <BarsContainer>
-        {!data.length && (
-          <StatusInformationContainer>
-            <StatusInformation hasError={hasError} noData={data.length === 0} />
-          </StatusInformationContainer>
-        )}
+    <Root ref={chartContainerRef}>
+      {!chartDoneAnimating && (
+        <StatusInformationContainer>
+          <StatusInformation
+            isLoading={isLoading}
+            hasError={hasError}
+            noData={noData}
+          />
+        </StatusInformationContainer>
+      )}
 
-        {data.map(renderChartBars)}
-      </BarsContainer>
+      <BarsContainer>{chartData.map(renderChartBars)}</BarsContainer>
 
       <BarChartAxis />
-    </div>
+    </Root>
   );
 };

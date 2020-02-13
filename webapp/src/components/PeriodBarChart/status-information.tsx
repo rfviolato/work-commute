@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEmptySet } from '@fortawesome/pro-regular-svg-icons';
 import { faIcon as erroIcon } from '../QueryErrorIcon';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 const Root = styled.div`
   display: flex;
@@ -25,7 +26,16 @@ const Text = styled.div`
 export const StatusInformation: React.FC<IStatusInfoProps> = ({
   noData,
   hasError,
+  isLoading,
 }) => {
+  if (isLoading) {
+    return (
+      <Root>
+        <LoadingSpinner />
+      </Root>
+    );
+  }
+
   if (hasError) {
     return (
       <Root>
