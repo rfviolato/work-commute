@@ -96,13 +96,6 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   const [windowWidth, setWindowWidth] = React.useState<number>(
     window.innerWidth,
   );
-  const watchBarRender = React.useCallback((node) => {
-    if (node === null) {
-      return setAreBarsRendered(false);
-    }
-
-    setAreBarsRendered(true);
-  }, []);
   const numberOfSlides = Math.ceil(chartData.length / BARS_PER_PAGE);
   const previousPeriodId = usePrevious(periodId, periodId);
   const hasPeriodChanged = periodId !== previousPeriodId;
@@ -121,11 +114,18 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return () => window.removeEventListener('resize', onResize);
   }, []);
-
-  const renderChartBars = ({
+  
+  const renderChartBars = React.useCallback(({
     totalTimeAtOffice,
     day,
   }: ITimetableChartResult) => {
+    const watchBarRender = (node: HTMLDivElement) => {
+      if (node === null) {
+        return setAreBarsRendered(false);
+      }
+
+      setAreBarsRendered(true);
+    };
     const { hours, minutes } = totalTimeAtOffice;
     const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
     const height = getBarHeight(
@@ -157,7 +157,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         </BarChartXValue>
       </BarContainer>
     );
-  };
+  }, [chartDataMaxYValue, barWidth, isMobileView]);
 
   React.useEffect(
     function barWidthCalculationEffect() {
