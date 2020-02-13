@@ -4,7 +4,7 @@
 
 Webapp for tracking how much time I spent commuting and working every day.
 
-### [Check it out!](https://work-commute-demo.now.sh/)
+### [Check it out!](https://work-commute-wine-psi.now.sh/period)
 
 # Motivation
 
