@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { useQuery } from '@apollo/react-hooks';
-import anime from 'animejs';
 import usePrevious from 'react-hooks-use-previous';
 import {
   IPeriodChartProps,
@@ -20,6 +19,12 @@ import {
 import query from './query';
 import { StatusInformation } from './status-information';
 import { ITimetableChartResult } from '../../interfaces';
+import {
+  createBarsInAnimationTimeline,
+  createBarsOutAnimationTimeline,
+  createReverseBarsOutAnimationTimeline,
+  ANIMATION_IDS,
+} from './animations';
 import {
   DIMENSIONS,
   Root,
@@ -135,11 +140,16 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return (
       <BarContainer barWidth={barWidth} key={day}>
         <BarRectangleContainer barHeight={height}>
-          <BarRectangle className="bar-rect" ref={watchBarRender} />
+          <BarRectangle
+            data-animation-id={ANIMATION_IDS.BAR_ANIMATED_RECTANGLE}
+            ref={watchBarRender}
+          />
         </BarRectangleContainer>
 
         {shouldDisplayYValue && (
-          <BarChartYValueLabel className="y-label">
+          <BarChartYValueLabel
+            data-animation-id={ANIMATION_IDS.BAR_Y_VALUE_LABEL}
+          >
             {hours}h{formatMinutes(minutes)}
           </BarChartYValueLabel>
         )}
@@ -183,28 +193,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
       if (hasPeriodChanged && isAnimating && !chartDoneAnimating) {
         animateBarsInTimeline.current.pause();
 
-        const animationTimeline = anime.timeline({
-          autoplay: false,
-          easing: 'easeOutCubic',
-        });
-
-        // Y value labels animation
-        animationTimeline.add({
-          targets: '.y-label',
-          duration: 50,
-          opacity: 0,
-          scaleX: 0.875,
-          scaleY: 0.875,
-          translateY: 2,
-        });
-
-        // Chart bars animation
-        animationTimeline.add({
-          targets: '.bar-rect',
-          duration: 450,
-          translateY: '100%',
-          easing: 'easeInOutCubic',
-        });
+        const animationTimeline = createReverseBarsOutAnimationTimeline();
 
         animationTimeline.complete = () => {
           sliderRef.current && sliderRef.current.slickGoTo(0, true);
@@ -225,28 +214,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   React.useEffect(
     function animateBarsOut() {
       if (hasPeriodChanged && chartDoneAnimating && data !== chartData) {
-        const animationTimeline = anime.timeline({
-          autoplay: false,
-          easing: 'easeOutCubic',
-        });
-
-        // Y value labels animation
-        animationTimeline.add({
-          targets: '.y-label',
-          duration: 200,
-          opacity: [1, 0],
-          scaleX: [1, 0.875],
-          scaleY: [1, 0.875],
-          translateY: [0, 2],
-        });
-
-        // Chart bars animation
-        animationTimeline.add({
-          targets: '.bar-rect',
-          duration: 600,
-          translateY: [0, '100%'],
-          easing: 'easeInOutCubic',
-        });
+        const animationTimeline = createBarsOutAnimationTimeline();
 
         animationTimeline.complete = () => {
           sliderRef.current && sliderRef.current.slickGoTo(0, true);
@@ -265,38 +233,16 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
   );
 
   React.useEffect(
-    function animateBarsIn() {
+    function animateBarsInEffect() {
       if (
         areBarsRendered &&
         isDataLoaded &&
         chartData.length &&
         !chartDoneAnimating
       ) {
-        const animationTimeline = anime.timeline({
-          autoplay: false,
-          easing: 'easeOutCubic',
-        });
+        const animationTimeline = createBarsInAnimationTimeline();
+
         animateBarsInTimeline.current = animationTimeline;
-
-        // Chart bars animation
-        animationTimeline.add({
-          targets: '.bar-rect',
-          duration: 900,
-          translateY: ['100%', 0],
-          delay: (el: any, i: number) => i * 30,
-          easing: 'easeInOutCubic',
-        });
-
-        // Y value labels animation
-        animationTimeline.add({
-          targets: '.y-label',
-          duration: 300,
-          opacity: [0, 1],
-          scaleX: [0.875, 1],
-          scaleY: [0.875, 1],
-          translateY: [2, 0],
-        });
-
         animationTimeline.complete = () => {
           if (isMobileView) {
             window.requestIdleCallback(
@@ -336,11 +282,14 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     ],
   );
 
-  React.useEffect(() => {
-    if (!chartDoneAnimating && !isAnimating) {
-      setChartData(data);
-    }
-  }, [chartDoneAnimating, isAnimating, data]);
+  React.useEffect(
+    function freshDataEffect() {
+      if (!chartDoneAnimating && !isAnimating) {
+        setChartData(data);
+      }
+    },
+    [chartDoneAnimating, isAnimating, data],
+  );
 
   if (isMobileView) {
     const slides = Array(numberOfSlides)
@@ -351,10 +300,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         return (
           <BarsContainer
             isCarouselItem
-            isCentered={
-              !isMobileView ||
-              (isMobileView && chartData.length < BARS_PER_PAGE)
-            }
+            isCentered={chartData.length < BARS_PER_PAGE}
             key={i}
           >
             {chartData
