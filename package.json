@@ -13,5 +13,7 @@
     "populate-dev-db": "mongoimport --host Cluster0-shard-0/cluster0-shard-00-00-uk48d.mongodb.net:27017,cluster0-shard-00-01-uk48d.mongodb.net:27017,cluster0-shard-00-02-uk48d.mongodb.net:27017 --ssl --username $DB_USERNAME --password $DB_PASSWORD --authenticationDatabase admin --db work-commute-dev --collection workTimetable --type json --file ./prod_dump.json"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
 }

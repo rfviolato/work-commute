@@ -1,4 +1,4 @@
-import { IPeriodResult, ITimetableChartResult } from '../../interfaces';
+import {IPeriodResult, ITime, ITimetableChartResult} from '../../interfaces';
 
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
@@ -48,4 +48,13 @@ export interface ICarouselChartProps {
   numberOfSlides: number;
   chartData: IChartData;
   renderChartBars(chartResult: ITimetableChartResult): JSX.Element;
+}
+
+export interface IChartBarProps {
+  barWidth: number;
+  hours: number;
+  minutes: number;
+  chartDataMaxYValue: number;
+  isMobileView: boolean;
+  day: string;
 }

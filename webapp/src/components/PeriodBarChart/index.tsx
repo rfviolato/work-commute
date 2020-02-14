@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { useQuery } from '@apollo/react-hooks';
 import usePrevious from 'react-hooks-use-previous';
@@ -11,8 +10,6 @@ import {
 } from './interface';
 import {
   getTotalMinutesFromTime,
-  getBarHeight,
-  formatMinutes,
   getArrayMaxValue,
 } from './utils';
 import query from './query';
@@ -22,17 +19,12 @@ import {
   createBarsInAnimationTimeline,
   createBarsOutAnimationTimeline,
   createReverseBarsOutAnimationTimeline,
-  ANIMATION_IDS,
 } from './animations';
 import { BARS_PER_PAGE, SLIDER_SPEED, CarouselChart } from './carousel-chart';
+import { ChartBar } from "./chart-bar";
 import {
   DIMENSIONS,
   Root,
-  BarChartXValue,
-  BarContainer,
-  BarRectangleContainer,
-  BarRectangle,
-  BarChartYValueLabel,
   BarsContainer,
   StatusInformationContainer,
   BarChartAxis,
@@ -115,49 +107,23 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     return () => window.removeEventListener('resize', onResize);
   }, []);
   
-  const renderChartBars = React.useCallback(({
+  const renderChartBars = React.useCallback(
+    ({
     totalTimeAtOffice,
     day,
-  }: ITimetableChartResult) => {
-    const watchBarRender = (node: HTMLDivElement) => {
-      if (node === null) {
-        return setAreBarsRendered(false);
-      }
+    }: ITimetableChartResult) => {
+      const handleBarRef = (node: HTMLDivElement) => {
+        if (node === null) {
+          return setAreBarsRendered(false);
+        }
 
-      setAreBarsRendered(true);
-    };
-    const { hours, minutes } = totalTimeAtOffice;
-    const totalMinutes = getTotalMinutesFromTime(totalTimeAtOffice);
-    const height = getBarHeight(
-      DIMENSIONS.CHART_HEIGHT,
-      chartDataMaxYValue,
-      totalMinutes,
-    );
-    const shouldDisplayYValue = !(hours === 0 && minutes < 30);
+        setAreBarsRendered(true);
+      };
 
-    return (
-      <BarContainer barWidth={barWidth} key={day}>
-        <BarRectangleContainer barHeight={height}>
-          <BarRectangle
-            data-animation-id={ANIMATION_IDS.BAR_ANIMATED_RECTANGLE}
-            ref={watchBarRender}
-          />
-        </BarRectangleContainer>
-
-        {shouldDisplayYValue && (
-          <BarChartYValueLabel
-            data-animation-id={ANIMATION_IDS.BAR_Y_VALUE_LABEL}
-          >
-            {hours}h{formatMinutes(minutes)}
-          </BarChartYValueLabel>
-        )}
-
-        <BarChartXValue data-animation-id={ANIMATION_IDS.BAR_X_VALUE_LABEL} isMobile={isMobileView}>
-          {moment(day).format('DD/MM')}
-        </BarChartXValue>
-      </BarContainer>
-    );
-  }, [chartDataMaxYValue, barWidth, isMobileView]);
+      return <ChartBar key={day} day={day} ref={handleBarRef} isMobileView={isMobileView} chartDataMaxYValue={chartDataMaxYValue}  barWidth={barWidth} {...totalTimeAtOffice} />;
+    },
+    [chartDataMaxYValue, barWidth, isMobileView],
+  );
 
   React.useEffect(
     function barWidthCalculationEffect() {
