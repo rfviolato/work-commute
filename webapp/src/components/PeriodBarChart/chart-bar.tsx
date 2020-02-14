@@ -1,3 +1,8 @@
+import { ANIMATION_IDS } from './animations';
+import moment from 'moment';
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSunglasses } from '@fortawesome/pro-regular-svg-icons';
 import { formatMinutes, getBarHeight, getTotalMinutesFromTime } from './utils';
 import {
   BarChartXValue,
@@ -6,10 +11,9 @@ import {
   BarRectangle,
   BarRectangleContainer,
   DIMENSIONS,
+  NoWorkDayDisplay,
+  NoWorkDayDisplayContainer,
 } from './styled';
-import { ANIMATION_IDS } from './animations';
-import moment from 'moment';
-import React from 'react';
 import { IChartBarProps } from './interface';
 
 export const ChartBar = React.forwardRef<any, IChartBarProps>(
@@ -19,6 +23,7 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
   ) => {
     const totalMinutes = getTotalMinutesFromTime({ hours, minutes });
     const shouldDisplayYValue = !(hours === 0 && minutes < 30);
+    const noWorkDay = hours === 0 && minutes === 0;
     const height = getBarHeight(
       DIMENSIONS.CHART_HEIGHT,
       chartDataMaxYValue,
@@ -40,6 +45,14 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
           >
             {hours}h{formatMinutes(minutes)}
           </BarChartYValueLabel>
+        )}
+
+        {noWorkDay && (
+          <NoWorkDayDisplayContainer>
+            <NoWorkDayDisplay>
+              <FontAwesomeIcon icon={faSunglasses} />
+            </NoWorkDayDisplay>
+          </NoWorkDayDisplayContainer>
         )}
 
         <BarChartXValue

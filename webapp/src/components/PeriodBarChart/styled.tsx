@@ -23,24 +23,6 @@ export const ChartBarsSlider = styled.div`
   height: ${DIMENSIONS.CHART_HEIGHT}px;
 `;
 
-export const AnimatedBarLabel = posed.div({
-  visible: {
-    opacity: 1,
-    scaleX: 1,
-    scaleY: 1,
-    y: 0,
-    transition: {
-      default: { duration: 350, ease: [0.215, 0.61, 0.355, 1] },
-    },
-  },
-  invisible: {
-    opacity: 0,
-    scaleX: 0.875,
-    scaleY: 0.875,
-    y: 2,
-  },
-});
-
 export const BarChartYValueLabel = styled.div`
   position: absolute;
   width: 100%;
@@ -64,7 +46,7 @@ export const BarChartXValue = styled.div<IBarChartXValueProps>`
   left: 0;
   font-size: 1.2em;
   text-align: center;
-   transform-origin: center center;
+  transform-origin: center center;
   will-change: transform;
   opacity: 0;
 `;
@@ -126,20 +108,6 @@ export const BarRectangleContainer = styled.div<IBarRectangleContainerProps>`
   overflow: hidden;
 `;
 
-export const AnimatedBar = posed.div({
-  visible: {
-    y: 0,
-    transition: ({ index }: { index: number }) => ({
-      y: {
-        duration: 900,
-        ease: [0.645, 0.045, 0.355, 1],
-        delay: index * 30,
-      },
-    }),
-  },
-  invisible: { y: '100%' },
-});
-
 export const BarRectangle = styled.div`
   height: 100%;
   border-top-left-radius: 5px;
@@ -155,4 +123,33 @@ export const BarChartAxis = styled.div`
   width: 100%;
   background-color: ${COLORS.GRAY};
   border-radius: 8px;
+`;
+
+export const NoWorkDayDisplayContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NoWorkDayDisplay = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  font-size: 13px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  margin-bottom: 25px;
+  opacity: 0.8;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    width: 1px;
+    height: 15px;
+    background-color: #fff;
+  }
 `;
