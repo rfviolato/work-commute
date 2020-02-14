@@ -1,4 +1,4 @@
-import {IPeriodResult, ITime, ITimetableChartResult} from '../../interfaces';
+import { IPeriodResult, ITimetableChartResult, TWorkDayEvents } from '../../interfaces';
 
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
@@ -57,4 +57,5 @@ export interface IChartBarProps {
   chartDataMaxYValue: number;
   isMobileView: boolean;
   day: string;
+  events: TWorkDayEvents;
 }

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import posed from 'react-pose';
 import { COLORS } from '../../global-styles';
 
 export const DIMENSIONS = {
@@ -142,7 +141,7 @@ export const NoWorkDayDisplay = styled.div`
   border: 1px solid currentColor;
   border-radius: 50%;
   margin-bottom: 25px;
-  opacity: 0.8;
+  color: ${COLORS.GRAY};
 
   &::before {
     content: '';
@@ -150,6 +149,6 @@ export const NoWorkDayDisplay = styled.div`
     bottom: -20px;
     width: 1px;
     height: 15px;
-    background-color: #fff;
+    background-color: currentColor;
   }
 `;

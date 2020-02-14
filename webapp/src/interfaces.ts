@@ -3,10 +3,17 @@ export interface ITime {
   minutes: number;
 }
 
+export enum EWorkDayEvents {
+  DayOff = 'Day off',
+  SickDay = 'Sick day',
+}
+
+export type TWorkDayEvents = EWorkDayEvents[] | null;
+
 export interface IWorkDayTimetableRecord {
   day: string;
   date: string;
-  events: string[];
+  events: TWorkDayEvents;
   homeArriveTime: string;
   homeLeaveTime: string;
   workArriveTime: string;
@@ -19,7 +26,7 @@ export interface IDayResult extends IWorkDayTimetableRecord {
   totalTimeAtOffice: ITime;
 }
 
-export interface ITimetableChartResult extends IWorkDayTimetableRecord {
+export interface ITimetableChartResult extends Pick<IWorkDayTimetableRecord, 'day' | 'events'> {
   totalMorningCommuteTime: ITime;
   totalEveningCommuteTime: ITime;
   totalTimeAtOffice: ITime;

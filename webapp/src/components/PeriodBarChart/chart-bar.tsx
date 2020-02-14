@@ -2,7 +2,8 @@ import { ANIMATION_IDS } from './animations';
 import moment from 'moment';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSunglasses } from '@fortawesome/pro-regular-svg-icons';
+import { faTags, faQuestion } from '@fortawesome/pro-regular-svg-icons';
+import { EventIcon } from '../EventIcon';
 import { formatMinutes, getBarHeight, getTotalMinutesFromTime } from './utils';
 import {
   BarChartXValue,
@@ -18,7 +19,7 @@ import { IChartBarProps } from './interface';
 
 export const ChartBar = React.forwardRef<any, IChartBarProps>(
   (
-    { day, hours, minutes, chartDataMaxYValue, barWidth, isMobileView },
+    { day, hours, minutes, chartDataMaxYValue, barWidth, isMobileView, events },
     ref,
   ) => {
     const totalMinutes = getTotalMinutesFromTime({ hours, minutes });
@@ -29,6 +30,17 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
       chartDataMaxYValue,
       totalMinutes,
     );
+    const renderEventIcon = () => {
+      if (!events) {
+        return <FontAwesomeIcon icon={faQuestion} />;
+      }
+
+      if (events.length > 1) {
+        return <FontAwesomeIcon icon={faTags} />;
+      }
+
+      return <EventIcon event={events[0]} />;
+    };
 
     return (
       <BarContainer barWidth={barWidth}>
@@ -49,9 +61,7 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
 
         {noWorkDay && (
           <NoWorkDayDisplayContainer>
-            <NoWorkDayDisplay>
-              <FontAwesomeIcon icon={faSunglasses} />
-            </NoWorkDayDisplay>
+            <NoWorkDayDisplay>{renderEventIcon()}</NoWorkDayDisplay>
           </NoWorkDayDisplayContainer>
         )}
 

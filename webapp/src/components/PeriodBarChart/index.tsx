@@ -8,10 +8,7 @@ import {
   IPeriodQueryData,
   IChartData,
 } from './interface';
-import {
-  getTotalMinutesFromTime,
-  getArrayMaxValue,
-} from './utils';
+import { getTotalMinutesFromTime, getArrayMaxValue } from './utils';
 import query from './query';
 import { StatusInformation } from './status-information';
 import { ITimetableChartResult } from '../../interfaces';
@@ -21,7 +18,7 @@ import {
   createReverseBarsOutAnimationTimeline,
 } from './animations';
 import { BARS_PER_PAGE, SLIDER_SPEED, CarouselChart } from './carousel-chart';
-import { ChartBar } from "./chart-bar";
+import { ChartBar } from './chart-bar';
 import {
   DIMENSIONS,
   Root,
@@ -106,12 +103,9 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
 
     return () => window.removeEventListener('resize', onResize);
   }, []);
-  
+
   const renderChartBars = React.useCallback(
-    ({
-    totalTimeAtOffice,
-    day,
-    }: ITimetableChartResult) => {
+    ({ totalTimeAtOffice, day, events }: ITimetableChartResult) => {
       const handleBarRef = (node: HTMLDivElement) => {
         if (node === null) {
           return setAreBarsRendered(false);
@@ -120,7 +114,18 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
         setAreBarsRendered(true);
       };
 
-      return <ChartBar key={day} day={day} ref={handleBarRef} isMobileView={isMobileView} chartDataMaxYValue={chartDataMaxYValue}  barWidth={barWidth} {...totalTimeAtOffice} />;
+      return (
+        <ChartBar
+          key={day}
+          day={day}
+          ref={handleBarRef}
+          isMobileView={isMobileView}
+          chartDataMaxYValue={chartDataMaxYValue}
+          barWidth={barWidth}
+          events={events}
+          {...totalTimeAtOffice}
+        />
+      );
     },
     [chartDataMaxYValue, barWidth, isMobileView],
   );

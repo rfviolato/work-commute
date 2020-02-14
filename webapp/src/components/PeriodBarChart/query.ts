@@ -5,6 +5,7 @@ export default gql`
     Period(periodStart: $periodStart, periodEnd: $periodEnd) {
       timetableChart {
         day
+        events
 
         totalTimeAtOffice {
           hours
