@@ -1,7 +1,14 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { EWorkDayEvents } from '../../interfaces';
-import { faTag, faSunglasses, faBed } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faTag,
+  faTreePalm,
+  faSyringe,
+  faConstruction,
+  faClock,
+  faHome,
+} from '@fortawesome/pro-regular-svg-icons';
 
 interface IEventIconProps {
   event: EWorkDayEvents;
@@ -10,12 +17,24 @@ interface IEventIconProps {
 export const EventIcon: React.FC<IEventIconProps> = ({ event }) => {
   const title = event;
 
-  if (event === 'Day off') {
-    return <FontAwesomeIcon title={title} icon={faSunglasses} />;
+  if (event === 'DAY_OFF') {
+    return <FontAwesomeIcon title={title} icon={faTreePalm} />;
   }
 
-  if (event === 'Sick day') {
-    return <FontAwesomeIcon title={title} icon={faBed} />;
+  if (event === 'WFH') {
+    return <FontAwesomeIcon title={title} icon={faHome} />;
+  }
+
+  if (event === 'SICK_DAY') {
+    return <FontAwesomeIcon title={title} icon={faSyringe} />;
+  }
+
+  if (event === 'PUBLIC_TRANSPORT_SHORTAGE') {
+    return <FontAwesomeIcon title={title} icon={faConstruction} />;
+  }
+
+  if (event === 'PUBLIC_TRANSPORT_DELAY') {
+    return <FontAwesomeIcon title={title} icon={faClock} />;
   }
 
   return <FontAwesomeIcon title={title} icon={faTag} />;

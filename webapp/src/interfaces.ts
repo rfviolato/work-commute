@@ -4,8 +4,12 @@ export interface ITime {
 }
 
 export enum EWorkDayEvents {
-  DayOff = 'Day off',
-  SickDay = 'Sick day',
+  DayOff = 'DAY_OFF',
+  SickDay = 'SICK_DAY',
+  PublicTransportShortage = 'PUBLIC_TRANSPORT_SHORTAGE',
+  PublicTransportDelay = 'PUBLIC_TRANSPORT_DELAY',
+  WorkingFromHome = 'WFH',
+  BikeCommute = 'BIKE_COMMUTE',
 }
 
 export type TWorkDayEvents = EWorkDayEvents[] | null;

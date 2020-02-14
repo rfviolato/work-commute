@@ -32,7 +32,7 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
     );
     const renderEventIcon = () => {
       if (!events) {
-        return <FontAwesomeIcon icon={faQuestion} />;
+        return null;
       }
 
       if (events.length > 1) {
@@ -59,7 +59,7 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
           </BarChartYValueLabel>
         )}
 
-        {noWorkDay && (
+        {noWorkDay && events && (
           <NoWorkDayDisplayContainer>
             <NoWorkDayDisplay>{renderEventIcon()}</NoWorkDayDisplay>
           </NoWorkDayDisplayContainer>
