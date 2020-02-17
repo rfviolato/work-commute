@@ -110,7 +110,6 @@ There are still some things that I want to create and fine-tune:
 - Display a nice UI when offline
 - Display day events
 - Give month picker proper mobile UI layout
-- Fine-tune easings and transitions to favor smoothness
 - Cover some UI edge-cases (e.g.: displaying something on not-worked days)
 
 # Project To-do
