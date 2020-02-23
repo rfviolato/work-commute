@@ -3,6 +3,7 @@ import { COLORS } from '../../global-styles';
 
 export const DIMENSIONS = {
   CHART_HEIGHT: 375,
+  PADDING_TOP: 20,
   BAR_GUTTER: 8,
   MIN_BAR_WIDTH: 25,
 };
@@ -19,7 +20,7 @@ export const StatusInformationContainer = styled.div`
 `;
 
 export const ChartBarsSlider = styled.div`
-  height: ${DIMENSIONS.CHART_HEIGHT}px;
+  height: ${DIMENSIONS.CHART_HEIGHT + DIMENSIONS.PADDING_TOP}px;
 `;
 
 export const BarChartInfo = styled.div`
@@ -36,7 +37,9 @@ export const BarChartInfo = styled.div`
 
 export const WorkDayEvent = styled.div`
   display: inline-block;
-  margin-top: 7px;
+  position: relative;
+  top: -45px;
+  left: -1px;
 `;
 
 interface IBarChartXValueProps {
@@ -67,7 +70,7 @@ export const BarsContainer = styled.div<IBarsContainerProps>`
   justify-content: ${({ isCentered }) =>
     isCentered ? 'flex-start' : 'center'};
   padding: 0 ${DIMENSIONS.BAR_GUTTER / 2}px;
-  height: ${DIMENSIONS.CHART_HEIGHT}px;
+  height: ${DIMENSIONS.CHART_HEIGHT + DIMENSIONS.PADDING_TOP}px;
   outline: 0;
 `;
 
