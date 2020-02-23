@@ -14,6 +14,7 @@ import {
   DIMENSIONS,
   NoWorkDayDisplay,
   NoWorkDayDisplayContainer,
+  NoWorkDayDisplayStem,
 } from './styled';
 import { IChartBarProps } from './interface';
 
@@ -60,8 +61,13 @@ export const ChartBar = React.forwardRef<any, IChartBarProps>(
         )}
 
         {noWorkDay && events && (
-          <NoWorkDayDisplayContainer>
-            <NoWorkDayDisplay>{renderEventIcon()}</NoWorkDayDisplay>
+          <NoWorkDayDisplayContainer
+            data-animation-id={ANIMATION_IDS.NO_WORK_INFO}
+          >
+            <NoWorkDayDisplay>
+              {renderEventIcon()}
+              <NoWorkDayDisplayStem data-animation-id={ANIMATION_IDS.NO_WORK_INFO_STEM} />
+            </NoWorkDayDisplay>
           </NoWorkDayDisplayContainer>
         )}
 

@@ -128,6 +128,7 @@ export const NoWorkDayDisplayContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0;
 `;
 
 export const NoWorkDayDisplay = styled.div`
@@ -142,13 +143,14 @@ export const NoWorkDayDisplay = styled.div`
   border-radius: 50%;
   margin-bottom: 25px;
   color: ${COLORS.GRAY};
+`;
 
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    width: 1px;
-    height: 15px;
-    background-color: currentColor;
-  }
+export const NoWorkDayDisplayStem = styled.div`
+  position: absolute;
+  bottom: -20px;
+  width: 1px;
+  height: 15px;
+  background-color: currentColor;
+  transform: scale(0);
+  transform-origin: top;
 `;

@@ -6,6 +6,8 @@ export const ANIMATION_IDS = {
   BAR_ANIMATED_RECTANGLE: 'BAR_RECT',
   BAR_Y_VALUE_LABEL: 'Y_VALUE',
   BAR_X_VALUE_LABEL: 'X_VALUE',
+  NO_WORK_INFO: 'NO_WORK_INFO',
+  NO_WORK_INFO_STEM: 'NO_WORK_INFO_STEM',
 };
 
 const getAnimationTarget = (id: string) => `[data-animation-id="${id}"]`;
@@ -33,6 +35,7 @@ export function createBarsInAnimationTimeline() {
     translateY: ['100%', 0],
     delay: (el: any, i: number) => i * 30,
     easing: BARS_EASING,
+    complete: animateNoWorkInfoIn,
   });
 
   // Y value labels animation
@@ -62,6 +65,7 @@ export function createBarsOutAnimationTimeline() {
     scaleX: [1, 0.875],
     scaleY: [1, 0.875],
     translateY: [0, 2],
+    complete: animateNoWorkInfoOut,
   });
 
   // Chart bars animation
@@ -99,6 +103,7 @@ export function createReverseBarsOutAnimationTimeline() {
     scaleX: 0.875,
     scaleY: 0.875,
     translateY: 2,
+    complete: animateNoWorkInfoOut,
   });
 
   // Chart bars animation
@@ -120,4 +125,38 @@ export function createReverseBarsOutAnimationTimeline() {
   });
 
   return animationTimeline;
+}
+
+function animateNoWorkInfoIn() {
+  anime({
+    targets: getAnimationTarget(ANIMATION_IDS.NO_WORK_INFO),
+    duration: 500,
+    translateY: [3, 0],
+    opacity: 1,
+    easing: 'easeInOutCubic',
+  });
+
+  anime({
+    targets: getAnimationTarget(ANIMATION_IDS.NO_WORK_INFO_STEM),
+    duration: 500,
+    scaleY: [0, 1],
+    easing: 'easeInOutCubic',
+  });
+}
+
+function animateNoWorkInfoOut() {
+  anime({
+    targets: getAnimationTarget(ANIMATION_IDS.NO_WORK_INFO),
+    duration: 200,
+    translateY: [0, 3],
+    opacity: 0,
+    easing: TIMELINE_EASING,
+  });
+
+  anime({
+    targets: getAnimationTarget(ANIMATION_IDS.NO_WORK_INFO_STEM),
+    duration: 200,
+    scaleY: [1, 0],
+    easing: TIMELINE_EASING,
+  });
 }
