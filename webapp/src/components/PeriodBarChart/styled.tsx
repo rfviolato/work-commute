@@ -22,7 +22,7 @@ export const ChartBarsSlider = styled.div`
   height: ${DIMENSIONS.CHART_HEIGHT}px;
 `;
 
-export const BarChartYValueLabel = styled.div`
+export const BarChartInfo = styled.div`
   position: absolute;
   width: 100%;
   top: 7px;
@@ -32,6 +32,11 @@ export const BarChartYValueLabel = styled.div`
   transform-origin: center center;
   will-change: transform;
   opacity: 0;
+`;
+
+export const WorkDayEvent = styled.div`
+  display: inline-block;
+  margin-top: 7px;
 `;
 
 interface IBarChartXValueProps {
@@ -124,21 +129,25 @@ export const BarChartAxis = styled.div`
   border-radius: 8px;
 `;
 
-export const NoWorkDayDisplayContainer = styled.div`
+export const NoWorkDayDisplay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
 `;
 
-export const NoWorkDayDisplay = styled.div`
+export const IconEllipsis = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
-  font-size: 13px;
+  width: 2em;
+  height: 2em;
+  min-width: 22px;
+  max-width: 25px;
+  min-height: 22px;
+  max-height: 25px;
+  font-size: 1.1em;
   border: 1px solid currentColor;
   border-radius: 50%;
   margin-bottom: 25px;

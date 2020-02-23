@@ -4,7 +4,7 @@ const TIMELINE_EASING = 'easeOutCubic';
 const BARS_EASING = 'easeInOutCubic';
 export const ANIMATION_IDS = {
   BAR_ANIMATED_RECTANGLE: 'BAR_RECT',
-  BAR_Y_VALUE_LABEL: 'Y_VALUE',
+  BAR_INFO: 'BAR_INFO',
   BAR_X_VALUE_LABEL: 'X_VALUE',
   NO_WORK_INFO: 'NO_WORK_INFO',
   NO_WORK_INFO_STEM: 'NO_WORK_INFO_STEM',
@@ -40,7 +40,7 @@ export function createBarsInAnimationTimeline() {
 
   // Y value labels animation
   animationTimeline.add({
-    targets: getAnimationTarget(ANIMATION_IDS.BAR_Y_VALUE_LABEL),
+    targets: getAnimationTarget(ANIMATION_IDS.BAR_INFO),
     duration: 300,
     opacity: [0, 1],
     scaleX: [0.875, 1],
@@ -59,7 +59,7 @@ export function createBarsOutAnimationTimeline() {
 
   // Y value labels animation
   animationTimeline.add({
-    targets: getAnimationTarget(ANIMATION_IDS.BAR_Y_VALUE_LABEL),
+    targets: getAnimationTarget(ANIMATION_IDS.BAR_INFO),
     duration: 200,
     opacity: [1, 0],
     scaleX: [1, 0.875],
@@ -97,7 +97,7 @@ export function createReverseBarsOutAnimationTimeline() {
 
   // Y value labels animation
   animationTimeline.add({
-    targets: getAnimationTarget(ANIMATION_IDS.BAR_Y_VALUE_LABEL),
+    targets: getAnimationTarget(ANIMATION_IDS.BAR_INFO),
     duration: 50,
     opacity: 0,
     scaleX: 0.875,
