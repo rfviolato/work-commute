@@ -9,10 +9,15 @@ import {
   faClock,
   faHome,
 } from '@fortawesome/pro-regular-svg-icons';
+import styled from '@emotion/styled';
 
 interface IEventIconProps {
   event: EWorkDayEvents;
 }
+
+const TagIcon = styled(FontAwesomeIcon)`
+  margin: 1px 0 0 1px;
+`;
 
 export const EventIcon: React.FC<IEventIconProps> = ({ event }) => {
   const title = event;
@@ -37,5 +42,5 @@ export const EventIcon: React.FC<IEventIconProps> = ({ event }) => {
     return <FontAwesomeIcon title={title} icon={faClock} />;
   }
 
-  return <FontAwesomeIcon title={title} icon={faTag} />;
+  return <TagIcon title={title} icon={faTag} />;
 };

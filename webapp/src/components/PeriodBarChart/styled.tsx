@@ -116,7 +116,7 @@ export const BarRectangle = styled.div`
   height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background-color: ${COLORS.CHART_BAR};
+  background-color: ${COLORS.GREEN};
   transform-origin: bottom left;
   will-change: transform;
   transform: translateY(100%);

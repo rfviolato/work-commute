@@ -2,7 +2,7 @@ import { css, Global } from '@emotion/core';
 import React from 'react';
 
 export const COLORS = {
-  CHART_BAR: '#4edfa5',
+  GREEN: '#48d49c',
   DANGER: 'orangered',
   GRAY: '#f1f1f1',
   DARK_GRAY: '#626262',

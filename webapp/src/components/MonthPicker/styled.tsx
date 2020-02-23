@@ -148,7 +148,7 @@ export const PickerMonth = styled.li<IPickerMonth>`
 
     return 'pointer';
   }};
-  color: ${({ isCurrent }) => (isCurrent ? COLORS.CHART_BAR : 'currentColor')};
+  color: ${({ isCurrent }) => (isCurrent ? COLORS.GREEN : 'currentColor')};
 
   &:hover {
     ${({ isAvailable, isCurrent }) =>
