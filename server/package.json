@@ -6,7 +6,7 @@
     "@types/mongodb": "^3.3.11",
     "@types/mongoose": "^5.5.32",
     "@types/moment": "^2.13.0",
-    "apollo-server-micro": "^2.9.8",
+    "apollo-server-micro": "^2.14.2",
     "firebase-admin": "^8.7.0",
     "graphql": "^14.5.8",
     "moment": "^2.24.0",
