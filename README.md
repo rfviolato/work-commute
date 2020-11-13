@@ -89,7 +89,7 @@ The biggest highlights for me are definitely the bar chart and the month picker.
 
 ### It can be used on any viewport
 
-Well, **it's fucking 2020.**
+Well, **it's fucking 2021.**
 
 But seriously, you can't think of any web app without giving proper mobile support nowadays, so that by itself was already a challenge I had put to myself, to not only think about the UI on a desktop but also a UI that can adapt to any viewport.
 
