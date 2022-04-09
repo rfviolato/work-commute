@@ -9,7 +9,7 @@
     "apollo-server-micro": "^2.9.8",
     "firebase-admin": "^8.7.0",
     "graphql": "^14.5.8",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongodb": "^3.3.4",
     "mongoose": "^5.7.12",
     "typescript": "^3.7.2"
