@@ -79,3 +79,5 @@ build/
 db_script.js
 .now
 .idea/watcherTasks.xml
+
+.vercel

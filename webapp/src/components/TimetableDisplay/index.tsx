@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Skeleton from 'react-loading-skeleton';
 import { ITimetableDisplayProps } from './interface';
 import {
@@ -24,7 +24,7 @@ export const TimetableDisplay: React.FC<ITimetableDisplayProps> = ({
       <IconContainer>
         <DisplayIconContainer>
           {hasError && <ErrorDisplay />}
-          <FontAwesomeIcon icon={icon} />
+          {icon}
         </DisplayIconContainer>
       </IconContainer>
 

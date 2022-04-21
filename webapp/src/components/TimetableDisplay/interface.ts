@@ -1,12 +1,10 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-
 export interface ITimetable {
   timestamp?: string;
   label: string;
 }
 
 export interface ITimetableDisplayProps {
-  icon: IconProp;
+  icon: any; // TODO: Fix any
   timetables: ITimetable[];
   isLoading?: boolean;
   hasError?: boolean;

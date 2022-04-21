@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { QueryErrorIcon } from '../QueryErrorIcon';
 import { COLORS } from '../../global-styles';
 
@@ -21,7 +21,7 @@ export const IconContainer = styled.div`
   border-radius: 50%;
 `;
 
-export const Icon = styled(FontAwesomeIcon)`
+export const Icon = styled.span`
   font-size: 25px;
   position: relative;
   top: -1px;

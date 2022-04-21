@@ -19,7 +19,7 @@ export const IconLabel: React.FC<IIconLabelProps> = ({
     <Root>
       <IconContainer>
         {hasError && <ErrorDisplay />}
-        <Icon icon={icon} />
+        <Icon>{icon}</Icon>
       </IconContainer>
 
       <Label>{label}</Label>

@@ -1,11 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
-import {
-  faBuilding,
-  faSunHaze,
-  faCloudsMoon,
-} from '@fortawesome/pro-solid-svg-icons';
 import query from './query';
 import { IS_DEV, DEVELOPMENT_DAY, DATE_FORMAT } from '../../constants';
 import { IconLabel } from '../IconLabel';
@@ -36,15 +31,15 @@ export const DayTotal: React.FC = () => {
 
     return (
       <Root>
-        <IconLabel icon={faSunHaze} label={LABELS.MORNING_COMMUTE}>
+        <IconLabel icon={<i className="fas fa-sun-haze" />} label={LABELS.MORNING_COMMUTE}>
           <TimeDisplay {...totalMorningCommuteTime} />
         </IconLabel>
 
-        <IconLabel icon={faBuilding} label={LABELS.TIME_AT_THE_OFFICE}>
+        <IconLabel icon={<i className="fas fa-building" />} label={LABELS.TIME_AT_THE_OFFICE}>
           <TimeDisplay {...totalTimeAtOffice} />
         </IconLabel>
 
-        <IconLabel icon={faCloudsMoon} label={LABELS.TOTAL_EVENING_COMMUTE}>
+        <IconLabel icon={<i className="fas fa-clouds-moon" />} label={LABELS.TOTAL_EVENING_COMMUTE}>
           <TimeDisplay {...totalEveningCommuteTime} />
         </IconLabel>
       </Root>
@@ -55,7 +50,7 @@ export const DayTotal: React.FC = () => {
     <Root>
       <IconLabel
         hasError={!!error}
-        icon={faSunHaze}
+        icon={<i className="fas fa-sun-haze" />}
         label={LABELS.MORNING_COMMUTE}
       >
         <TimeDisplay isLoading={loading} />
@@ -63,7 +58,7 @@ export const DayTotal: React.FC = () => {
 
       <IconLabel
         hasError={!!error}
-        icon={faBuilding}
+        icon={<i className="fas fa-building" />}
         label={LABELS.TIME_AT_THE_OFFICE}
       >
         <TimeDisplay isLoading={loading} />
@@ -71,7 +66,7 @@ export const DayTotal: React.FC = () => {
 
       <IconLabel
         hasError={!!error}
-        icon={faCloudsMoon}
+        icon={<i className="fas fa-clouds-moon" />}
         label={LABELS.TOTAL_EVENING_COMMUTE}
       >
         <TimeDisplay isLoading={loading} />
