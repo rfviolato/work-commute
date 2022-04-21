@@ -6,11 +6,11 @@
     "DB_PASSWORD": "@db-password"
   },
   "builds": [
-    { "src": "server/graphql/index.ts", "use": "@now/node" },
-    { "src": "server/api/**/*.ts", "use": "@now/node" },
+    { "src": "server/graphql/index.ts", "use": "@vercel/node" },
+    { "src": "server/api/**/*.ts", "use": "@vercel/node" },
     {
       "src": "webapp/package.json",
-      "use": "@now/static-build",
+      "use": "@vercel/static-build",
       "config": { "distDir": "build" }
     }
   ],

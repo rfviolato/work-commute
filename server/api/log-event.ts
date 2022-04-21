@@ -1,4 +1,4 @@
-import { NowRequest, NowResponse } from '@now/node';
+import { NowRequest, NowResponse } from '@vercel/node';
 import moment from 'moment';
 import { createDbClient } from './../lib/db';
 import { DAY_FORMAT } from '../constants';
