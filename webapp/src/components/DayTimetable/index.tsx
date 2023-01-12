@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { faClock } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
 import { TimetableDisplay } from '../TimetableDisplay';
 import { DEVELOPMENT_DAY, IS_DEV, DATE_FORMAT } from '../../constants';
@@ -27,7 +26,7 @@ export const DayTimetable: React.FC = () => {
 
     return (
       <TimetableDisplay
-        icon={faClock}
+        icon={<i className="far fa-clock" />}
         timetables={[
           { timestamp: homeLeaveTime, label: LABELS.HOME_LEAVE },
           { timestamp: workArriveTime, label: LABELS.WORK_ARRIVE },
@@ -40,7 +39,7 @@ export const DayTimetable: React.FC = () => {
 
   return (
     <TimetableDisplay
-      icon={faClock}
+      icon={<i className="far fa-clock" />}
       isLoading={loading}
       hasError={!!error}
       timetables={[

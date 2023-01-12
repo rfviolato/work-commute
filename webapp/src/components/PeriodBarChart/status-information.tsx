@@ -1,9 +1,6 @@
 import React from "react";
 import posed, {PoseGroup} from "react-pose";
 import styled from '@emotion/styled';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEmptySet } from '@fortawesome/pro-regular-svg-icons';
-import { faIcon as errorIcon } from '../QueryErrorIcon';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { IStatusInfoProps } from './interface';
 
@@ -29,7 +26,7 @@ const Root = styled(AnimatedRoot)<IRootProps>`
   width: ${({ width }) => `${width}px` || 'auto'}
 `;
 
-const Icon = styled(FontAwesomeIcon)`
+const Icon = styled.span`
   font-size: 60px;
   margin-bottom: 16px;
 `;
@@ -55,7 +52,7 @@ export const StatusInformation: React.FC<IStatusInfoProps> = ({
     if (hasError) {
       return (
         <Root width={300} key="error">
-          <Icon icon={errorIcon} />
+          <Icon className="far fa-exclamation-circle" />
           <Text>
             There was a problem while fetching data for the selected period
           </Text>
@@ -66,7 +63,7 @@ export const StatusInformation: React.FC<IStatusInfoProps> = ({
     if (noData) {
       return (
         <Root width={200} key="no-data">
-          <Icon icon={faEmptySet} />
+          <Icon className="far fa-empty-set" />
           <Text>No recorded data for the selected period</Text>
         </Root>
       );

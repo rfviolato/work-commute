@@ -193,3 +193,7 @@ export const PickerYearContainer = styled.div`
 `;
 
 export const ErrorDisplay = styled(QueryErrorIcon)``;
+
+export const CalendarIcon = styled.i`
+  transform: translateY(-2px);
+`;

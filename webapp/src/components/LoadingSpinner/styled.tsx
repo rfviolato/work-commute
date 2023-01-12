@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 
@@ -13,7 +12,7 @@ const rotate = keyframes`
   }
 `;
 
-export const Spinner = styled(FontAwesomeIcon)`
+export const Spinner = styled.span`
   opacity: 0.75;
   animation: ${rotate} 1500ms cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
 `;

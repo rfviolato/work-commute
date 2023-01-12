@@ -1,10 +1,5 @@
 import React from 'react';
 import { IListItemPickerProps } from './interface';
-import {
-  faArrowCircleLeft,
-  faArrowCircleRight,
-} from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavigationButton, CurrentItemDisplay } from './styled';
 
 export const ListItemPicker: React.FC<IListItemPickerProps> = ({
@@ -40,7 +35,7 @@ export const ListItemPicker: React.FC<IListItemPickerProps> = ({
         isUnavailable={currentIndex === 0}
         onClick={onPreviousClick}
       >
-        <FontAwesomeIcon icon={faArrowCircleLeft} />
+        <i className="far fa-arrow-circle-left" />
       </NavigationButton>
 
       <CurrentItemDisplay>{list[currentIndex]}</CurrentItemDisplay>
@@ -49,7 +44,7 @@ export const ListItemPicker: React.FC<IListItemPickerProps> = ({
         isUnavailable={currentIndex === list.length - 1}
         onClick={onNextClick}
       >
-        <FontAwesomeIcon icon={faArrowCircleRight} />
+        <i className="far fa-arrow-circle-right" />
       </NavigationButton>
     </div>
   );

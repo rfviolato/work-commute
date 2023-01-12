@@ -1,7 +1,6 @@
 {
   "name": "work-commute",
   "version": "0.1.0",
-  "private": true,
   "prettier": {
     "singleQuote": true,
     "arrowParens": "always",

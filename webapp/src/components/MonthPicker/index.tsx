@@ -1,9 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import { PoseGroup } from 'react-pose';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/pro-solid-svg-icons';
-import { faCalendarAlt } from '@fortawesome/pro-regular-svg-icons';
 import { useQuery } from '@apollo/react-hooks';
 import Skeleton from 'react-loading-skeleton';
 import {
@@ -26,7 +23,7 @@ import {
   PickerYearContainer,
   PickerMonthContainer,
   PickerMonth,
-  POSE_NAMES,
+  POSE_NAMES, CalendarIcon,
 } from './styled';
 import { MONTH_DATE_FORMAT } from '../../constants';
 import { useCalendarData } from './use-calendar-data';
@@ -143,7 +140,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
             {hasError ? (
               <ErrorDisplay />
             ) : (
-                <FontAwesomeIcon icon={faCalendarAlt} />
+                <CalendarIcon className="far fa-calendar-alt" />
               )}
           </RetractedTriggerBtn>
         )}
@@ -154,7 +151,7 @@ export const MonthPickerComponent: React.FC<IMonthPickerComponentProps> = ({
             onPoseComplete={(pose: string) => setIsExpanded(pose !== 'exit')}
           >
             <ExpandedTriggerBtn onClick={() => setIsOpen(false)}>
-              <FontAwesomeIcon icon={faTimes} />
+              <i className="fas fa-times" />
             </ExpandedTriggerBtn>
 
             <PickerYearContainer>

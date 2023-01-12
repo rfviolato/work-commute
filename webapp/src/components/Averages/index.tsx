@@ -1,5 +1,4 @@
 import React from 'react';
-import { faBriefcase, faTrain } from '@fortawesome/pro-solid-svg-icons';
 import { TimeDisplay } from '../TimeDisplay';
 import { IconLabel } from '../IconLabel';
 import { useQuery } from '@apollo/react-hooks';
@@ -48,13 +47,13 @@ export const AveragesComponent: React.FC<IAveragesComponentProps> = ({
 }) => {
   return (
     <Root>
-      <IconLabel hasError={hasError} icon={faTrain} label="Time commuting">
+      <IconLabel hasError={hasError} icon={<i className="fas fa-train" />} label="Time commuting">
         <TimeDisplay isLoading={isLoading} {...averageTimeCommuting} />
       </IconLabel>
 
       <IconLabel
         hasError={hasError}
-        icon={faBriefcase}
+        icon={<i className="fas fa-briefcase" />}
         label="Time at the office"
       >
         <TimeDisplay isLoading={isLoading} {...averageTimeAtOffice} />

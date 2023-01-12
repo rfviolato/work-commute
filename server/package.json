@@ -1,11 +1,11 @@
 {
   "name": "server",
-  "description": "work-commut server",
+  "description": "work-commute server",
   "dependencies": {
-    "@now/node": "^1.1.2",
+    "@types/moment": "^2.13.0",
     "@types/mongodb": "^3.3.11",
     "@types/mongoose": "^5.5.32",
-    "@types/moment": "^2.13.0",
+    "@vercel/node": "^2.8.6",
     "apollo-server-micro": "^2.9.8",
     "firebase-admin": "^8.7.0",
     "graphql": "^14.5.8",
