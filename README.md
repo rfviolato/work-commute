@@ -13,7 +13,7 @@ I am a bit obsessed with my own time and how it is being spent, and just like mo
 Besides wanting to give myself a more full-stack challenge, I also wanted to learn some technical stuff that I did not have the chance of using before in an application, which are:
 
 - Typescript
-- Zeit Now
+- Vercel Now
 - GraphQL
 - MongoDB
 - React-hooks
