@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { QueryErrorIcon } from '../QueryErrorIcon';
 import { COLORS } from '../../global-styles';
 
