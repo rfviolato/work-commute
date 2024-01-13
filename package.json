@@ -1,18 +1,24 @@
 {
   "name": "work-commute",
   "version": "0.1.0",
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "always",
-    "trailingComma": "all"
-  },
+  "private": true,
   "scripts": {
-    "deploy": "now --prod",
-    "dump-prod-db": "mongoexport --host Cluster0-shard-0/cluster0-shard-00-00-uk48d.mongodb.net:27017,cluster0-shard-00-01-uk48d.mongodb.net:27017,cluster0-shard-00-02-uk48d.mongodb.net:27017 --ssl --username $DB_USERNAME --password $DB_PASSWORD --authenticationDatabase admin --db work-commute --collection workTimetable --type json --out prod_dump.json",
-    "populate-dev-db": "mongoimport --host Cluster0-shard-0/cluster0-shard-00-00-uk48d.mongodb.net:27017,cluster0-shard-00-01-uk48d.mongodb.net:27017,cluster0-shard-00-02-uk48d.mongodb.net:27017 --ssl --username $DB_USERNAME --password $DB_PASSWORD --authenticationDatabase admin --db work-commute-dev --collection workTimetable --type json --file ./prod_dump.json"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "14.0.4"
+  },
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4"
   }
 }
