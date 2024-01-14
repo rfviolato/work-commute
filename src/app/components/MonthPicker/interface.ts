@@ -1,4 +1,4 @@
-import { IFirstRecordResult } from '../../interfaces';
+import { IFirstRecordResult } from "../../interfaces";
 
 export interface IMonthPickerValue {
   year: string;
@@ -20,7 +20,7 @@ export interface IMonthPickerComponentProps extends IMonthPickerProps {
   hasError?: boolean;
 }
 
-type FirstRecordData = Pick<IFirstRecordResult, 'day'>;
+type FirstRecordData = Pick<IFirstRecordResult, "day">;
 
 export interface IMonthPickerQuery {
   FirstRecord: FirstRecordData;

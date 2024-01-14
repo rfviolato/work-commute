@@ -1,4 +1,4 @@
-import {IPeriodResult, ITime, ITimetableChartResult} from '../../interfaces';
+import { IPeriodResult, ITime, ITimetableChartResult } from "../../interfaces";
 
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
@@ -13,7 +13,7 @@ declare global {
   interface Window {
     requestIdleCallback: (
       callback: (deadline: RequestIdleCallbackDeadline) => void,
-      opts?: RequestIdleCallbackOptions,
+      opts?: RequestIdleCallbackOptions
     ) => RequestIdleCallbackHandle;
     cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
   }
@@ -24,7 +24,7 @@ export interface IPeriodChartProps {
   periodEnd: string;
 }
 
-type PeriodQueryData = Pick<IPeriodResult, 'timetableChart'>;
+type PeriodQueryData = Pick<IPeriodResult, "timetableChart">;
 
 export interface IPeriodQueryData {
   Period: PeriodQueryData;
@@ -40,7 +40,7 @@ export interface IPeriodChartComponentProps {
 }
 
 export interface IStatusInfoProps
-  extends Pick<IPeriodChartComponentProps, 'hasError' | 'isLoading'> {
+  extends Pick<IPeriodChartComponentProps, "hasError" | "isLoading"> {
   noData?: boolean;
 }
 

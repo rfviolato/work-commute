@@ -1,8 +1,8 @@
-import { IDayResult } from '../../interfaces';
+import { IDayResult } from "../../interfaces";
 
 type DayTimetableQueryData = Pick<
   IDayResult,
-  'homeArriveTime' | 'homeLeaveTime' | 'workArriveTime' | 'workLeaveTime'
+  "homeArriveTime" | "homeLeaveTime" | "workArriveTime" | "workLeaveTime"
 >;
 export interface IDayTimetableQuery {
   Day: DayTimetableQueryData;

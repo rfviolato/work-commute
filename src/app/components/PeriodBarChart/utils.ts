@@ -1,4 +1,4 @@
-import { ITime } from '../../interfaces';
+import { ITime } from "../../interfaces";
 
 export function getArrayMaxValue(array: any[], acessor: Function): number {
   return array.reduce((accum: number, currentItem: any) => {
@@ -19,7 +19,7 @@ export function getTotalMinutesFromTime(time: ITime): number {
 export function getBarHeight(
   maxHeight: number,
   maxValue: number,
-  value: number,
+  value: number
 ): number {
   return (value * maxHeight) / maxValue;
 }

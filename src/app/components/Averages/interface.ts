@@ -1,8 +1,8 @@
-import { ITime, IPeriodResult } from '../../interfaces';
+import { ITime, IPeriodResult } from "../../interfaces";
 
 type PeriodQueryData = Pick<
   IPeriodResult,
-  'averageTimeAtOffice' | 'averageTimeCommuting'
+  "averageTimeAtOffice" | "averageTimeCommuting"
 >;
 
 export interface IAveragesQueryData {
