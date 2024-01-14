@@ -1,4 +1,4 @@
-import { ITime } from "../../interfaces";
+import { ITime } from "../../types";
 
 export function getArrayMaxValue(array: any[], acessor: Function): number {
   return array.reduce((accum: number, currentItem: any) => {

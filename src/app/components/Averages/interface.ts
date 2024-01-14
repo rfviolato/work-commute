@@ -1,4 +1,4 @@
-import { ITime, IPeriodResult } from "../../interfaces";
+import { ITime, IPeriodResult } from "../../types";
 
 type PeriodQueryData = Pick<
   IPeriodResult,

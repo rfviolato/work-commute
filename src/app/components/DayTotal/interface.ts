@@ -1,8 +1,8 @@
-import { IDayResult } from '../../interfaces';
+import { IDayResult } from "../../types";
 
 type DayTimetableQueryData = Pick<
   IDayResult,
-  'totalMorningCommuteTime' | 'totalEveningCommuteTime' | 'totalTimeAtOffice'
+  "totalMorningCommuteTime" | "totalEveningCommuteTime" | "totalTimeAtOffice"
 >;
 
 export interface IDayTotalQuery {

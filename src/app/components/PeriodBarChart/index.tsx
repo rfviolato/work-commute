@@ -11,7 +11,7 @@ import {
 import { getTotalMinutesFromTime, getArrayMaxValue } from "./utils";
 import query from "./query";
 import { StatusInformation } from "./status-information";
-import { ITimetableChartResult } from "../../interfaces";
+import { ITimetableChartResult } from "../../types";
 import {
   createBarsInAnimationTimeline,
   createBarsOutAnimationTimeline,

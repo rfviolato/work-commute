@@ -1,4 +1,4 @@
-import { IPeriodResult, ITime, ITimetableChartResult } from "../../interfaces";
+import { IPeriodResult, ITime, ITimetableChartResult } from "../../types";
 
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {

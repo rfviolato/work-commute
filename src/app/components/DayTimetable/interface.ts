@@ -1,4 +1,4 @@
-import { IDayResult } from "../../interfaces";
+import { IDayResult } from "../../types";
 
 type DayTimetableQueryData = Pick<
   IDayResult,

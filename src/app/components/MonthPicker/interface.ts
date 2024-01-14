@@ -1,4 +1,4 @@
-import { IFirstRecordResult } from "../../interfaces";
+import { IFirstRecordResult } from "../../types";
 
 export interface IMonthPickerValue {
   year: string;
