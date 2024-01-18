@@ -1,11 +1,11 @@
-import React from 'react';
-import { Slider } from '../Slider';
-import { BarsContainer } from './styled';
-import { ICarouselChartProps } from './interface';
+import React from "react";
+import { Slider } from "../Slider";
+import { BarsContainer } from "./styled";
+import { ICarouselChartProps } from "./interface";
 
 export const BARS_PER_PAGE = 5;
 export const SLIDER_SPEED = 800;
-const SLIDER_EASING = 'cubic-bezier(0.645, 0.045, 0.355, 1)'; // easeInOutCubic
+const SLIDER_EASING = "cubic-bezier(0.645, 0.045, 0.355, 1)"; // easeInOutCubic
 
 const CarouselChartComponent = React.forwardRef<any, ICarouselChartProps>(
   (props, ref) => {
@@ -24,7 +24,7 @@ const CarouselChartComponent = React.forwardRef<any, ICarouselChartProps>(
             {chartData
               .slice(
                 currentPage * BARS_PER_PAGE - BARS_PER_PAGE,
-                currentPage * BARS_PER_PAGE,
+                currentPage * BARS_PER_PAGE
               )
               .map(renderChartBars)}
           </BarsContainer>
@@ -43,7 +43,9 @@ const CarouselChartComponent = React.forwardRef<any, ICarouselChartProps>(
         {slides}
       </Slider>
     );
-  },
+  }
 );
+
+CarouselChartComponent.displayName = "CarouselChart";
 
 export const CarouselChart = React.memo(CarouselChartComponent);
