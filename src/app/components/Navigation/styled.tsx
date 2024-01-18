@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
-import { NavLink } from 'react-router-dom';
-import { COLORS } from '../../global-styles';
+import styled from "@emotion/styled";
+import { default as NextLink } from "next/link";
+import { COLORS } from "../../global-styles";
 
 export const Root = styled.nav`
   display: flex;
@@ -12,7 +12,7 @@ export const Root = styled.nav`
   border-bottom: 1px solid #aaa;
 `;
 
-export const Link = styled(NavLink)`
+export const Link = styled(NextLink)`
   &:visited {
     color: currentColor;
   }
@@ -27,7 +27,7 @@ export const Link = styled(NavLink)`
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 55%;
     height: 1px;

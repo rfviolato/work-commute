@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import moment, { Moment } from "moment";
 import { Card } from "../Card";

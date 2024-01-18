@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { SkeletonTheme } from "react-loading-skeleton";
 import "@rfviolato/private-registry/font-awesome-5/css/fontawesome.min.css";
 import "@rfviolato/private-registry/font-awesome-5/css/solid.min.css";
 import "@rfviolato/private-registry/font-awesome-5/css/regular.min.css";
 
 // fonts
 import "typeface-roboto";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>
+        <SkeletonTheme highlightColor="#b9b9b9">{children}</SkeletonTheme>
+      </body>
     </html>
   );
 }

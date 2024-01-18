@@ -1,13 +1,16 @@
-import React from 'react';
-import { Root, Link } from './styled';
+import React from "react";
+import { Root, Link } from "./styled";
+import { usePathname } from "next/navigation";
 
 export const Navigation: React.FC = () => {
+  const pathname = usePathname();
+
   return (
     <Root>
-      <Link exact activeClassName="active" to="/">
+      <Link className={pathname === "/today" ? "active" : ""} href="/today">
         Today
       </Link>
-      <Link activeClassName="active" to="/period">
+      <Link className={pathname === "/period" ? "active" : ""} href="/period">
         Period
       </Link>
     </Root>
