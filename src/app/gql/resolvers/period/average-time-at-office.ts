@@ -6,12 +6,13 @@ import {
   IDayTimetableRecord,
 } from "../../types";
 
-export default (
+const averageTimeAtOfficeResolver = (
   timetables: IDayTimetableRecord[]
 ): IAverageTimeAtOfficeResolverResult => {
   try {
     const result = timetables.reduce(
-      (accum, { workArriveTime, workLeaveTime, day }) => {
+      (accum, { workArriveTime, workLeaveTime }) => {
+        // Removed unused variable 'day'
         if (workArriveTime && workLeaveTime) {
           const workArriveDate = moment(workArriveTime, TIME_FORMAT);
           const workLeaveDate = moment(workLeaveTime, TIME_FORMAT);
@@ -38,6 +39,10 @@ export default (
 
     return getTimeFromMinutes(averageMinutesAtOffice);
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default averageTimeAtOfficeResolver;

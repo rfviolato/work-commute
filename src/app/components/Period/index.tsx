@@ -22,15 +22,17 @@ const today = moment();
 let defaultPeriodStartDate = getPeriodStart(today);
 let defaultPeriodEndDate = getPeriodEnd(today);
 
-const urlParams = new URLSearchParams(window.location.search);
+if (typeof window !== "undefined") {
+  const urlParams = new URLSearchParams(window.location.search);
 
-for (const queryStringEntry of urlParams.entries()) {
-  if (queryStringEntry[0] === PERIOD_QUERY_STRING) {
-    const date = moment(queryStringEntry[1], MONTH_DATE_FORMAT);
+  for (const queryStringEntry of urlParams.entries()) {
+    if (queryStringEntry[0] === PERIOD_QUERY_STRING) {
+      const date = moment(queryStringEntry[1], MONTH_DATE_FORMAT);
 
-    if (date.isValid()) {
-      defaultPeriodStartDate = getPeriodStart(date);
-      defaultPeriodEndDate = getPeriodEnd(date);
+      if (date.isValid()) {
+        defaultPeriodStartDate = getPeriodStart(date);
+        defaultPeriodEndDate = getPeriodEnd(date);
+      }
     }
   }
 }

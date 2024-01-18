@@ -6,7 +6,7 @@ import {
   IDayTimetableRecord,
 } from "../../types";
 
-export default (
+const timetableChartResolver = (
   timetables: IDayTimetableRecord[]
 ): ITimetableChartResolverResult => {
   try {
@@ -22,6 +22,10 @@ export default (
       };
     });
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default timetableChartResolver;

@@ -1,8 +1,8 @@
 import { IGQLContext } from "../../types";
 
-export default async (
-  parent: any,
-  params: any,
+const firstRecordInfoResolver = async (
+  _: any,
+  __: any,
   { db }: IGQLContext
 ): Promise<any> => {
   try {
@@ -14,6 +14,10 @@ export default async (
 
     return result[0];
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default firstRecordInfoResolver;

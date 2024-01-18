@@ -1,6 +1,6 @@
 import { IGQLContext, IPeriodQueryParams } from "./../../types";
 
-export default async (
+const periodQueryResolver = async (
   parent: any,
   { periodStart, periodEnd }: IPeriodQueryParams,
   { db }: IGQLContext
@@ -16,6 +16,10 @@ export default async (
       .sort({ date: 1 })
       .toArray();
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default periodQueryResolver;

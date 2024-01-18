@@ -1,7 +1,7 @@
-import { IGQLContext, IDayQueryParams } from "./../types";
+import { IGQLContext, IDayQueryParams } from "./../../types";
 
-export default async (
-  parent: any,
+const dayQueryResolver = async (
+  _: any,
   { day }: IDayQueryParams,
   { db }: IGQLContext
 ): Promise<any> => {
@@ -12,6 +12,10 @@ export default async (
       },
     });
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default dayQueryResolver;

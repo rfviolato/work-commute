@@ -1,12 +1,12 @@
-import { UpdateWriteOpResult } from 'mongodb';
-import moment from 'moment';
-import { TIME_FORMAT, DAY_FORMAT } from '../constants';
-import { createDbClient } from '../lib/db';
+import { UpdateResult } from "mongodb";
+import moment from "moment";
+import { TIME_FORMAT, DAY_FORMAT } from "../constants";
+import { createDbClient } from "../lib/db";
 
 export const logTime = async (
   date: string,
-  property: string,
-): Promise<UpdateWriteOpResult> => {
+  property: string
+): Promise<UpdateResult> => {
   const momentDate = moment(date).utc();
   const day = momentDate.format(DAY_FORMAT);
   const time = momentDate.format(TIME_FORMAT);
@@ -21,6 +21,6 @@ export const logTime = async (
         day,
       },
     },
-    { upsert: true },
+    { upsert: true }
   );
 };

@@ -6,7 +6,7 @@ import {
   IDayTimetableRecord,
 } from "../../types";
 
-export default (
+const calculateTotalTimeAtOffice = (
   timetables: IDayTimetableRecord[]
 ): ITotalTimeAtOfficeResolverResult => {
   try {
@@ -27,6 +27,10 @@ export default (
 
     return getTimeFromMinutes(totalMinutesAtOffice);
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default calculateTotalTimeAtOffice;

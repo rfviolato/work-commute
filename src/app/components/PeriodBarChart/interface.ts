@@ -1,23 +1,4 @@
-import { IPeriodResult, ITime, ITimetableChartResult } from "../../types";
-
-type RequestIdleCallbackHandle = any;
-type RequestIdleCallbackOptions = {
-  timeout: number;
-};
-type RequestIdleCallbackDeadline = {
-  readonly didTimeout: boolean;
-  timeRemaining: () => number;
-};
-
-declare global {
-  interface Window {
-    requestIdleCallback: (
-      callback: (deadline: RequestIdleCallbackDeadline) => void,
-      opts?: RequestIdleCallbackOptions
-    ) => RequestIdleCallbackHandle;
-    cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
-  }
-}
+import { IPeriodResult, ITimetableChartResult } from "../../types";
 
 export interface IPeriodChartProps {
   periodStart: string;

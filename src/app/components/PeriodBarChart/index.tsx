@@ -82,7 +82,7 @@ export const PeriodBarChartComponent: React.FC<IPeriodChartComponentProps> = ({
     BAR_WIDTH_INITIAL_VALUE
   );
   const [windowWidth, setWindowWidth] = React.useState<number>(
-    window.innerWidth
+    typeof window !== "undefined" ? window.innerWidth : 0
   );
   const numberOfSlides = Math.ceil(chartData.length / BARS_PER_PAGE);
   const previousPeriodId = usePrevious(periodId, periodId);

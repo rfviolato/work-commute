@@ -6,7 +6,7 @@ import {
   IAverageTimeCommutingResolverResult,
 } from "../../types";
 
-export default (
+const averageTimeCommutingResolver = (
   timetables: IDayTimetableRecord[]
 ): IAverageTimeCommutingResolverResult => {
   try {
@@ -59,6 +59,10 @@ export default (
 
     return getTimeFromMinutes(averageMinutesCommuting);
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default averageTimeCommutingResolver;

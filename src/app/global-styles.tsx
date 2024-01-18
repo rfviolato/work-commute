@@ -1,14 +1,14 @@
-import { css, Global } from '@emotion/core';
-import React from 'react';
+import { css, Global } from "@emotion/core";
+import React from "react";
 
 export const COLORS = {
-  CHART_BAR: '#4edfa5',
-  DANGER: 'orangered',
-  GRAY: '#f1f1f1',
-  DARK_GRAY: '#626262',
-  LIGHT_BLACK: '#404040',
-  BLACK: '#323232',
-  WHITE: '#fff',
+  CHART_BAR: "#4edfa5",
+  DANGER: "orangered",
+  GRAY: "#f1f1f1",
+  DARK_GRAY: "#626262",
+  LIGHT_BLACK: "#404040",
+  BLACK: "#323232",
+  WHITE: "#fff",
 };
 
 const styles = css`
@@ -54,4 +54,4 @@ const styles = css`
   }
 `;
 
-export const GlobalStyles: React.SFC = () => <Global styles={styles} />;
+export const GlobalStyles: React.FC = () => <Global styles={styles} />;

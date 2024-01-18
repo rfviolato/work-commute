@@ -6,7 +6,7 @@ import {
   IDayTimetableRecord,
 } from "../../types";
 
-export default ({
+const totalMorningCommuteTimeResolver = ({
   homeLeaveTime,
   workArriveTime,
 }: IDayTimetableRecord): ITotalMorningCommuteResolverResult => {
@@ -24,6 +24,10 @@ export default ({
 
     return getTimeFromMinutes(0);
   } catch (e) {
-    throw new Error(e);
+    const error = new Error(e as string);
+
+    throw error;
   }
 };
+
+export default totalMorningCommuteTimeResolver;
