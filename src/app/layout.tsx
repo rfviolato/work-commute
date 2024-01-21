@@ -4,6 +4,7 @@ import "@rfviolato/private-registry/font-awesome-5/css/fontawesome.min.css";
 import "@rfviolato/private-registry/font-awesome-5/css/solid.min.css";
 import "@rfviolato/private-registry/font-awesome-5/css/regular.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "./globals.css";
 
 // fonts
 import "typeface-roboto";
